@@ -226,7 +226,7 @@ class DraftAnalyzer {
                 if (pick.metadata && pick.metadata.first_name && pick.metadata.last_name) {
                     playerName = `${pick.metadata.first_name} ${pick.metadata.last_name}`;
                 } else {
-                    playerName = playerDetails[pick.player_id]?.name || `Player ${pick.player_id}`;
+                    playerName = playerDetails[pick.player_id]?.full_name || `Player ${pick.player_id}`;
                 }
                 
                 const playerPosition = pick.metadata?.position || playerDetails[pick.player_id]?.position || 'UNKNOWN';
@@ -356,7 +356,7 @@ class DraftAnalyzer {
                 if (pick.metadata && pick.metadata.first_name && pick.metadata.last_name) {
                     playerName = `${pick.metadata.first_name} ${pick.metadata.last_name}`;
                 } else {
-                    playerName = playerDetails[pick.player_id]?.name || `Player ${pick.player_id}`;
+                    playerName = playerDetails[pick.player_id]?.full_name || `Player ${pick.player_id}`;
                 }
                 
                 const playerPosition = pick.metadata?.position || playerDetails[pick.player_id]?.position || 'UNKNOWN';
