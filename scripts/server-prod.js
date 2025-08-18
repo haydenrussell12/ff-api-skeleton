@@ -24,6 +24,8 @@ console.log('✅ Supabase environment variables validated successfully');
 console.log('🚀 Starting Fantasy Football API server...');
 console.log('🌍 Environment:', process.env.NODE_ENV || 'development');
 console.log('📁 Working directory:', __dirname);
+console.log('🔑 Supabase URL length:', process.env.SUPABASE_URL ? process.env.SUPABASE_URL.length : 'MISSING');
+console.log('🔑 Supabase Key length:', process.env.SUPABASE_ANON_KEY ? process.env.SUPABASE_ANON_KEY.length : 'MISSING');
 
 // Create Supabase client
 const supabase = createClient(
