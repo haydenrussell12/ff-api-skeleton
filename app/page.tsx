@@ -133,8 +133,8 @@ export default function Home() {
                 <div class="hero-section">
                     <h2>Ready to dominate your fantasy league?</h2>
                     <p>Get instant draft analysis, player projections, and strategic insights to build the ultimate team.</p>
-                    <a href="/draft-analyzer-new.html" class="cta-button">Try Draft Analyzer Now</a>
-                    <a href="/pre-draft-cheat-sheet.html" class="cta-button" style="background: #f39c12;">📋 Pre Draft Cheat Sheet</a>
+                    <a href="/draft-analyzer" class="cta-button">Try Draft Analyzer Now</a>
+                    <a href="/cheat-sheet" class="cta-button" style="background: #f39c12;">📋 Pre Draft Cheat Sheet</a>
                     <a href="#" class="cta-button coming-soon" style="background: #e74c3c;">
                         🤖 AI Helper
                         <span class="coming-soon-tag">Coming Soon</span>
@@ -159,8 +159,8 @@ export default function Home() {
                 <div class="hero-section" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
                     <h2>Start Building Your Championship Team</h2>
                     <p>Join thousands of fantasy managers who are already using our tools to dominate their leagues.</p>
-                    <a href="/draft-analyzer-new.html" class="cta-button">🚀 Start Analyzing Drafts</a>
-                    <a href="/pre-draft-cheat-sheet.html" class="cta-button" style="background: #f39c12;">📋 Pre Draft Cheat Sheet</a>
+                    <a href="/draft-analyzer" class="cta-button">🚀 Start Analyzing Drafts</a>
+                    <a href="/cheat-sheet" class="cta-button" style="background: #f39c12;">📋 Pre Draft Cheat Sheet</a>
                 </div>
             </div>
         </body>
