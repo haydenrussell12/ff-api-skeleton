@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
 import DraftAnalyzer from './draft-analyzer-new.js';
 import PositionGradeEngine from './position-grade-engine.js';
 
@@ -10,6 +11,18 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Validate Supabase environment variables
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+  console.error('❌ Missing Supabase environment variables. Check your Vercel environment variables.');
+  process.exit(1);
+}
+
+// Create Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 // Middleware
 app.use(cors());
