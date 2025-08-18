@@ -4,11 +4,14 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node scripts/server.js",
+    "dev": "next dev",
+    "web:dev": "next dev",
+    "api:dev": "node scripts/server.js",
     "dev-new": "node scripts/server-new.js",
-    "start": "node scripts/server-prod.js",
-    "build": "echo 'Build completed successfully' && node -e \"console.log('✅ Build script executed')\"",
+    "start": "next start",
+    "api:start": "node scripts/server-prod.js",
+    "build": "next build",
+    "vercel:build": "next build",
     "test-endpoints": "node scripts/test-endpoints.js",
     "load-data": "node scripts/load_rankings_csv.js data/rankings.csv",
     "fetch-projections": "node scripts/fetch-projections.js",
@@ -22,7 +25,6 @@
     "verify-migration": "node scripts/verify-migration.js",
     "connect-league": "node scripts/league-connector.js",
     "fetch-sleeper": "node scripts/fetch-sleeper-projections.js",
-    "populate-sleeper-ids": "node scripts/populate-sleeper-ids.js",
     "calculate-vorp": "node scripts/calculate-vorp-scores.js",
     "upload-vorp": "node scripts/upload-vorp-to-supabase.js"
   },
@@ -39,6 +41,13 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^4.21.2",
-    "node-fetch": "^3.3.2"
+    "next": "^14.2.31",
+    "node-fetch": "^3.3.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.10",
+    "typescript": "5.9.2"
   }
 }
