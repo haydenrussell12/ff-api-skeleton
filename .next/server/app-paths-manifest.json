@@ -1,5 +1,5 @@
 {
-  "/api/debug/routes/route": "app/api/debug/routes/route.js",
   "/health/route": "app/health/route.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/api/debug/routes/route": "app/api/debug/routes/route.js"
 }
