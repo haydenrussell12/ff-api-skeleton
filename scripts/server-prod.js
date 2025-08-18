@@ -15,8 +15,13 @@ const PORT = process.env.PORT || 3000;
 // Validate Supabase environment variables
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
   console.error('❌ Missing Supabase environment variables. Check your Vercel environment variables.');
+  console.error('SUPABASE_URL:', process.env.SUPABASE_URL ? 'SET' : 'MISSING');
+  console.error('SUPABASE_ANON_KEY:', process.env.SUPABASE_ANON_KEY ? 'SET' : 'MISSING');
   process.exit(1);
 }
+
+console.log('✅ Supabase environment variables validated successfully');
+console.log('🚀 Starting Fantasy Football API server...');
 
 // Create Supabase client
 const supabase = createClient(
