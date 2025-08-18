@@ -1,1 +1,0 @@
-self.__BUILD_MANIFEST = (function(a,b,c){return {__rewrites:{afterFiles:[{has:a,source:b,destination:b},{has:a,source:c,destination:c}],beforeFiles:[],fallback:[]},sortedPages:["\u002F_app"]}}(void 0,"\u002Fdraft-analyzer-new.html","\u002Fpre-draft-cheat-sheet.html"));self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()

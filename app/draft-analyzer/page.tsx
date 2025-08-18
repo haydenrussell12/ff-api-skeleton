@@ -2,16 +2,36 @@
 
 import { useState } from 'react';
 
+interface Team {
+  teamId: string;
+  teamName: string;
+  totalProjectedPoints: number;
+  totalAdpValue: number;
+  averageAdpValue: number;
+  totalVorpScore: number;
+  averageVorpScore: number;
+  optimalLineupPoints: number;
+  benchPoints: number;
+  players: any[];
+  positionGrades: any;
+  roster: any[];
+}
+
+interface AnalysisResults {
+  teams: Team[];
+  summary: any;
+}
+
 export default function DraftAnalyzerPage() {
   const [draftUrl, setDraftUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState<AnalysisResults | null>(null);
   const [error, setError] = useState('');
   const [showResults, setShowResults] = useState(false);
 
   const analyzeDraft = async () => {
     if (!draftUrl.trim()) {
-      alert('Please enter a draft URL');
+      setError('Please enter a draft URL');
       return;
     }
 
@@ -20,24 +40,15 @@ export default function DraftAnalyzerPage() {
     setShowResults(false);
 
     try {
-      console.log('Sending request to analyze draft:', draftUrl);
-      
       const response = await fetch('/api/analyze-draft', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ draftUrl })
+        body: JSON.stringify({ draftUrl: draftUrl.trim() }),
       });
 
-      console.log('Response status:', response.status);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
       const result = await response.json();
-      console.log('Response data:', result);
 
       if (result.success) {
         setResults(result.data);
@@ -47,13 +58,14 @@ export default function DraftAnalyzerPage() {
       }
     } catch (error) {
       console.error('Error analyzing draft:', error);
-      setError(`Analysis failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setError(`Analysis failed: ${errorMessage}`);
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  const scrollToTeam = (teamId) => {
+  const scrollToTeam = (teamId: string) => {
     const element = document.querySelector(`[data-team-id="${teamId}"]`);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -134,8 +146,8 @@ export default function DraftAnalyzerPage() {
                 transition: 'transform 0.2s ease',
                 opacity: isAnalyzing ? 0.7 : 1
               }}
-              onMouseEnter={(e) => !isAnalyzing && (e.target.style.transform = 'scale(1.02)')}
-              onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+              onMouseEnter={(e) => !isAnalyzing && ((e.target as HTMLElement).style.transform = 'scale(1.02)')}
+              onMouseLeave={(e) => (e.target as HTMLElement).style.transform = 'scale(1)'}
             >
               {isAnalyzing ? '🔍 Analyzing Draft...' : '🚀 Analyze Draft & Calculate Optimal Lineups'}
             </button>
