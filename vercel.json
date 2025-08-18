@@ -12,6 +12,10 @@
       "dest": "scripts/server-prod.js"
     },
     {
+      "src": "/health",
+      "dest": "scripts/server-prod.js"
+    },
+    {
       "src": "^/$",
       "dest": "public/index.html"
     },
@@ -22,10 +26,6 @@
     {
       "src": "/cheat-sheet",
       "dest": "public/pre-draft-cheat-sheet.html"
-    },
-    {
-      "src": "/health",
-      "dest": "scripts/server-prod.js"
     },
     {
       "src": "/(.*)",

@@ -38,9 +38,64 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// Method validation middleware
+const validateMethod = (allowedMethods) => {
+  return (req, res, next) => {
+    if (!allowedMethods.includes(req.method)) {
+      return res.status(405).json({
+        error: 'Method Not Allowed',
+        allowed: allowedMethods,
+        received: req.method,
+        path: req.path
+      });
+    }
+    next();
+  };
+};
+
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    supabase: {
+      url: process.env.SUPABASE_URL ? 'SET' : 'MISSING',
+      key: process.env.SUPABASE_ANON_KEY ? 'SET' : 'MISSING'
+    }
+  });
+});
+
+// Debug routes endpoint
+app.get('/api/_debug/routes', (req, res) => {
+  const routes = [
+    {
+      path: '/health',
+      method: 'GET',
+      description: 'Health check endpoint'
+    },
+    {
+      path: '/api/analyze-draft',
+      method: 'POST',
+      description: 'Analyze Sleeper draft performance'
+    },
+    {
+      path: '/api/cheat-sheet',
+      method: 'GET',
+      description: 'Get pre-draft cheat sheet data'
+    },
+    {
+      path: '/api/_debug/routes',
+      method: 'GET',
+      description: 'List all available API routes'
+    }
+  ];
+  
+  res.json({
+    routes,
+    total: routes.length,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Serve static files
@@ -57,7 +112,7 @@ app.get('/cheat-sheet', (req, res) => {
 });
 
 // API Routes
-app.post('/api/analyze-draft', async (req, res) => {
+app.post('/api/analyze-draft', validateMethod(['POST']), async (req, res) => {
   try {
     const { draftUrl, source = 'fantasypros', format = 'standard', evaluationMode = 'projections' } = req.body;
     
@@ -85,7 +140,7 @@ app.post('/api/analyze-draft', async (req, res) => {
 });
 
 // Cheat Sheet API endpoint
-app.get('/api/cheat-sheet', async (req, res) => {
+app.get('/api/cheat-sheet', validateMethod(['GET']), async (req, res) => {
   try {
     // Load VORP data
     const fs = await import('fs');
@@ -182,9 +237,32 @@ app.use('/api/*', (req, res) => {
   res.status(404).json({ success: false, error: 'API endpoint not found' });
 });
 
-// Fallback route for any unmatched routes - serve index.html for SPA routing
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+// 404 handler for unmatched routes
+app.use('*', (req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    path: req.originalUrl,
+    method: req.method,
+    availableRoutes: [
+      '/health',
+      '/api/analyze-draft',
+      '/api/cheat-sheet',
+      '/api/_debug/routes',
+      '/draft-analyzer',
+      '/cheat-sheet'
+    ],
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('❌ Server error:', err);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Start server (only if not on Vercel)
