@@ -110,17 +110,29 @@ class DraftAnalyzer {
             
             // Use the updated teams from the analysis
             const updatedTeams = {};
-            analysis.teams.forEach(team => {
-                updatedTeams[team.teamId] = {
-                    ...teamsWithOptimalLineups[team.teamId],
-                    totalProjectedPoints: team.totalProjectedPoints,
-                    totalAdpValue: team.totalAdpValue,
-                    averageAdpValue: team.averageAdpValue,
-                    totalVorpScore: team.totalVorpScore,
-                    averageVorpScore: team.averageVorpScore,
-                    positionGrades: teamsWithOptimalLineups[team.teamId].positionGrades
-                };
-            });
+            
+            // Safety check: ensure analysis.teams exists and is an array
+            if (analysis && analysis.teams && Array.isArray(analysis.teams)) {
+                analysis.teams.forEach(team => {
+                    if (team && team.teamId && teamsWithOptimalLineups[team.teamId]) {
+                        updatedTeams[team.teamId] = {
+                            ...teamsWithOptimalLineups[team.teamId],
+                            totalProjectedPoints: team.totalProjectedPoints,
+                            totalAdpValue: team.totalAdpValue,
+                            averageAdpValue: team.averageAdpValue,
+                            totalVorpScore: team.totalVorpScore,
+                            averageVorpScore: team.averageVorpScore,
+                            positionGrades: teamsWithOptimalLineups[team.teamId].positionGrades
+                        };
+                    }
+                });
+            } else {
+                console.warn('⚠️ No teams found in analysis, using fallback');
+                // Fallback: use the teamsWithOptimalLineups directly
+                Object.keys(teamsWithOptimalLineups).forEach(teamId => {
+                    updatedTeams[teamId] = teamsWithOptimalLineups[teamId];
+                });
+            }
             
             console.log('🎉 Draft analysis completed successfully!');
             
@@ -876,6 +888,17 @@ class DraftAnalyzer {
     analyzeDraftPerformance(teams) {
         console.log('🔍 Analyzing draft performance...');
         
+        // Safety check: ensure teams parameter is valid
+        if (!teams || typeof teams !== 'object' || Object.keys(teams).length === 0) {
+            console.warn('⚠️ No teams provided to analyzeDraftPerformance, returning empty analysis');
+            return {
+                totalPicks: 0,
+                totalTeams: 0,
+                rounds: 0,
+                teams: []
+            };
+        }
+        
         const analysis = {
             totalPicks: 0,
             totalTeams: 0,
@@ -1140,6 +1163,16 @@ class DraftAnalyzer {
     }
 
     calculateRankings(teams) {
+        // Safety check: ensure teams parameter is valid
+        if (!teams || typeof teams !== 'object' || Object.keys(teams).length === 0) {
+            console.warn('⚠️ No teams provided to calculateRankings, returning empty rankings');
+            return {
+                byProjectedPoints: [],
+                byAdpValue: [],
+                final: []
+            };
+        }
+        
         // Convert to array for sorting
         const teamsArray = Object.values(teams);
 
