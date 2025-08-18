@@ -9,6 +9,7 @@ interface Player {
   projectedPoints: number;
   vorpScore: number;
   adpValue: number;
+  rawAdp: string;
   rank: number;
   adp?: number;
   bye?: number;
@@ -72,6 +73,7 @@ export default function CheatSheetPage() {
             projectedPoints: vorpPlayer?.points || 0,
             vorpScore: vorpPlayer?.vorp || 0,
             adpValue: parseFloat(adpPlayer.AVG) || 0,
+            rawAdp: adpPlayer.AVG || '0', // Keep original ADP value
             rank: parseInt(adpPlayer.Rank) || 0,
             adp: parseFloat(adpPlayer.AVG) || 0,
             bye: parseInt(adpPlayer.Bye) || 0
@@ -314,6 +316,9 @@ export default function CheatSheetPage() {
                   onClick={() => handleSort('adpValue')}>
                 ADP {getSortIcon('adpValue')}
               </th>
+              <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid #dee2e6' }}>
+                Raw ADP
+              </th>
               <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid #dee2e6', cursor: 'pointer' }}
                   onClick={() => handleSort('projectedPoints')}>
                 Proj Pts {getSortIcon('projectedPoints')}
@@ -338,6 +343,7 @@ export default function CheatSheetPage() {
                 <td style={{ padding: '15px' }}>{player.position}</td>
                 <td style={{ padding: '15px' }}>{player.team}</td>
                 <td style={{ padding: '15px' }}>{player.adpValue.toFixed(1)}</td>
+                <td style={{ padding: '15px' }}>{player.rawAdp}</td>
                 <td style={{ padding: '15px' }}>{player.projectedPoints.toFixed(1)}</td>
                 <td style={{ padding: '15px', color: player.vorpScore > 0 ? '#27ae60' : '#e74c3c' }}>
                   {player.vorpScore.toFixed(1)}

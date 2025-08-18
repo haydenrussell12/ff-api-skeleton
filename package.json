@@ -6,10 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "web:dev": "next dev",
-    "api:dev": "node scripts/server.js",
-    "dev-new": "node scripts/server-new.js",
     "start": "next start",
-    "api:start": "node scripts/server-prod.js",
     "build": "next build",
     "vercel:build": "next build",
     "test-endpoints": "node scripts/test-endpoints.js",
