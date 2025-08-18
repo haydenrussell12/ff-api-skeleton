@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node scripts/server.js",
     "dev-new": "node scripts/server-new.js",
-    "start": "node scripts/server.js",
-    "build": "echo 'Build completed successfully'",
+    "start": "node scripts/server-prod.js",
+    "build": "echo 'Build completed successfully' && node -e \"console.log('✅ Build script executed')\"",
     "load-data": "node scripts/load_rankings_csv.js data/rankings.csv",
     "fetch-projections": "node scripts/fetch-projections.js",
     "populate-fantasypros-adp": "node scripts/populate-fantasypros-adp.js",
@@ -38,6 +38,6 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^4.21.2",
-    "vercel": "^44.7.3"
+    "node-fetch": "^3.3.2"
   }
 }
