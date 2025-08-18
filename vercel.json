@@ -26,10 +26,6 @@
     {
       "src": "/cheat-sheet",
       "dest": "public/pre-draft-cheat-sheet.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "public/$1"
     }
   ],
   "env": {
