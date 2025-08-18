@@ -8,6 +8,7 @@
     "dev": "node scripts/server.js",
     "dev-new": "node scripts/server-new.js",
     "start": "node scripts/server.js",
+    "build": "echo 'Build completed successfully'",
     "load-data": "node scripts/load_rankings_csv.js data/rankings.csv",
     "fetch-projections": "node scripts/fetch-projections.js",
     "populate-fantasypros-adp": "node scripts/populate-fantasypros-adp.js",
