@@ -1,14 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/ai/ask/route": "app/api/ai/ask/route.js",
   "/api/debug/routes/route": "app/api/debug/routes/route.js",
-  "/api/leagues/[...slug]/route": "app/api/leagues/[...slug]/route.js",
-  "/api/cheat-sheet/route": "app/api/cheat-sheet/route.js",
-  "/api/leagues/route": "app/api/leagues/route.js",
-  "/cheat-sheet/page": "app/cheat-sheet/page.js",
-  "/draft-analyzer/page": "app/draft-analyzer/page.js",
   "/health/route": "app/health/route.js",
-  "/page": "app/page.js",
-  "/test/page": "app/test/page.js",
-  "/api/analyze-draft/route": "app/api/analyze-draft/route.js"
+  "/page": "app/page.js"
 }
