@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fantasy Football Helper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .back-link {
+            text-align: left;
+            margin: 20px;
+        }
+        
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .chat-container {
+            padding: 30px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message.ai {
+            background: white;
+            color: #333;
+            border: 1px solid #e9ecef;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.ai .confidence {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .message.ai .reasoning {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .question-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .question-input:focus {
+            border-color: #667eea;
+        }
+        
+        .ask-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        
+        .ask-button:hover {
+            background: #5a6fd8;
+        }
+        
+        .ask-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .examples {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .examples h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .example-questions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .example-question {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .example-question:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="/">← Back to Home</a>
+        </div>
+        
+        <div class="header">
+            <h1>🤖 AI Fantasy Football Helper</h1>
+            <p>Ask me anything about fantasy football! I can help with start/sit decisions, projections, player comparisons, and more.</p>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <strong>AI Assistant:</strong> Hello! I'm your AI fantasy football assistant. I can help you with:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Start/sit decisions (e.g., "Who should I start: Gibbs vs Swift?")</li>
+                        <li>Player projections (e.g., "How many points is Gibbs projected to score this year?")</li>
+                        <li>Player comparisons (e.g., "Compare Gibbs and Swift")</li>
+                        <li>Waiver wire advice (e.g., "Who should I pick up at RB?")</li>
+                        <li>Trade analysis and general fantasy advice</li>
+                    </ul>
+                    <div class="confidence">Confidence: High</div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <input type="text" class="question-input" id="questionInput" placeholder="Ask me anything about fantasy football..." maxlength="500">
+                <button class="ask-button" id="askButton" onclick="askQuestion()">Ask AI</button>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>🤖 AI is thinking...</p>
+            </div>
+        </div>
+        
+        <div class="examples">
+            <h3>💡 Try these example questions:</h3>
+            <div class="example-questions">
+                <div class="example-question" onclick="useExample(this)">
+                    <strong>Start/Sit Decision:</strong><br>
+                    "Who should I start: Gibbs vs Swift?"
+                </div>
+                <div class="example-question" onclick="useExample(this)">
+                    <strong>Player Projection:</strong><br>
+                    "How many points is Gibbs projected to score this year?"
+                </div>
+                <div class="example-question" onclick="useExample(this)">
+                    <strong>Player Comparison:</strong><br>
+                    "Compare Gibbs and Swift for this season"
+                </div>
+                <div class="example-question" onclick="useExample(this)">
+                    <strong>Waiver Wire:</strong><br>
+                    "Who should I pick up at RB this week?"
+                </div>
+                <div class="example-question" onclick="useExample(this)">
+                    <strong>Trade Advice:</strong><br>
+                    "Should I trade Gibbs for Swift?"
+                </div>
+                <div class="example-question" onclick="useExample(this)">
+                    <strong>General Advice:</strong><br>
+                    "What's the best strategy for streaming QBs?"
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+        
+        function useExample(element) {
+            const question = element.textContent.split('"')[1];
+            document.getElementById('questionInput').value = question;
+            document.getElementById('questionInput').focus();
+        }
+        
+        async function askQuestion() {
+            const questionInput = document.getElementById('questionInput');
+            const askButton = document.getElementById('askButton');
+            const loading = document.getElementById('loading');
+            const question = questionInput.value.trim();
+            
+            if (!question) {
+                alert('Please enter a question');
+                return;
+            }
+            
+            // Add user message to chat
+            addMessage(question, 'user');
+            
+            // Clear input and show loading
+            questionInput.value = '';
+            askButton.disabled = true;
+            loading.classList.add('show');
+            
+            try {
+                const response = await fetch('/api/ai/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        question: question
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    addMessage(result.answer, 'ai', result.reasoning, result.confidence);
+                } else {
+                    addMessage(`Error: ${result.answer}`, 'ai', result.reasoning, result.confidence);
+                }
+                
+            } catch (error) {
+                console.error('Error asking question:', error);
+                addMessage('Sorry, I encountered an error. Please try again.', 'ai', 'Technical error occurred', 0.3);
+            } finally {
+                // Hide loading and re-enable button
+                loading.classList.remove('show');
+                askButton.disabled = false;
+                questionInput.focus();
+            }
+        }
+        
+        function addMessage(content, type, reasoning = null, confidence = null) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            let messageContent = `<strong>${type === 'user' ? 'You' : 'AI Assistant'}:</strong> ${content}`;
+            
+            if (type === 'ai' && reasoning) {
+                messageContent += `<div class="reasoning"><strong>Reasoning:</strong> ${reasoning}</div>`;
+            }
+            
+            if (type === 'ai' && confidence !== null) {
+                const confidenceText = confidence >= 0.8 ? 'High' : confidence >= 0.6 ? 'Medium' : 'Low';
+                messageContent += `<div class="confidence">Confidence: ${confidenceText}</div>`;
+            }
+            
+            messageDiv.innerHTML = messageContent;
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Store in history
+            chatHistory.push({
+                type,
+                content,
+                reasoning,
+                confidence,
+                timestamp: new Date()
+            });
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('questionInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                askQuestion();
+            }
+        });
+        
+        // Auto-focus input on page load
+        window.addEventListener('load', function() {
+            document.getElementById('questionInput').focus();
+        });
+    </script>
+</body>
+</html> 

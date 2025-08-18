@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Football League Manager</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .back-link {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .league-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .league-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ecf0f1;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .league-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        
+        .league-card p {
+            margin: 8px 0;
+            color: #34495e;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        
+        .section h2 {
+            color: #34495e;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        button {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+        
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .keeper-recommendation {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .keeper-recommendation.definite {
+            border-left-color: #27ae60;
+            background: #d5f4e6;
+        }
+        
+        .keeper-recommendation.strong {
+            border-left-color: #f39c12;
+            background: #fef9e7;
+        }
+        
+        .keeper-recommendation.consider {
+            border-left-color: #e67e22;
+            background: #fdf2e9;
+        }
+        
+        .keeper-recommendation.weak {
+            border-left-color: #e74c3c;
+            background: #fadbd8;
+        }
+        
+        .keeper-recommendation.dont {
+            border-left-color: #95a5a6;
+            background: #f4f6f6;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="/">← Back to Home</a>
+        </div>
+        <div class="header">
+            <h1>🏈 Fantasy Football League Manager</h1>
+        </div>
+        
+        <!-- League Connection Section -->
+        <div class="section">
+            <h2>🔗 Connect to League</h2>
+            <div class="form-group">
+                <label for="platform">Platform:</label>
+                <select id="platform" onchange="toggleSeasonField()">
+                    <option value="sleeper">Sleeper</option>
+                    <option value="espn">ESPN</option>
+                    <option value="yahoo" disabled>Yahoo (Coming Soon)</option>
+                </select>
+            </div>
+            <div class="form-group" id="seasonField" style="display: none;">
+                <label for="season">Season:</label>
+                <select id="season">
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                </select>
+                <small>ESPN requires season selection</small>
+            </div>
+            <div class="form-group">
+                <label for="leagueId">League ID:</label>
+                <input type="text" id="leagueId" placeholder="Enter your league ID">
+                <small id="leagueIdHelp">Find this in your league URL</small>
+            </div>
+            <button onclick="connectLeague()">Connect to League</button>
+            <div id="connectionStatus"></div>
+        </div>
+        
+        <!-- League Management Section -->
+        <div class="section hidden" id="leagueManagement">
+            <h2>📊 League Management</h2>
+            <div id="leagueInfo"></div>
+            <button onclick="importRosters()">Import Team Rosters</button>
+            <div id="rosterStatus"></div>
+        </div>
+        
+        <!-- Keeper Analysis Section -->
+        <div class="section hidden" id="keeperAnalysis">
+            <h2>🎯 Keeper Analysis</h2>
+            <div id="teamSelector"></div>
+            <div id="keeperRecommendations"></div>
+        </div>
+        
+        <!-- Connected Leagues Section -->
+        <div class="section">
+            <h2>🏆 Connected Leagues</h2>
+            <button onclick="loadLeagues()">Refresh Leagues</button>
+            <button onclick="testAPI()">Test API Call</button>
+            <div id="connectedLeagues"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentLeague = null;
+        
+        async function connectLeague() {
+            const platform = document.getElementById('platform').value;
+            const leagueId = document.getElementById('leagueId').value.trim();
+            const season = document.getElementById('season').value;
+            
+            if (!leagueId) {
+                showStatus('connectionStatus', 'Please enter a league ID', 'error');
+                return;
+            }
+            
+            if (platform === 'espn' && !season) {
+                showStatus('connectionStatus', 'Please select a season for ESPN leagues', 'error');
+                return;
+            }
+            
+            showStatus('connectionStatus', 'Connecting to league...', 'info');
+            
+            try {
+                const response = await fetch('/api/leagues/connect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ leagueId, platform, season })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentLeague = result.data;
+                    showStatus('connectionStatus', `✅ Connected to ${result.data.league_name}!`, 'success');
+                    showLeagueManagement();
+                    loadLeagues();
+                } else {
+                    showStatus('connectionStatus', `❌ ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('connectionStatus', `❌ Connection failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function importRosters() {
+            if (!currentLeague) return;
+            
+            const platform = document.getElementById('platform').value;
+            const season = document.getElementById('season').value;
+            
+            showStatus('rosterStatus', 'Importing rosters...', 'info');
+            
+            try {
+                const response = await fetch(`/api/leagues/${currentLeague.league_id_external}/import-rosters`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ platform, season })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('rosterStatus', `✅ Imported ${result.data.total_players} players!`, 'success');
+                    showKeeperAnalysis();
+                } else {
+                    showStatus('rosterStatus', `❌ ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('rosterStatus', `❌ Import failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function loadLeagues() {
+            console.log('Loading leagues...');
+            try {
+                const response = await fetch('/api/leagues');
+                console.log('API response:', response);
+                const result = await response.json();
+                console.log('API result:', result);
+                
+                if (result.success) {
+                    console.log('Leagues data:', result.data);
+                    displayLeagues(result.data);
+                } else {
+                    console.error('API returned error:', result.error);
+                }
+            } catch (error) {
+                console.error('Failed to load leagues:', error);
+            }
+        }
+        
+        function displayLeagues(leagues) {
+            const container = document.getElementById('connectedLeagues');
+            console.log('Displaying leagues:', leagues);
+            
+            if (!leagues || leagues.length === 0) {
+                container.innerHTML = '<p>No leagues connected yet.</p>';
+                return;
+            }
+            
+            container.innerHTML = leagues.map(league => {
+                console.log('Processing league:', league);
+                const season = league.settings?.season || 'N/A';
+                const teamCount = league.settings?.total_rosters || league.league_members?.[0]?.count || 'N/A';
+                
+                return `
+                    <div class="league-card" data-league-id="${league.league_id}" data-league-name="${league.name || 'Unnamed League'}">
+                        <h3>${league.name || 'Unnamed League'}</h3>
+                        <p><strong>Platform:</strong> ${league.platform}</p>
+                        <p><strong>Season:</strong> ${season}</p>
+                        <p><strong>Teams:</strong> ${teamCount}</p>
+                        <p><strong>League ID:</strong> ${league.league_id}</p>
+                        <div class="league-actions">
+                            <button class="btn-primary select-league-btn">Select League</button>
+                            <button class="btn-danger delete-league-btn">Delete League</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Add event listeners after creating the HTML
+            addLeagueEventListeners();
+        }
+        
+        function addLeagueEventListeners() {
+            // Add event listeners for select buttons
+            document.querySelectorAll('.select-league-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const leagueCard = this.closest('.league-card');
+                    const leagueId = leagueCard.dataset.leagueId;
+                    selectLeague(leagueId);
+                });
+            });
+            
+            // Add event listeners for delete buttons
+            document.querySelectorAll('.delete-league-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const leagueCard = this.closest('.league-card');
+                    const leagueId = leagueCard.dataset.leagueId;
+                    const leagueName = leagueCard.dataset.leagueName;
+                    console.log('Delete button clicked for league:', leagueId, leagueName);
+                    deleteLeague(leagueId, leagueName);
+                });
+            });
+        }
+        
+        function selectLeague(leagueId) {
+            // Implementation for selecting a specific league
+            console.log('Selected league:', leagueId);
+        }
+        
+        async function deleteLeague(leagueId, leagueName) {
+            console.log('deleteLeague called with:', leagueId, leagueName);
+            
+            if (!confirm(`Are you sure you want to delete "${leagueName}"? This action cannot be undone and will remove all associated data.`)) {
+                console.log('User cancelled deletion');
+                return;
+            }
+            
+            console.log('Proceeding with deletion...');
+            
+            try {
+                console.log('Making DELETE request to:', `/api/leagues/${leagueId}`);
+                const response = await fetch(`/api/leagues/${leagueId}`, {
+                    method: 'DELETE'
+                });
+                
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response result:', result);
+                
+                if (result.success) {
+                    console.log('League deleted successfully');
+                    showStatus('connectionStatus', `✅ League "${leagueName}" deleted successfully!`, 'success');
+                    // Refresh the leagues list
+                    loadLeagues();
+                } else {
+                    console.log('Delete failed with error:', result.error);
+                    showStatus('connectionStatus', `❌ Failed to delete league: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                showStatus('connectionStatus', `❌ Delete failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function showLeagueManagement() {
+            document.getElementById('leagueManagement').classList.remove('hidden');
+            document.getElementById('leagueInfo').innerHTML = `
+                <div class="league-card">
+                    <h3>${currentLeague.league_name}</h3>
+                    <p><strong>Teams:</strong> ${currentLeague.teams_count}</p>
+                    <p><strong>Season:</strong> ${currentLeague.season}</p>
+                </div>
+            `;
+        }
+        
+        function showKeeperAnalysis() {
+            document.getElementById('keeperAnalysis').classList.remove('hidden');
+            // Load teams for selection
+            loadTeams();
+        }
+        
+        async function loadTeams() {
+            // This would load teams from the connected league
+            // For now, showing a placeholder
+            document.getElementById('teamSelector').innerHTML = `
+                <div class="form-group">
+                    <label>Select Team:</label>
+                    <select id="teamSelect" onchange="analyzeKeepers()">
+                        <option value="">Choose a team...</option>
+                        <option value="team1">Team 1</option>
+                        <option value="team2">Team 2</option>
+                        <option value="team3">Team 3</option>
+                    </select>
+                </div>
+            `;
+        }
+        
+        async function analyzeKeepers() {
+            const teamId = document.getElementById('teamSelect').value;
+            if (!teamId) return;
+            
+            document.getElementById('keeperRecommendations').innerHTML = '<div class="loading"><div class="spinner"></div>Analyzing keepers...</div>';
+            
+            try {
+                const response = await fetch(`/api/leagues/${currentLeague.league_id}/teams/${teamId}/keepers`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayKeeperRecommendations(result.data);
+                } else {
+                    document.getElementById('keeperRecommendations').innerHTML = `<div class="status error">❌ ${result.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('keeperRecommendations').innerHTML = `<div class="status error">❌ Analysis failed: ${error.message}</div>`;
+            }
+        }
+        
+        function displayKeeperRecommendations(recommendations) {
+            const container = document.getElementById('keeperRecommendations');
+            
+            if (recommendations.length === 0) {
+                container.innerHTML = '<p>No keeper recommendations available.</p>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <h3>Keeper Recommendations</h3>
+                ${recommendations.map(rec => `
+                    <div class="keeper-recommendation ${getKeeperClass(rec.recommendation)}">
+                        <h4>${rec.player_name} (${rec.position} - ${rec.team})</h4>
+                        <p><strong>Current ADP:</strong> ${rec.current_adp}</p>
+                        <p><strong>Keeper Value:</strong> ${rec.keeper_value}</p>
+                        <p><strong>Recommendation:</strong> ${rec.recommendation}</p>
+                    </div>
+                `).join('')}
+            `;
+        }
+        
+        function getKeeperClass(recommendation) {
+            if (recommendation.includes('DEFINITE')) return 'definite';
+            if (recommendation.includes('STRONG')) return 'strong';
+            if (recommendation.includes('CONSIDER')) return 'consider';
+            if (recommendation.includes('WEAK')) return 'weak';
+            if (recommendation.includes('DON\'T')) return 'dont';
+            return '';
+        }
+        
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function toggleSeasonField() {
+            const platform = document.getElementById('platform').value;
+            const seasonField = document.getElementById('seasonField');
+            const leagueIdHelp = document.getElementById('leagueIdHelp');
+
+            if (platform === 'espn') {
+                seasonField.style.display = 'block';
+                leagueIdHelp.textContent = 'Find this in your league URL (e.g., https://fantasy.espn.com/league/LEAGUE_ID)';
+            } else {
+                seasonField.style.display = 'none';
+                leagueIdHelp.textContent = 'Find this in your league URL';
+            }
+        }
+        
+        async function testAPI() {
+            console.log('Testing API call...');
+            document.getElementById('connectedLeagues').innerHTML = '<p>Testing API...</p>';
+            
+            try {
+                const response = await fetch('/api/leagues');
+                console.log('API response status:', response.status);
+                const result = await response.json();
+                console.log('API result:', result);
+                
+                if (result.success) {
+                    document.getElementById('connectedLeagues').innerHTML = `<p>✅ API working! Found ${result.data.length} leagues</p>`;
+                    displayLeagues(result.data);
+                } else {
+                    document.getElementById('connectedLeagues').innerHTML = `<p>❌ API error: ${result.error}</p>`;
+                }
+            } catch (error) {
+                console.error('API test failed:', error);
+                document.getElementById('connectedLeagues').innerHTML = `<p>❌ API test failed: ${error.message}</p>`;
+            }
+        }
+        
+        // Load leagues on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, calling loadLeagues...');
+            // Add visual feedback that JavaScript is working
+            document.getElementById('connectedLeagues').innerHTML = '<p>Loading leagues...</p>';
+            loadLeagues();
+        });
+        
+        // Also try to load on window load as backup
+        window.addEventListener('load', function() {
+            console.log('Window loaded, calling loadLeagues...');
+            if (document.getElementById('connectedLeagues').innerHTML === '') {
+                loadLeagues();
+            }
+        });
+    </script>
+</body>
+</html> 

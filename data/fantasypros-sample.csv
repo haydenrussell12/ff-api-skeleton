@@ -1,0 +1,23 @@
+Player,Pos,Team,FPTS,Rank,Tier,ADP,ECR,Best,Worst,Std Dev
+Christian McCaffrey,RB,SF,320.5,1,1,1.2,1.0,1,3,0.5
+Breece Hall,RB,NYJ,310.2,2,1,2.1,2.0,1,4,0.8
+Justin Jefferson,WR,MIN,305.8,3,1,3.5,3.0,2,5,0.7
+Tyreek Hill,WR,MIA,300.1,4,1,4.2,4.0,3,6,0.9
+CeeDee Lamb,WR,DAL,295.3,5,1,5.8,5.0,4,7,0.6
+Bijan Robinson,RB,ATL,290.7,6,1,6.1,6.0,5,8,0.8
+Saquon Barkley,RB,PHI,285.4,7,1,7.3,7.0,6,9,0.7
+Ja'Marr Chase,WR,CIN,280.9,8,1,8.4,8.0,7,10,0.9
+Derrick Henry,RB,BAL,275.6,9,1,9.7,9.0,8,11,0.6
+Amon-Ra St. Brown,WR,DET,270.2,10,1,10.2,10.0,9,12,0.8
+Jahmyr Gibbs,RB,DET,265.8,11,1,12.0,11.0,10,15,1.2
+De'Von Achane,RB,MIA,260.3,12,1,15.0,12.0,11,18,1.5
+Josh Jacobs,RB,GB,255.1,13,2,18.0,13.0,12,20,1.8
+A.J. Brown,WR,PHI,250.7,14,2,20.0,14.0,13,22,2.1
+Kyren Williams,RB,LAR,245.4,15,2,25.0,15.0,14,25,2.5
+Josh Allen,QB,BUF,350.2,16,2,30.0,16.0,15,35,4.2
+Jonathan Taylor,RB,IND,240.8,17,2,35.0,17.0,15,30,3.1
+Breece Hall,RB,NYJ,235.5,18,2,40.0,18.0,16,35,3.8
+Davante Adams,WR,LV,230.1,19,2,45.0,19.0,17,40,4.2
+Lamar Jackson,QB,BAL,340.8,20,2,50.0,20.0,18,45,5.1
+Patrick Mahomes,QB,KC,335.3,21,2,55.0,21.0,19,50,5.8
+Travis Kelce,TE,KC,225.9,22,2,60.0,22.0,20,55,6.2 

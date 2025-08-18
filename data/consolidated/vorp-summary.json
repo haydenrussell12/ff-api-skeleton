@@ -1,0 +1,502 @@
+{
+  "season": "2025",
+  "generatedAt": "2025-08-17T00:15:53.668Z",
+  "totalPlayers": 599,
+  "positionStats": {
+    "QB": {
+      "playerCount": 80,
+      "averageVORP": -157.01500000000004,
+      "maxVORP": 65.55000000000001,
+      "minVORP": -288.05,
+      "topPlayers": [
+        {
+          "name": "Jayden Daniels",
+          "vorp": 65.55000000000001,
+          "points": 355.8
+        },
+        {
+          "name": "Josh Allen",
+          "vorp": 59.94999999999999,
+          "points": 350.2
+        },
+        {
+          "name": "Joe Burrow",
+          "vorp": 51.35000000000002,
+          "points": 341.6
+        },
+        {
+          "name": "Lamar Jackson",
+          "vorp": 50.55000000000001,
+          "points": 340.8
+        },
+        {
+          "name": "Jalen Hurts",
+          "vorp": 39.85000000000002,
+          "points": 330.1
+        }
+      ]
+    },
+    "RB": {
+      "playerCount": 152,
+      "averageVORP": -44.87236842105261,
+      "maxVORP": 160.05,
+      "minVORP": -112.25,
+      "topPlayers": [
+        {
+          "name": "Saquon Barkley",
+          "vorp": 160.05,
+          "points": 273.1
+        },
+        {
+          "name": "Bijan Robinson",
+          "vorp": 147.55,
+          "points": 260.6
+        },
+        {
+          "name": "Jahmyr Gibbs",
+          "vorp": 145.84999999999997,
+          "points": 258.9
+        },
+        {
+          "name": "Derrick Henry",
+          "vorp": 135.35000000000002,
+          "points": 248.4
+        },
+        {
+          "name": "Christian McCaffrey",
+          "vorp": 115.35000000000001,
+          "points": 228.4
+        }
+      ]
+    },
+    "WR": {
+      "playerCount": 215,
+      "averageVORP": -58.89511627906975,
+      "maxVORP": 113.25,
+      "minVORP": -117.54999999999998,
+      "topPlayers": [
+        {
+          "name": "Ja'Marr Chase",
+          "vorp": 113.25,
+          "points": 231.2
+        },
+        {
+          "name": "Justin Jefferson",
+          "vorp": 87.15,
+          "points": 205.1
+        },
+        {
+          "name": "CeeDee Lamb",
+          "vorp": 75.05000000000001,
+          "points": 193
+        },
+        {
+          "name": "Puka Nacua",
+          "vorp": 69.75,
+          "points": 187.7
+        },
+        {
+          "name": "Nico Collins",
+          "vorp": 65.55000000000001,
+          "points": 183.5
+        }
+      ]
+    },
+    "TE": {
+      "playerCount": 119,
+      "averageVORP": -48.294117647058826,
+      "maxVORP": 65.79999999999998,
+      "minVORP": -83.30000000000001,
+      "topPlayers": [
+        {
+          "name": "Brock Bowers",
+          "vorp": 65.79999999999998,
+          "points": 149.7
+        },
+        {
+          "name": "George Kittle",
+          "vorp": 63.69999999999999,
+          "points": 147.6
+        },
+        {
+          "name": "Trey McBride",
+          "vorp": 55.5,
+          "points": 139.4
+        },
+        {
+          "name": "Mark Andrews",
+          "vorp": 33.39999999999999,
+          "points": 117.3
+        },
+        {
+          "name": "Sam LaPorta",
+          "vorp": 31.69999999999999,
+          "points": 115.6
+        }
+      ]
+    },
+    "K": {
+      "playerCount": 33,
+      "averageVORP": -3.6681818181818246,
+      "maxVORP": 16.94999999999999,
+      "minVORP": -59.150000000000006,
+      "topPlayers": [
+        {
+          "name": "Brandon Aubrey",
+          "vorp": 16.94999999999999,
+          "points": 141.6
+        },
+        {
+          "name": "Matt Gay",
+          "vorp": 12.449999999999989,
+          "points": 137.1
+        },
+        {
+          "name": "Chase McLaughlin",
+          "vorp": 11.75,
+          "points": 136.4
+        },
+        {
+          "name": "Jake Elliott",
+          "vorp": 9.449999999999989,
+          "points": 134.1
+        },
+        {
+          "name": "Jason Sanders",
+          "vorp": 8.75,
+          "points": 133.4
+        }
+      ]
+    }
+  },
+  "normalizationInfo": {
+    "description": "League-Wide Normalized VORP scores (0-100%) - Higher = better relative to ALL players across ALL positions",
+    "method": "Min-Max normalization across the entire league (all positions combined)",
+    "scale": "0-100 (0% = worst VORP in league, 100% = best VORP in league, 50% = middle of pack)",
+    "note": "This allows true cross-position comparison - a 95% QB vs 93% RB means the QB is more valuable league-wide"
+  },
+  "topVORPPlayers": [
+    {
+      "name": "Saquon Barkley",
+      "position": "RB",
+      "team": "PHI",
+      "vorp": 160.05,
+      "normalizedVorp": 100,
+      "projectedPoints": 273.1
+    },
+    {
+      "name": "Bijan Robinson",
+      "position": "RB",
+      "team": "ATL",
+      "vorp": 147.55,
+      "normalizedVorp": 97.21044409729971,
+      "projectedPoints": 260.6
+    },
+    {
+      "name": "Jahmyr Gibbs",
+      "position": "RB",
+      "team": "DET",
+      "vorp": 145.84999999999997,
+      "normalizedVorp": 96.83106449453246,
+      "projectedPoints": 258.9
+    },
+    {
+      "name": "Derrick Henry",
+      "position": "RB",
+      "team": "BAL",
+      "vorp": 135.35000000000002,
+      "normalizedVorp": 94.48783753626422,
+      "projectedPoints": 248.4
+    },
+    {
+      "name": "Christian McCaffrey",
+      "position": "RB",
+      "team": "SF",
+      "vorp": 115.35000000000001,
+      "normalizedVorp": 90.02454809194377,
+      "projectedPoints": 228.4
+    },
+    {
+      "name": "Ja'Marr Chase",
+      "position": "WR",
+      "team": "CIN",
+      "vorp": 113.25,
+      "normalizedVorp": 89.55590270029012,
+      "projectedPoints": 231.2
+    },
+    {
+      "name": "Josh Jacobs",
+      "position": "RB",
+      "team": "GB",
+      "vorp": 113.05,
+      "normalizedVorp": 89.51126980584691,
+      "projectedPoints": 226.1
+    },
+    {
+      "name": "De'Von Achane",
+      "position": "RB",
+      "team": "MIA",
+      "vorp": 107.14999999999999,
+      "normalizedVorp": 88.19459941977237,
+      "projectedPoints": 220.2
+    },
+    {
+      "name": "Ashton Jeanty",
+      "position": "RB",
+      "team": "LV",
+      "vorp": 104.35000000000001,
+      "normalizedVorp": 87.5697388975675,
+      "projectedPoints": 217.4
+    },
+    {
+      "name": "Jonathan Taylor",
+      "position": "RB",
+      "team": "IND",
+      "vorp": 103.45,
+      "normalizedVorp": 87.36889087257308,
+      "projectedPoints": 216.5
+    },
+    {
+      "name": "Kyren Williams",
+      "position": "RB",
+      "team": "LAR",
+      "vorp": 99.95,
+      "normalizedVorp": 86.587815219817,
+      "projectedPoints": 213
+    },
+    {
+      "name": "Bucky Irving",
+      "position": "RB",
+      "team": "TB",
+      "vorp": 89.45,
+      "normalizedVorp": 84.24458826154876,
+      "projectedPoints": 202.5
+    },
+    {
+      "name": "Justin Jefferson",
+      "position": "WR",
+      "team": "MIN",
+      "vorp": 87.15,
+      "normalizedVorp": 83.73130997545192,
+      "projectedPoints": 205.1
+    },
+    {
+      "name": "Chase Brown",
+      "position": "RB",
+      "team": "CIN",
+      "vorp": 83.25000000000001,
+      "normalizedVorp": 82.86096853380943,
+      "projectedPoints": 196.3
+    },
+    {
+      "name": "James Cook",
+      "position": "RB",
+      "team": "BUF",
+      "vorp": 83.05,
+      "normalizedVorp": 82.81633563936622,
+      "projectedPoints": 196.1
+    },
+    {
+      "name": "CeeDee Lamb",
+      "position": "WR",
+      "team": "DAL",
+      "vorp": 75.05000000000001,
+      "normalizedVorp": 81.03101986163803,
+      "projectedPoints": 193
+    },
+    {
+      "name": "Puka Nacua",
+      "position": "WR",
+      "team": "LAR",
+      "vorp": 69.75,
+      "normalizedVorp": 79.8482481588931,
+      "projectedPoints": 187.7
+    },
+    {
+      "name": "Breece Hall",
+      "position": "RB",
+      "team": "NYJ",
+      "vorp": 69.55,
+      "normalizedVorp": 79.8036152644499,
+      "projectedPoints": 182.6
+    },
+    {
+      "name": "James Conner",
+      "position": "RB",
+      "team": "ARI",
+      "vorp": 69.55,
+      "normalizedVorp": 79.8036152644499,
+      "projectedPoints": 182.6
+    },
+    {
+      "name": "Kenneth Walker III",
+      "position": "RB",
+      "team": "SEA",
+      "vorp": 68.95,
+      "normalizedVorp": 79.66971658112028,
+      "projectedPoints": 182
+    }
+  ],
+  "topNormalizedVORPPlayers": [
+    {
+      "name": "Saquon Barkley",
+      "position": "RB",
+      "team": "PHI",
+      "normalizedVorp": 100,
+      "vorp": 160.05,
+      "projectedPoints": 273.1
+    },
+    {
+      "name": "Bijan Robinson",
+      "position": "RB",
+      "team": "ATL",
+      "normalizedVorp": 97.21044409729971,
+      "vorp": 147.55,
+      "projectedPoints": 260.6
+    },
+    {
+      "name": "Jahmyr Gibbs",
+      "position": "RB",
+      "team": "DET",
+      "normalizedVorp": 96.83106449453246,
+      "vorp": 145.84999999999997,
+      "projectedPoints": 258.9
+    },
+    {
+      "name": "Derrick Henry",
+      "position": "RB",
+      "team": "BAL",
+      "normalizedVorp": 94.48783753626422,
+      "vorp": 135.35000000000002,
+      "projectedPoints": 248.4
+    },
+    {
+      "name": "Christian McCaffrey",
+      "position": "RB",
+      "team": "SF",
+      "normalizedVorp": 90.02454809194377,
+      "vorp": 115.35000000000001,
+      "projectedPoints": 228.4
+    },
+    {
+      "name": "Ja'Marr Chase",
+      "position": "WR",
+      "team": "CIN",
+      "normalizedVorp": 89.55590270029012,
+      "vorp": 113.25,
+      "projectedPoints": 231.2
+    },
+    {
+      "name": "Josh Jacobs",
+      "position": "RB",
+      "team": "GB",
+      "normalizedVorp": 89.51126980584691,
+      "vorp": 113.05,
+      "projectedPoints": 226.1
+    },
+    {
+      "name": "De'Von Achane",
+      "position": "RB",
+      "team": "MIA",
+      "normalizedVorp": 88.19459941977237,
+      "vorp": 107.14999999999999,
+      "projectedPoints": 220.2
+    },
+    {
+      "name": "Ashton Jeanty",
+      "position": "RB",
+      "team": "LV",
+      "normalizedVorp": 87.5697388975675,
+      "vorp": 104.35000000000001,
+      "projectedPoints": 217.4
+    },
+    {
+      "name": "Jonathan Taylor",
+      "position": "RB",
+      "team": "IND",
+      "normalizedVorp": 87.36889087257308,
+      "vorp": 103.45,
+      "projectedPoints": 216.5
+    },
+    {
+      "name": "Kyren Williams",
+      "position": "RB",
+      "team": "LAR",
+      "normalizedVorp": 86.587815219817,
+      "vorp": 99.95,
+      "projectedPoints": 213
+    },
+    {
+      "name": "Bucky Irving",
+      "position": "RB",
+      "team": "TB",
+      "normalizedVorp": 84.24458826154876,
+      "vorp": 89.45,
+      "projectedPoints": 202.5
+    },
+    {
+      "name": "Justin Jefferson",
+      "position": "WR",
+      "team": "MIN",
+      "normalizedVorp": 83.73130997545192,
+      "vorp": 87.15,
+      "projectedPoints": 205.1
+    },
+    {
+      "name": "Chase Brown",
+      "position": "RB",
+      "team": "CIN",
+      "normalizedVorp": 82.86096853380943,
+      "vorp": 83.25000000000001,
+      "projectedPoints": 196.3
+    },
+    {
+      "name": "James Cook",
+      "position": "RB",
+      "team": "BUF",
+      "normalizedVorp": 82.81633563936622,
+      "vorp": 83.05,
+      "projectedPoints": 196.1
+    },
+    {
+      "name": "CeeDee Lamb",
+      "position": "WR",
+      "team": "DAL",
+      "normalizedVorp": 81.03101986163803,
+      "vorp": 75.05000000000001,
+      "projectedPoints": 193
+    },
+    {
+      "name": "Puka Nacua",
+      "position": "WR",
+      "team": "LAR",
+      "normalizedVorp": 79.8482481588931,
+      "vorp": 69.75,
+      "projectedPoints": 187.7
+    },
+    {
+      "name": "Breece Hall",
+      "position": "RB",
+      "team": "NYJ",
+      "normalizedVorp": 79.8036152644499,
+      "vorp": 69.55,
+      "projectedPoints": 182.6
+    },
+    {
+      "name": "James Conner",
+      "position": "RB",
+      "team": "ARI",
+      "normalizedVorp": 79.8036152644499,
+      "vorp": 69.55,
+      "projectedPoints": 182.6
+    },
+    {
+      "name": "Kenneth Walker III",
+      "position": "RB",
+      "team": "SEA",
+      "normalizedVorp": 79.66971658112028,
+      "vorp": 68.95,
+      "projectedPoints": 182
+    }
+  ]
+}

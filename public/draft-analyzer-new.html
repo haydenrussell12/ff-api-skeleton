@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Football Draft Analyzer - OPTIMAL LINEUP EDITION</title>
+    <style>
+        /* BUILD TAG - CONFIRMS CORRECT FILE IS BEING SERVED */
+        .build-tag {
+            background: linear-gradient(45deg, #ff0000, #ff6600);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            border: 3px solid #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .input-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-group input {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #2c3e50;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .results-section {
+            padding: 30px;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-header h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .results-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Optimal Lineup Rankings Table */
+        .lineup-rankings {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .lineup-rankings h3 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .rankings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rankings-table th,
+        .rankings-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .rankings-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .rankings-table td {
+            vertical-align: middle;
+        }
+
+        /* Overall Roster Grade column styling */
+        .rankings-table td:nth-child(3) {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .rankings-table td:nth-child(3):not(:empty) {
+            padding: 8px 12px;
+            border-radius: 8px;
+            min-width: 60px;
+            display: inline-block;
+        }
+
+        /* Grade-specific styling for table cells */
+        .grade-A { background: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
+        .grade-B { background: #fff3cd; color: #856404; border: 2px solid #ffeaa7; }
+        .grade-C { background: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
+        .grade-D { background: #e8f4fd; color: #0c5460; border: 2px solid #bee5eb; }
+        .grade-F { background: #f8f9fa; color: #6c757d; border: 2px solid #dee2e6; }
+
+        .rankings-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .winner {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%) !important;
+            font-weight: bold;
+        }
+
+        .top3 {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%) !important;
+        }
+
+        .clickable-team {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .clickable-team:hover {
+            color: #764ba2;
+        }
+
+        /* Team Cards with Optimal Lineup Analysis */
+        .team-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-card.winner {
+            border: 3px solid #ffd700;
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+        }
+
+        .team-card.top3 {
+            border: 2px solid #c0c0c0;
+        }
+
+        .team-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .team-header h4 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .team-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .optimal-lineup-section {
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .optimal-lineup-section h5 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .position-group {
+            margin-bottom: 20px;
+        }
+
+        .position-group h6 {
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .players-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+        }
+
+        .player-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .player-name {
+            font-weight: 600;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .player-pick {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .player-projection {
+            font-size: 0.9rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .player-vorp {
+            font-size: 0.8rem;
+            color: #28a745;
+            font-weight: 600;
+            background: #d4edda;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        .player-vorp.negative {
+            color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .lineup-insights {
+            background: #e8f4fd;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .lineup-insights h6 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .recommendation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .recommendation.high {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .recommendation.medium {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .recommendation.low {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+
+        .lineup-insights .recommendation.low {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .steal-pick-section {
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            background: #f8f9fa;
+        }
+
+        .steal-pick-section h5 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .steal-pick-section p {
+            margin: 0;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .bench-players-section {
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            background: #f8f9fa;
+        }
+
+        .bench-players-section h5 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .bench-players-section p {
+            margin: 0 0 15px 0;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .bench-players-section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .bench-players-section li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .adp-explanation {
+            background: #e8f4fd;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .position-grades-section {
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            background: #f8f9fa;
+        }
+
+        .position-grades-section h5 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .overall-grade {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .grade-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .grade-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .position-grades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .position-grade-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: transform 0.2s ease;
+        }
+
+        .position-grade-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .position-name {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .position-grade {
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .position-grade.A { background: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
+        .position-grade.B { background: #fff3cd; color: #856404; border: 2px solid #ffeaa7; }
+        .position-grade.C { background: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
+        .position-grade.D { background: #e8f4fd; color: #0c5460; border: 2px solid #bee5eb; }
+        .position-grade.F { background: #f8f9fa; color: #6c757d; border: 2px solid #dee2e6; }
+
+        .position-score {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .position-recommendations {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .position-recommendations h6 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recommendation {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+        }
+
+        .recommendation.high {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .recommendation.medium {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .recommendation.priority {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+            font-weight: 600;
+        }
+
+        .recommendation.strategy {
+            border-left-color: #17a2b8;
+            background: #d1ecf1;
+        }
+
+        .recommendation.balance {
+            border-left-color: #fd7e14;
+            background: #ffeaa7;
+        }
+
+        @media (max-width: 768px) {
+            .team-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .players-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-button">← Back to Home</a>
+    
+    <!-- BUILD TAG - CONFIRMS CORRECT FILE IS BEING SERVED -->
+    <div class="build-tag">
+        🚀 OPTIMAL LINEUP ENGINE BUILD - READY FOR MONEYBALL! 🔥
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🏈 Fantasy Football Draft Analyzer</h1>
+            <p>OPTIMAL LINEUP EDITION - Calculate your best possible starting lineup!</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="draftUrl" placeholder="Enter Sleeper draft URL (e.g., https://sleeper.com/draft/nfl/1234567890)" />
+                <button class="analyze-btn" onclick="analyzeDraft()" id="analyzeBtn">
+                    🚀 Analyze Draft & Calculate Optimal Lineups
+                </button>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <div class="results-header">
+                <h2>🎯 Optimal Lineup Analysis Complete!</h2>
+                <p>See which team has the best starting lineup and get actionable insights!</p>
+            </div>
+
+            <!-- Optimal Lineup Rankings -->
+            <div class="lineup-rankings">
+                <h3>🏆 Optimal Lineup Rankings (Starting Lineup Projections)</h3>
+                <table class="rankings-table" id="rankingsTable">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Overall Roster Grade</th>
+                            <th>Optimal Lineup Points</th>
+                            <th>Bench Points</th>
+                            <th>Total Roster Points</th>
+                            <th title="(Draft Spot - ADP) - Positive = drafted later than ADP (better value), Negative = drafted earlier than ADP (worse value)">ADP Value</th>
+                            <th title="Average VORP (Value Over Replacement Player) - Higher is better">Avg VORP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingsBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Team Cards with Optimal Lineup Details -->
+            <div class="team-cards" id="teamCards">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function analyzeDraft() {
+            const draftUrl = document.getElementById('draftUrl').value.trim();
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const resultsSection = document.getElementById('resultsSection');
+
+            if (!draftUrl) {
+                alert('Please enter a draft URL');
+                return;
+            }
+
+            // Show loading state
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = '🔍 Analyzing Draft...';
+            resultsSection.style.display = 'none';
+
+            try {
+                console.log('Sending request to analyze draft:', draftUrl);
+                
+                const response = await fetch('/api/analyze-draft', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ draftUrl })
+                });
+
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log('Response data:', result);
+
+                if (result.success) {
+                    displayResults(result.data);
+                } else {
+                    throw new Error(result.error || 'Analysis failed');
+                }
+            } catch (error) {
+                console.error('Error analyzing draft:', error);
+                showError(`Analysis failed: ${error.message}`);
+            } finally {
+                // Reset button
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = '🚀 Analyze Draft & Calculate Optimal Lineups';
+            }
+        }
+
+        function displayResults(data) {
+            const resultsSection = document.getElementById('resultsSection');
+            const rankingsBody = document.getElementById('rankingsBody');
+            const teamCards = document.getElementById('teamCards');
+
+            // Check if required DOM elements exist
+            if (!resultsSection || !rankingsBody || !teamCards) {
+                console.error('Required DOM elements not found:', {
+                    resultsSection: !!resultsSection,
+                    rankingsBody: !!rankingsBody,
+                    teamCards: !!teamCards
+                });
+                showError('Failed to display results: Required elements not found');
+                return;
+            }
+
+            // Check if data and teams exist
+            if (!data || !data.teams || typeof data.teams !== 'object') {
+                console.error('Invalid data structure:', data);
+                showError('Invalid data structure received from server');
+                return;
+            }
+
+            // Clear previous results
+            rankingsBody.innerHTML = '';
+            teamCards.innerHTML = '';
+
+            // Sort teams by optimal lineup points (descending)
+            const sortedTeams = Object.entries(data.teams).sort((a, b) => {
+                return (b[1].optimalLineupPoints || 0) - (a[1].optimalLineupPoints || 0);
+            });
+
+            console.log('Sorted teams:', sortedTeams);
+
+            // Display rankings
+            sortedTeams.forEach(([teamId, team], index) => {
+                const isWinner = index === 0;
+                const isTop3 = index < 3;
+                
+                const row = document.createElement('tr');
+                if (isWinner) row.className = 'winner';
+                else if (isTop3) row.className = 'top3';
+
+                row.innerHTML = `
+                    <td>${index + 1}${index === 0 ? ' 🏆' : index === 1 ? ' 🥈' : index === 2 ? ' 🥉' : ''}</td>
+                    <td>
+                        <span class="clickable-team" onclick="scrollToTeam('${teamId}')">
+                            ${team.teamName || `Team ${teamId}`}
+                        </span>
+                    </td>
+                    <td>${team.positionGrades && team.positionGrades.overallGrade ? team.positionGrades.overallGrade.grade : 'N/A'}</td>
+                    <td><strong>${team.optimalLineupPoints || 0}</strong></td>
+                    <td>${team.benchPoints || 0}</td>
+                    <td>${Math.round((team.totalProjectedPoints || 0) * 10) / 10}</td>
+                    <td>${team.averageAdpValue ? Math.round(team.averageAdpValue * 10) / 10 : 'N/A'}</td>
+                    <td>${team.averageVorpScore ? Math.round(team.averageVorpScore * 10) / 10 : 'N/A'}</td>
+                `;
+
+                // Apply grade-specific styling to the Overall Roster Grade column
+                const overallGradeCell = row.cells[2];
+                if (overallGradeCell) {
+                    const grade = team.positionGrades && team.positionGrades.overallGrade ? team.positionGrades.overallGrade.grade : 'N/A';
+                    overallGradeCell.className = ''; // Clear any existing classes
+                    if (grade) {
+                        overallGradeCell.classList.add(`grade-${grade.replace(/[+-]/g, '')}`);
+                    }
+                }
+
+                rankingsBody.appendChild(row);
+            });
+
+            // Display team cards with optimal lineup details
+            sortedTeams.forEach(([teamId, team], index) => {
+                const isWinner = index === 0;
+                const isTop3 = index < 3;
+                
+                const teamCard = document.createElement('div');
+                teamCard.className = `team-card ${isWinner ? 'winner' : isTop3 ? 'top3' : ''}`;
+                teamCard.setAttribute('data-team-id', teamId);
+
+                teamCard.innerHTML = `
+                    <div class="team-header">
+                        <h4>${team.teamName || `Team ${teamId}`}</h4>
+                        <p>Rank #${index + 1} • ${team.roster ? team.roster.length : 0} Players</p>
+                    </div>
+
+                    <div class="team-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Optimal Lineup Points</div>
+                            <div class="stat-value">${team.optimalLineupPoints || 0}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Bench Points</div>
+                            <div class="stat-value">${team.benchPoints || 0}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Total Roster Points</div>
+                            <div class="stat-value">${Math.round((team.totalProjectedPoints || 0) * 10) / 10}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label" title="(Draft Spot - ADP) - Positive = drafted later than ADP (better value), Negative = drafted earlier than ADP (worse value)">ADP Value</div>
+                            <div class="stat-value">${team.averageAdpValue ? Math.round(team.averageAdpValue * 10) / 10 : 'N/A'}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label" title="Average VORP (Value Over Replacement Player) - Higher is better">Avg VORP</div>
+                            <div class="stat-value">${team.averageVorpScore ? Math.round(team.averageVorpScore * 10) / 10 : 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    ${team.positionGrades ? `
+                    <div class="position-grades-section">
+                        <h5>📊 Position Grades</h5>
+                        <div class="overall-grade">
+                            <div class="grade-label">Overall Team Grade:</div>
+                            <div class="grade-value grade-${team.positionGrades.overallGrade.grade.replace(/[+-]/g, '')}">${team.positionGrades.overallGrade.grade} (${team.positionGrades.overallGrade.score}/100)</div>
+                        </div>
+                        <div class="position-grades-grid">
+                            ${Object.entries(team.positionGrades.positionGrades || {}).map(([position, grade]) => `
+                                <div class="position-grade-item">
+                                    <div class="position-name">${position}</div>
+                                    <div class="position-grade grade-${grade.grade.replace(/[+-]/g, '')}">${grade.grade}</div>
+                                    <div class="position-score">${grade.score}/100</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${team.positionGrades.recommendations && team.positionGrades.recommendations.length > 0 ? `
+                        <div class="position-recommendations">
+                            <h6>💡 Position-Based Recommendations</h6>
+                            ${team.positionGrades.recommendations.map(rec => `
+                                <div class="recommendation ${rec.priority || 'medium'}">
+                                    <strong>${rec.type}:</strong> ${rec.message}
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                    </div>
+                    ` : ''}
+
+                    <div class="optimal-lineup-section">
+                        <h5>🎯 Optimal Starting Lineup</h5>
+                        ${(() => {
+                            window.currentTeamRoster = team.roster;
+                            return displayOptimalLineup(team.optimalLineup);
+                        })()}
+                        
+                        ${team.lineupAnalysis && team.lineupAnalysis.recommendations ? 
+                            `<div class="lineup-insights">
+                                <h6>💡 Lineup Insights & Recommendations</h6>
+                                ${team.lineupAnalysis.recommendations.map(rec => 
+                                    `<div class="recommendation ${rec.priority || 'medium'}">
+                                        <strong>${rec.type}:</strong> ${rec.message}
+                                    </div>`
+                                ).join('')}
+                            </div>` : ''
+                        }
+                    </div>
+
+                    ${displayBiggestStealAndWorstPick(team)}
+                    
+                `;
+
+                teamCards.appendChild(teamCard);
+            });
+
+            // Show results
+            resultsSection.style.display = 'block';
+        }
+
+        function displayOptimalLineup(optimalLineup) {
+            if (!optimalLineup) return '<p>No optimal lineup data available</p>';
+
+            let html = '';
+            const positions = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'DEF', 'K'];
+
+            positions.forEach(pos => {
+                const players = optimalLineup[pos];
+                if (players && Array.isArray(players) && players.length > 0) {
+                    html += `
+                        <div class="position-group">
+                            <h6>${pos} (${players.length})</h6>
+                            <div class="players-list">
+                    `;
+                    
+                    players.forEach(player => {
+                        if (player) {
+                            const playerName = player.playerName || player.name || 'Unknown';
+                            const pickNumber = player.pickNumber || '?';
+                            const projectedPoints = player.projectedPoints || 0;
+                            const vorpScore = player.vorpScore || null;
+                            
+                            html += `
+                                <div class="player-item">
+                                    <span class="player-name">${playerName}</span>
+                                    <span class="player-pick">Pick ${pickNumber}</span>
+                                    <span class="player-projection">${projectedPoints} pts</span>
+                                    ${vorpScore !== null ? `<span class="player-vorp ${vorpScore < 0 ? 'negative' : ''}">VORP: ${vorpScore.toFixed(1)}</span>` : ''}
+                                </div>
+                            `;
+                        }
+                    });
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            // Add bench players section
+            const allStartingPlayers = new Set();
+            positions.forEach(pos => {
+                const players = optimalLineup[pos];
+                if (players && Array.isArray(players) && players.length > 0) {
+                    players.forEach(player => {
+                        if (player) {
+                            allStartingPlayers.add(player.playerId || player.id || player.playerName || player.name);
+                        }
+                    });
+                }
+            });
+
+            // Get bench players from the team roster (this will be passed from the parent function)
+            if (window.currentTeamRoster && Array.isArray(window.currentTeamRoster)) {
+                const benchPlayers = window.currentTeamRoster.filter(player => {
+                    if (!player) return false;
+                    const playerId = player.playerId || player.id || player.playerName || player.name;
+                    return !allStartingPlayers.has(playerId);
+                });
+
+                if (benchPlayers.length > 0) {
+                    html += `
+                        <div class="position-group">
+                            <h6>Bench (${benchPlayers.length})</h6>
+                            <div class="players-list">
+                    `;
+                    
+                    benchPlayers.forEach(player => {
+                        if (player) {
+                            const playerName = player.playerName || player.name || 'Unknown';
+                            const pickNumber = player.pickNumber || '?';
+                            const projectedPoints = player.projectedPoints || 0;
+                            const vorpScore = player.vorpScore || null;
+                            
+                            html += `
+                                <div class="player-item">
+                                    <span class="player-name">${playerName}</span>
+                                    <span class="player-pick">Pick ${pickNumber}</span>
+                                    <span class="player-projection">${projectedPoints} pts</span>
+                                    ${vorpScore !== null ? `<span class="player-vorp ${vorpScore < 0 ? 'negative' : ''}">VORP: ${vorpScore.toFixed(1)}</span>` : ''}
+                                </div>
+                            `;
+                        }
+                    });
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            return html || '<p>No optimal lineup data available</p>';
+        }
+
+        function displayBiggestStealAndWorstPick(team) {
+            if (!team || !team.roster || !Array.isArray(team.roster) || team.roster.length === 0) {
+                return '';
+            }
+
+            // Find biggest steal (highest positive ADP value)
+            let biggestSteal = null;
+            let highestAdpValue = -Infinity;
+
+            // Find worst pick (lowest ADP value)
+            let worstPick = null;
+            let lowestAdpValue = Infinity;
+
+            team.roster.forEach(player => {
+                if (!player) return;
+                
+                const adpValue = player.adpValue || 0;
+                
+                // Biggest steal (positive ADP value means drafted later than ADP - better value)
+                if (adpValue > highestAdpValue) {
+                    highestAdpValue = adpValue;
+                    biggestSteal = player;
+                }
+                
+                // Worst pick (negative ADP value means drafted earlier than ADP - worse value)
+                if (adpValue < lowestAdpValue) {
+                    lowestAdpValue = adpValue;
+                    worstPick = player;
+                }
+            });
+
+            let html = '';
+            
+            if (biggestSteal && highestAdpValue > 0) {
+                const playerName = biggestSteal.playerName || biggestSteal.name || 'Unknown';
+                const pickNumber = biggestSteal.pickNumber || '?';
+                const projectedPoints = biggestSteal.projectedPoints || 0;
+                const vorpScore = biggestSteal.vorpScore || null;
+                
+                html += `
+                    <div class="steal-pick-section">
+                        <h5>🎯 Biggest Steal</h5>
+                        <p>
+                            <strong>${playerName}</strong>
+                            (Pick ${pickNumber})
+                            was drafted ${Math.round(highestAdpValue * 10) / 10} picks later than his ADP
+                            and is projected for ${projectedPoints} points.
+                            ${vorpScore !== null ? `<br><em>VORP Score: ${vorpScore.toFixed(1)}</em>` : ''}
+                        </p>
+                    </div>
+                `;
+            }
+            
+            if (worstPick && lowestAdpValue < 0) {
+                const playerName = worstPick.playerName || worstPick.name || 'Unknown';
+                const pickNumber = worstPick.pickNumber || '?';
+                const projectedPoints = worstPick.projectedPoints || 0;
+                const vorpScore = worstPick.vorpScore || null;
+                
+                html += `
+                    <div class="steal-pick-section">
+                        <h5>👎 Worst Pick</h5>
+                        <p>
+                            <strong>${playerName}</strong>
+                            (Pick ${pickNumber})
+                            was drafted ${Math.abs(Math.round(lowestAdpValue * 10) / 10)} picks earlier than his ADP
+                            and is projected for ${projectedPoints} points.
+                            ${vorpScore !== null ? `<br><em>VORP Score: ${vorpScore.toFixed(1)}</em>` : ''}
+                        </p>
+                    </div>
+                `;
+            }
+            
+            return html;
+        }
+
+        function scrollToTeam(teamId) {
+            const teamCard = document.querySelector(`[data-team-id="${teamId}"]`);
+            if (teamCard) {
+                teamCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                teamCard.style.animation = 'pulse 0.5s ease-in-out';
+                setTimeout(() => {
+                    teamCard.style.animation = '';
+                }, 500);
+            }
+        }
+
+        function showError(message) {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.innerHTML = `
+                <div class="error">
+                    <h3>❌ Error</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+            resultsSection.style.display = 'block';
+        }
+
+        // Add pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> 

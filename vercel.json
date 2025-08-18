@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "scripts/server-prod.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "scripts/server-prod.js"
+    },
+    {
+      "src": "/draft-analyzer",
+      "dest": "scripts/server-prod.js"
+    },
+    {
+      "src": "/cheat-sheet",
+      "dest": "scripts/server-prod.js"
+    },
+    {
+      "src": "/health",
+      "dest": "scripts/server-prod.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "public/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+} 

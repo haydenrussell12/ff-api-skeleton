@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre Draft Cheat Sheet - Fantasy Football AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        select, input {
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .stats {
+            padding: 20px 30px;
+            background: #e8f4fd;
+            border-bottom: 1px solid #bee5eb;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 70vh;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: #495057;
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        th:hover {
+            background: #6c757d;
+        }
+
+        th.sortable::after {
+            content: ' ↕';
+            opacity: 0.5;
+        }
+
+        th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+
+        th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e3f2fd;
+        }
+
+        .position-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 30px;
+        }
+
+        .position-QB { background: #ff6b6b; color: white; }
+        .position-RB { background: #4ecdc4; color: white; }
+        .position-WR { background: #45b7d1; color: white; }
+        .position-TE { background: #96ceb4; color: white; }
+        .position-K { background: #feca57; color: #2c3e50; }
+        .position-DEF { background: #ff9ff3; color: white; }
+
+        .normalized-vorp {
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            display: inline-block;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .normalized-vorp[data-score="high"] {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .normalized-vorp[data-score="medium"] {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .normalized-vorp[data-score="low"] {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .vorp-positive {
+            color: #155724;
+            font-weight: 600;
+        }
+
+        .vorp-negative {
+            color: #721c24;
+            font-weight: 600;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #dc3545;
+            background: #f8d7da;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #2c3e50;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                justify-content: space-between;
+            }
+            
+            .stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-button">← Back to Home</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Pre Draft Cheat Sheet</h1>
+            <p>Compare players across positions with VORP, normalized VORP, and projections</p>
+        </div>
+
+        <div class="controls">
+            <div class="filter-group">
+                <label for="position-filter">Position:</label>
+                <select id="position-filter">
+                    <option value="">All Positions</option>
+                    <option value="QB">QB</option>
+                    <option value="RB">RB</option>
+                    <option value="WR">WR</option>
+                    <option value="TE">TE</option>
+                    <option value="K">K</option>
+                    <option value="DEF">DEF</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="search-input">Search:</label>
+                <input type="text" id="search-input" class="search-box" placeholder="Search player names...">
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="total-players">-</div>
+                <div class="stat-label">Total Players</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avg-vorp">-</div>
+                <div class="stat-label">Avg VORP</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avg-normalized">-</div>
+                <div class="stat-label">Avg Normalized VORP</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avg-projection">-</div>
+                <div class="stat-label">Avg Projection</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="players-table">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-sort="rank">Rank</th>
+                        <th class="sortable" data-sort="position">Position</th>
+                        <th class="sortable" data-sort="playerName">Player Name</th>
+                        <th class="sortable" data-sort="team">Team</th>
+                        <th class="sortable" data-sort="projectedPoints">Projected Points</th>
+                        <th class="sortable" data-sort="vorpScore">VORP</th>
+                        <th class="sortable" data-sort="normalizedVorp" title="League-Wide Normalized VORP (0-100%) - Higher = better relative to ALL players across ALL positions. 95%+ = elite league-wide value, 20% or less = poor league-wide value">League VORP Rank</th>
+                        <th class="sortable" data-sort="adp">ADP</th>
+                    </tr>
+                </thead>
+                <tbody id="players-tbody">
+                    <tr>
+                        <td colspan="8" class="loading">Loading player data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let playersData = [];
+        let filteredData = [];
+        let currentSort = { column: 'rank', direction: 'asc' };
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadPlayersData);
+
+        // Event listeners
+        document.getElementById('position-filter').addEventListener('change', filterPlayers);
+        document.getElementById('search-input').addEventListener('input', filterPlayers);
+
+        // Add sorting to table headers
+        document.querySelectorAll('th.sortable').forEach(th => {
+            th.addEventListener('click', () => sortTable(th.dataset.sort));
+        });
+
+        async function loadPlayersData() {
+            try {
+                const response = await fetch('/api/cheat-sheet');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                playersData = data.players || [];
+                filteredData = [...playersData];
+                
+                updateStats();
+                renderTable();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('players-tbody').innerHTML = `
+                    <tr>
+                        <td colspan="8" class="error">
+                            Error loading data: ${error.message}<br>
+                            Please try refreshing the page.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function filterPlayers() {
+            const positionFilter = document.getElementById('position-filter').value;
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+
+            filteredData = playersData.filter(player => {
+                const matchesPosition = !positionFilter || player.position === positionFilter;
+                const matchesSearch = !searchTerm || 
+                    player.playerName.toLowerCase().includes(searchTerm) ||
+                    player.team.toLowerCase().includes(searchTerm);
+                
+                return matchesPosition && matchesSearch;
+            });
+
+            updateStats();
+            renderTable();
+        }
+
+        function sortTable(column) {
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'asc';
+            }
+
+            // Update sort indicators
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+                if (th.dataset.sort === currentSort.column) {
+                    th.classList.add(currentSort.direction === 'asc' ? 'sort-asc' : 'sort-desc');
+                }
+            });
+
+            // Sort data
+            filteredData.sort((a, b) => {
+                let aVal = a[currentSort.column];
+                let bVal = b[currentSort.column];
+
+                // Handle numeric values
+                if (typeof aVal === 'number' && typeof bVal === 'number') {
+                    return currentSort.direction === 'asc' ? aVal - bVal : bVal - aVal;
+                }
+
+                // Handle string values
+                aVal = String(aVal || '').toLowerCase();
+                bVal = String(bVal || '').toLowerCase();
+                
+                if (currentSort.direction === 'asc') {
+                    return aVal.localeCompare(bVal);
+                } else {
+                    return bVal.localeCompare(aVal);
+                }
+            });
+
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('players-tbody');
+            
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="loading">No players match your filters</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filteredData.map((player, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>
+                        <span class="position-badge position-${player.position}">${player.position}</span>
+                    </td>
+                    <td><strong>${player.playerName}</strong></td>
+                    <td>${player.team}</td>
+                    <td>${player.projectedPoints ? player.projectedPoints.toFixed(1) : 'N/A'}</td>
+                    <td class="${player.vorpScore > 0 ? 'vorp-positive' : 'vorp-negative'}">
+                        ${player.vorpScore ? player.vorpScore.toFixed(1) : 'N/A'}
+                    </td>
+                    <td>
+                        <span class="normalized-vorp" data-score="${getNormalizedVorpCategory(player.normalizedVorp)}">
+                            ${player.normalizedVorp ? player.normalizedVorp.toFixed(1) : 'N/A'}
+                        </span>
+                    </td>
+                    <td>${player.adp ? player.adp : 'N/A'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            if (filteredData.length === 0) {
+                document.getElementById('total-players').textContent = '0';
+                document.getElementById('avg-vorp').textContent = 'N/A';
+                document.getElementById('avg-normalized').textContent = 'N/A';
+                document.getElementById('avg-projection').textContent = 'N/A';
+                return;
+            }
+
+            const totalPlayers = filteredData.length;
+            const avgVorp = filteredData.reduce((sum, p) => sum + (p.vorpScore || 0), 0) / totalPlayers;
+            const avgNormalized = filteredData.reduce((sum, p) => sum + (p.normalizedVorp || 0), 0) / totalPlayers;
+            const avgProjection = filteredData.reduce((sum, p) => sum + (p.projectedPoints || 0), 0) / totalPlayers;
+
+            document.getElementById('total-players').textContent = totalPlayers;
+            document.getElementById('avg-vorp').textContent = avgVorp.toFixed(1);
+            document.getElementById('avg-normalized').textContent = avgNormalized.toFixed(1);
+            document.getElementById('avg-projection').textContent = avgProjection.toFixed(1);
+        }
+
+        function getNormalizedVorpCategory(normalizedVorp) {
+            if (normalizedVorp === null || normalizedVorp === undefined) {
+                return 'medium'; // Default to medium if no data
+            }
+            if (normalizedVorp >= 95) { // Top 5% = elite league-wide
+                return 'high';
+            } else if (normalizedVorp >= 80) { // Top 20% = very good league-wide
+                return 'high';
+            } else if (normalizedVorp <= 20) { // Bottom 20% = poor league-wide
+                return 'low';
+            } else {
+                return 'medium'; // Middle 60% = average league-wide
+            }
+        }
+    </script>
+</body>
+</html> 

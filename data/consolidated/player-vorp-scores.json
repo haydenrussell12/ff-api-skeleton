@@ -1,0 +1,5573 @@
+{
+  "metadata": {
+    "season": "2025",
+    "generatedAt": "2025-08-17T00:15:53.665Z",
+    "totalPlayers": 599,
+    "positionStats": {
+      "QB": {
+        "playerCount": 80,
+        "averageVORP": -157.01500000000004,
+        "maxVORP": 65.55000000000001,
+        "minVORP": -288.05,
+        "topPlayers": [
+          {
+            "name": "Jayden Daniels",
+            "vorp": 65.55000000000001,
+            "points": 355.8
+          },
+          {
+            "name": "Josh Allen",
+            "vorp": 59.94999999999999,
+            "points": 350.2
+          },
+          {
+            "name": "Joe Burrow",
+            "vorp": 51.35000000000002,
+            "points": 341.6
+          },
+          {
+            "name": "Lamar Jackson",
+            "vorp": 50.55000000000001,
+            "points": 340.8
+          },
+          {
+            "name": "Jalen Hurts",
+            "vorp": 39.85000000000002,
+            "points": 330.1
+          }
+        ]
+      },
+      "RB": {
+        "playerCount": 152,
+        "averageVORP": -44.87236842105261,
+        "maxVORP": 160.05,
+        "minVORP": -112.25,
+        "topPlayers": [
+          {
+            "name": "Saquon Barkley",
+            "vorp": 160.05,
+            "points": 273.1
+          },
+          {
+            "name": "Bijan Robinson",
+            "vorp": 147.55,
+            "points": 260.6
+          },
+          {
+            "name": "Jahmyr Gibbs",
+            "vorp": 145.84999999999997,
+            "points": 258.9
+          },
+          {
+            "name": "Derrick Henry",
+            "vorp": 135.35000000000002,
+            "points": 248.4
+          },
+          {
+            "name": "Christian McCaffrey",
+            "vorp": 115.35000000000001,
+            "points": 228.4
+          }
+        ]
+      },
+      "WR": {
+        "playerCount": 215,
+        "averageVORP": -58.89511627906975,
+        "maxVORP": 113.25,
+        "minVORP": -117.54999999999998,
+        "topPlayers": [
+          {
+            "name": "Ja'Marr Chase",
+            "vorp": 113.25,
+            "points": 231.2
+          },
+          {
+            "name": "Justin Jefferson",
+            "vorp": 87.15,
+            "points": 205.1
+          },
+          {
+            "name": "CeeDee Lamb",
+            "vorp": 75.05000000000001,
+            "points": 193
+          },
+          {
+            "name": "Puka Nacua",
+            "vorp": 69.75,
+            "points": 187.7
+          },
+          {
+            "name": "Nico Collins",
+            "vorp": 65.55000000000001,
+            "points": 183.5
+          }
+        ]
+      },
+      "TE": {
+        "playerCount": 119,
+        "averageVORP": -48.294117647058826,
+        "maxVORP": 65.79999999999998,
+        "minVORP": -83.30000000000001,
+        "topPlayers": [
+          {
+            "name": "Brock Bowers",
+            "vorp": 65.79999999999998,
+            "points": 149.7
+          },
+          {
+            "name": "George Kittle",
+            "vorp": 63.69999999999999,
+            "points": 147.6
+          },
+          {
+            "name": "Trey McBride",
+            "vorp": 55.5,
+            "points": 139.4
+          },
+          {
+            "name": "Mark Andrews",
+            "vorp": 33.39999999999999,
+            "points": 117.3
+          },
+          {
+            "name": "Sam LaPorta",
+            "vorp": 31.69999999999999,
+            "points": 115.6
+          }
+        ]
+      },
+      "K": {
+        "playerCount": 33,
+        "averageVORP": -3.6681818181818246,
+        "maxVORP": 16.94999999999999,
+        "minVORP": -59.150000000000006,
+        "topPlayers": [
+          {
+            "name": "Brandon Aubrey",
+            "vorp": 16.94999999999999,
+            "points": 141.6
+          },
+          {
+            "name": "Matt Gay",
+            "vorp": 12.449999999999989,
+            "points": 137.1
+          },
+          {
+            "name": "Chase McLaughlin",
+            "vorp": 11.75,
+            "points": 136.4
+          },
+          {
+            "name": "Jake Elliott",
+            "vorp": 9.449999999999989,
+            "points": 134.1
+          },
+          {
+            "name": "Jason Sanders",
+            "vorp": 8.75,
+            "points": 133.4
+          }
+        ]
+      }
+    },
+    "normalizationInfo": {
+      "description": "League-Wide Normalized VORP scores (0-100%) - Higher = better relative to ALL players across ALL positions",
+      "method": "Min-Max normalization across the entire league (all positions combined)",
+      "scale": "0-100 (0% = worst VORP in league, 100% = best VORP in league, 50% = middle of pack)",
+      "note": "This allows true cross-position comparison - a 95% QB vs 93% RB means the QB is more valuable league-wide"
+    }
+  },
+  "vorpScores": [
+    {
+      "playerName": "Ja'Marr Chase",
+      "position": "WR",
+      "team": "CIN",
+      "projectedPoints": 231.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 113.25,
+      "normalizedVorp": 89.55590270029012
+    },
+    {
+      "playerName": "Bijan Robinson",
+      "position": "RB",
+      "team": "ATL",
+      "projectedPoints": 260.6,
+      "medianPoints": 113.05,
+      "vorpScore": 147.55,
+      "normalizedVorp": 97.21044409729971
+    },
+    {
+      "playerName": "Saquon Barkley",
+      "position": "RB",
+      "team": "PHI",
+      "projectedPoints": 273.1,
+      "medianPoints": 113.05,
+      "vorpScore": 160.05,
+      "normalizedVorp": 100
+    },
+    {
+      "playerName": "Justin Jefferson",
+      "position": "WR",
+      "team": "MIN",
+      "projectedPoints": 205.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 87.15,
+      "normalizedVorp": 83.73130997545192
+    },
+    {
+      "playerName": "Jahmyr Gibbs",
+      "position": "RB",
+      "team": "DET",
+      "projectedPoints": 258.9,
+      "medianPoints": 113.05,
+      "vorpScore": 145.84999999999997,
+      "normalizedVorp": 96.83106449453246
+    },
+    {
+      "playerName": "CeeDee Lamb",
+      "position": "WR",
+      "team": "DAL",
+      "projectedPoints": 193,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 75.05000000000001,
+      "normalizedVorp": 81.03101986163803
+    },
+    {
+      "playerName": "Puka Nacua",
+      "position": "WR",
+      "team": "LAR",
+      "projectedPoints": 187.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 69.75,
+      "normalizedVorp": 79.8482481588931
+    },
+    {
+      "playerName": "Christian McCaffrey",
+      "position": "RB",
+      "team": "SF",
+      "projectedPoints": 228.4,
+      "medianPoints": 113.05,
+      "vorpScore": 115.35000000000001,
+      "normalizedVorp": 90.02454809194377
+    },
+    {
+      "playerName": "Malik Nabers",
+      "position": "WR",
+      "team": "NYG",
+      "projectedPoints": 183.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 65.35000000000002,
+      "normalizedVorp": 78.8663244811426
+    },
+    {
+      "playerName": "Amon-Ra St. Brown",
+      "position": "WR",
+      "team": "DET",
+      "projectedPoints": 180.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 62.85000000000002,
+      "normalizedVorp": 78.30841330060255
+    },
+    {
+      "playerName": "Ashton Jeanty",
+      "position": "RB",
+      "team": "LV",
+      "projectedPoints": 217.4,
+      "medianPoints": 113.05,
+      "vorpScore": 104.35000000000001,
+      "normalizedVorp": 87.5697388975675
+    },
+    {
+      "playerName": "Derrick Henry",
+      "position": "RB",
+      "team": "BAL",
+      "projectedPoints": 248.4,
+      "medianPoints": 113.05,
+      "vorpScore": 135.35000000000002,
+      "normalizedVorp": 94.48783753626422
+    },
+    {
+      "playerName": "De'Von Achane",
+      "position": "RB",
+      "team": "MIA",
+      "projectedPoints": 220.2,
+      "medianPoints": 113.05,
+      "vorpScore": 107.14999999999999,
+      "normalizedVorp": 88.19459941977237
+    },
+    {
+      "playerName": "Nico Collins",
+      "position": "WR",
+      "team": "HOU",
+      "projectedPoints": 183.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 65.55000000000001,
+      "normalizedVorp": 78.91095737558581
+    },
+    {
+      "playerName": "Brian Thomas Jr.",
+      "position": "WR",
+      "team": "JAC",
+      "projectedPoints": 181.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 63.45000000000002,
+      "normalizedVorp": 78.44231198393216
+    },
+    {
+      "playerName": "Josh Jacobs",
+      "position": "RB",
+      "team": "GB",
+      "projectedPoints": 226.1,
+      "medianPoints": 113.05,
+      "vorpScore": 113.05,
+      "normalizedVorp": 89.51126980584691
+    },
+    {
+      "playerName": "A.J. Brown",
+      "position": "WR",
+      "team": "PHI",
+      "projectedPoints": 172.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 54.85000000000002,
+      "normalizedVorp": 76.52309752287437
+    },
+    {
+      "playerName": "Brock Bowers",
+      "position": "TE",
+      "team": "LV",
+      "projectedPoints": 149.7,
+      "medianPoints": 83.9,
+      "vorpScore": 65.79999999999998,
+      "normalizedVorp": 78.96674849363981
+    },
+    {
+      "playerName": "Drake London",
+      "position": "WR",
+      "team": "ATL",
+      "projectedPoints": 167.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 49.150000000000006,
+      "normalizedVorp": 75.25106003124303
+    },
+    {
+      "playerName": "Jonathan Taylor",
+      "position": "RB",
+      "team": "IND",
+      "projectedPoints": 216.5,
+      "medianPoints": 113.05,
+      "vorpScore": 103.45,
+      "normalizedVorp": 87.36889087257308
+    },
+    {
+      "playerName": "Lamar Jackson",
+      "position": "QB",
+      "team": "BAL",
+      "projectedPoints": 340.8,
+      "medianPoints": 290.25,
+      "vorpScore": 50.55000000000001,
+      "normalizedVorp": 75.56349029234546
+    },
+    {
+      "playerName": "Bucky Irving",
+      "position": "RB",
+      "team": "TB",
+      "projectedPoints": 202.5,
+      "medianPoints": 113.05,
+      "vorpScore": 89.45,
+      "normalizedVorp": 84.24458826154876
+    },
+    {
+      "playerName": "Josh Allen",
+      "position": "QB",
+      "team": "BUF",
+      "projectedPoints": 350.2,
+      "medianPoints": 290.25,
+      "vorpScore": 59.94999999999999,
+      "normalizedVorp": 77.66123633117607
+    },
+    {
+      "playerName": "Kyren Williams",
+      "position": "RB",
+      "team": "LAR",
+      "projectedPoints": 213,
+      "medianPoints": 113.05,
+      "vorpScore": 99.95,
+      "normalizedVorp": 86.587815219817
+    },
+    {
+      "playerName": "Ladd McConkey",
+      "position": "WR",
+      "team": "LAC",
+      "projectedPoints": 165.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 47.25,
+      "normalizedVorp": 74.82704753403257
+    },
+    {
+      "playerName": "Chase Brown",
+      "position": "RB",
+      "team": "CIN",
+      "projectedPoints": 196.3,
+      "medianPoints": 113.05,
+      "vorpScore": 83.25000000000001,
+      "normalizedVorp": 82.86096853380943
+    },
+    {
+      "playerName": "Trey McBride",
+      "position": "TE",
+      "team": "ARI",
+      "projectedPoints": 139.4,
+      "medianPoints": 83.9,
+      "vorpScore": 55.5,
+      "normalizedVorp": 76.66815442981478
+    },
+    {
+      "playerName": "Tee Higgins",
+      "position": "WR",
+      "team": "CIN",
+      "projectedPoints": 161.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 43.150000000000006,
+      "normalizedVorp": 73.9120731979469
+    },
+    {
+      "playerName": "Jayden Daniels",
+      "position": "QB",
+      "team": "WAS",
+      "projectedPoints": 355.8,
+      "medianPoints": 290.25,
+      "vorpScore": 65.55000000000001,
+      "normalizedVorp": 78.91095737558581
+    },
+    {
+      "playerName": "Tyreek Hill",
+      "position": "WR",
+      "team": "MIA",
+      "projectedPoints": 168.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 50.55000000000001,
+      "normalizedVorp": 75.56349029234546
+    },
+    {
+      "playerName": "James Cook",
+      "position": "RB",
+      "team": "BUF",
+      "projectedPoints": 196.1,
+      "medianPoints": 113.05,
+      "vorpScore": 83.05,
+      "normalizedVorp": 82.81633563936622
+    },
+    {
+      "playerName": "Jaxon Smith-Njigba",
+      "position": "WR",
+      "team": "SEA",
+      "projectedPoints": 151.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 33.650000000000006,
+      "normalizedVorp": 71.79201071189468
+    },
+    {
+      "playerName": "Breece Hall",
+      "position": "RB",
+      "team": "NYJ",
+      "projectedPoints": 182.6,
+      "medianPoints": 113.05,
+      "vorpScore": 69.55,
+      "normalizedVorp": 79.8036152644499
+    },
+    {
+      "playerName": "Joe Burrow",
+      "position": "QB",
+      "team": "CIN",
+      "projectedPoints": 341.6,
+      "medianPoints": 290.25,
+      "vorpScore": 51.35000000000002,
+      "normalizedVorp": 75.74202187011828
+    },
+    {
+      "playerName": "Jalen Hurts",
+      "position": "QB",
+      "team": "PHI",
+      "projectedPoints": 330.1,
+      "medianPoints": 290.25,
+      "vorpScore": 39.85000000000002,
+      "normalizedVorp": 73.175630439634
+    },
+    {
+      "playerName": "Garrett Wilson",
+      "position": "WR",
+      "team": "NYJ",
+      "projectedPoints": 144.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 26.55000000000001,
+      "normalizedVorp": 70.2075429591609
+    },
+    {
+      "playerName": "Alvin Kamara",
+      "position": "RB",
+      "team": "NO",
+      "projectedPoints": 178,
+      "medianPoints": 113.05,
+      "vorpScore": 64.95,
+      "normalizedVorp": 78.77705869225619
+    },
+    {
+      "playerName": "George Kittle",
+      "position": "TE",
+      "team": "SF",
+      "projectedPoints": 147.6,
+      "medianPoints": 83.9,
+      "vorpScore": 63.69999999999999,
+      "normalizedVorp": 78.49810310198616
+    },
+    {
+      "playerName": "Davante Adams",
+      "position": "WR",
+      "team": "LAR",
+      "projectedPoints": 159.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 41.25,
+      "normalizedVorp": 73.48806070073644
+    },
+    {
+      "playerName": "Mike Evans",
+      "position": "WR",
+      "team": "TB",
+      "projectedPoints": 164.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 46.55000000000001,
+      "normalizedVorp": 74.67083240348137
+    },
+    {
+      "playerName": "Marvin Harrison Jr.",
+      "position": "WR",
+      "team": "ARI",
+      "projectedPoints": 154.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 36.55000000000001,
+      "normalizedVorp": 72.43918768132114
+    },
+    {
+      "playerName": "Kenneth Walker III",
+      "position": "RB",
+      "team": "SEA",
+      "projectedPoints": 182,
+      "medianPoints": 113.05,
+      "vorpScore": 68.95,
+      "normalizedVorp": 79.66971658112028
+    },
+    {
+      "playerName": "Omarion Hampton",
+      "position": "RB",
+      "team": "LAC",
+      "projectedPoints": 177,
+      "medianPoints": 113.05,
+      "vorpScore": 63.95,
+      "normalizedVorp": 78.55389422004016
+    },
+    {
+      "playerName": "Terry McLaurin",
+      "position": "WR",
+      "team": "WAS",
+      "projectedPoints": 159.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 41.75,
+      "normalizedVorp": 73.59964293684446
+    },
+    {
+      "playerName": "Chuba Hubbard",
+      "position": "RB",
+      "team": "CAR",
+      "projectedPoints": 174.3,
+      "medianPoints": 113.05,
+      "vorpScore": 61.250000000000014,
+      "normalizedVorp": 77.9513501450569
+    },
+    {
+      "playerName": "DJ Moore",
+      "position": "WR",
+      "team": "CHI",
+      "projectedPoints": 142.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 24.75,
+      "normalizedVorp": 69.80584690917205
+    },
+    {
+      "playerName": "James Conner",
+      "position": "RB",
+      "team": "ARI",
+      "projectedPoints": 182.6,
+      "medianPoints": 113.05,
+      "vorpScore": 69.55,
+      "normalizedVorp": 79.8036152644499
+    },
+    {
+      "playerName": "DK Metcalf",
+      "position": "WR",
+      "team": "PIT",
+      "projectedPoints": 154,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 36.05000000000001,
+      "normalizedVorp": 72.32760544521312
+    },
+    {
+      "playerName": "Courtland Sutton",
+      "position": "WR",
+      "team": "DEN",
+      "projectedPoints": 144.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 26.350000000000023,
+      "normalizedVorp": 70.16291006471769
+    },
+    {
+      "playerName": "Sam LaPorta",
+      "position": "TE",
+      "team": "DET",
+      "projectedPoints": 115.6,
+      "medianPoints": 83.9,
+      "vorpScore": 31.69999999999999,
+      "normalizedVorp": 71.35683999107341
+    },
+    {
+      "playerName": "Patrick Mahomes II",
+      "position": "QB",
+      "team": "KC",
+      "projectedPoints": 327,
+      "medianPoints": 290.25,
+      "vorpScore": 36.75,
+      "normalizedVorp": 72.48382057576434
+    },
+    {
+      "playerName": "DeVonta Smith",
+      "position": "WR",
+      "team": "PHI",
+      "projectedPoints": 137.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 19.75,
+      "normalizedVorp": 68.69002454809194
+    },
+    {
+      "playerName": "Rashee Rice",
+      "position": "WR",
+      "team": "KC",
+      "projectedPoints": 116.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -1.1499999999999915,
+      "normalizedVorp": 64.02588707877706
+    },
+    {
+      "playerName": "Xavier Worthy",
+      "position": "WR",
+      "team": "KC",
+      "projectedPoints": 145.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 27.650000000000006,
+      "normalizedVorp": 70.45302387859853
+    },
+    {
+      "playerName": "TreVeyon Henderson",
+      "position": "RB",
+      "team": "NE",
+      "projectedPoints": 154.8,
+      "medianPoints": 113.05,
+      "vorpScore": 41.750000000000014,
+      "normalizedVorp": 73.59964293684446
+    },
+    {
+      "playerName": "David Montgomery",
+      "position": "RB",
+      "team": "DET",
+      "projectedPoints": 164.5,
+      "medianPoints": 113.05,
+      "vorpScore": 51.45,
+      "normalizedVorp": 75.76433831733988
+    },
+    {
+      "playerName": "Zay Flowers",
+      "position": "WR",
+      "team": "BAL",
+      "projectedPoints": 145.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 27.25,
+      "normalizedVorp": 70.36375808971212
+    },
+    {
+      "playerName": "D'Andre Swift",
+      "position": "RB",
+      "team": "CHI",
+      "projectedPoints": 167,
+      "medianPoints": 113.05,
+      "vorpScore": 53.95,
+      "normalizedVorp": 76.32224949787994
+    },
+    {
+      "playerName": "Jameson Williams",
+      "position": "WR",
+      "team": "DET",
+      "projectedPoints": 141.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 23.650000000000006,
+      "normalizedVorp": 69.56036598973444
+    },
+    {
+      "playerName": "Tetairoa McMillan",
+      "position": "WR",
+      "team": "CAR",
+      "projectedPoints": 120.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 2.750000000000014,
+      "normalizedVorp": 64.89622852041956
+    },
+    {
+      "playerName": "Travis Kelce",
+      "position": "TE",
+      "team": "KC",
+      "projectedPoints": 106,
+      "medianPoints": 83.9,
+      "vorpScore": 22.099999999999994,
+      "normalizedVorp": 69.2144610577996
+    },
+    {
+      "playerName": "T.J. Hockenson",
+      "position": "TE",
+      "team": "MIN",
+      "projectedPoints": 106.6,
+      "medianPoints": 83.9,
+      "vorpScore": 22.69999999999999,
+      "normalizedVorp": 69.3483597411292
+    },
+    {
+      "playerName": "Baker Mayfield",
+      "position": "QB",
+      "team": "TB",
+      "projectedPoints": 280.4,
+      "medianPoints": 290.25,
+      "vorpScore": -9.850000000000023,
+      "normalizedVorp": 62.08435617049766
+    },
+    {
+      "playerName": "Travis Hunter",
+      "position": "WR",
+      "team": "JAC",
+      "projectedPoints": 120.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 2.750000000000014,
+      "normalizedVorp": 64.89622852041956
+    },
+    {
+      "playerName": "Aaron Jones Sr.",
+      "position": "RB",
+      "team": "MIN",
+      "projectedPoints": 160.4,
+      "medianPoints": 113.05,
+      "vorpScore": 47.35000000000001,
+      "normalizedVorp": 74.84936398125419
+    },
+    {
+      "playerName": "Joe Mixon",
+      "position": "RB",
+      "team": "HOU",
+      "projectedPoints": 159.2,
+      "medianPoints": 113.05,
+      "vorpScore": 46.14999999999999,
+      "normalizedVorp": 74.58156661459495
+    },
+    {
+      "playerName": "RJ Harvey",
+      "position": "RB",
+      "team": "DEN",
+      "projectedPoints": 140.9,
+      "medianPoints": 113.05,
+      "vorpScore": 27.85000000000001,
+      "normalizedVorp": 70.49765677304174
+    },
+    {
+      "playerName": "Calvin Ridley",
+      "position": "WR",
+      "team": "TEN",
+      "projectedPoints": 141.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 23.950000000000017,
+      "normalizedVorp": 69.62731533139925
+    },
+    {
+      "playerName": "George Pickens",
+      "position": "WR",
+      "team": "DAL",
+      "projectedPoints": 137.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 19.150000000000006,
+      "normalizedVorp": 68.55612586476234
+    },
+    {
+      "playerName": "Isiah Pacheco",
+      "position": "RB",
+      "team": "KC",
+      "projectedPoints": 144.6,
+      "medianPoints": 113.05,
+      "vorpScore": 31.549999999999997,
+      "normalizedVorp": 71.32336532024101
+    },
+    {
+      "playerName": "Bo Nix",
+      "position": "QB",
+      "team": "DEN",
+      "projectedPoints": 308.8,
+      "medianPoints": 290.25,
+      "vorpScore": 18.55000000000001,
+      "normalizedVorp": 68.42222718143272
+    },
+    {
+      "playerName": "Tony Pollard",
+      "position": "RB",
+      "team": "TEN",
+      "projectedPoints": 157.2,
+      "medianPoints": 113.05,
+      "vorpScore": 44.14999999999999,
+      "normalizedVorp": 74.1352376701629
+    },
+    {
+      "playerName": "Kaleb Johnson",
+      "position": "RB",
+      "team": "PIT",
+      "projectedPoints": 145.6,
+      "medianPoints": 113.05,
+      "vorpScore": 32.55,
+      "normalizedVorp": 71.54652979245705
+    },
+    {
+      "playerName": "Jaylen Waddle",
+      "position": "WR",
+      "team": "MIA",
+      "projectedPoints": 126.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 8.650000000000006,
+      "normalizedVorp": 66.21289890649409
+    },
+    {
+      "playerName": "Jerry Jeudy",
+      "position": "WR",
+      "team": "CLE",
+      "projectedPoints": 132.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 14.75,
+      "normalizedVorp": 67.57420218701182
+    },
+    {
+      "playerName": "Mark Andrews",
+      "position": "TE",
+      "team": "BAL",
+      "projectedPoints": 117.3,
+      "medianPoints": 83.9,
+      "vorpScore": 33.39999999999999,
+      "normalizedVorp": 71.73621959384066
+    },
+    {
+      "playerName": "Chris Olave",
+      "position": "WR",
+      "team": "NO",
+      "projectedPoints": 117.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -0.3499999999999943,
+      "normalizedVorp": 64.20441865654989
+    },
+    {
+      "playerName": "Rome Odunze",
+      "position": "WR",
+      "team": "CHI",
+      "projectedPoints": 119.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 1.2500000000000142,
+      "normalizedVorp": 64.56148181209551
+    },
+    {
+      "playerName": "Brian Robinson Jr.",
+      "position": "RB",
+      "team": "WAS",
+      "projectedPoints": 145.6,
+      "medianPoints": 113.05,
+      "vorpScore": 32.55,
+      "normalizedVorp": 71.54652979245705
+    },
+    {
+      "playerName": "Deebo Samuel Sr.",
+      "position": "WR",
+      "team": "WAS",
+      "projectedPoints": 132.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 14.25,
+      "normalizedVorp": 67.46261995090381
+    },
+    {
+      "playerName": "Kyler Murray",
+      "position": "QB",
+      "team": "ARI",
+      "projectedPoints": 315.9,
+      "medianPoints": 290.25,
+      "vorpScore": 25.649999999999977,
+      "normalizedVorp": 70.00669493416648
+    },
+    {
+      "playerName": "Jordan Addison",
+      "position": "WR",
+      "team": "MIN",
+      "projectedPoints": 112.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -5.549999999999983,
+      "normalizedVorp": 63.043963401026545
+    },
+    {
+      "playerName": "Evan Engram",
+      "position": "TE",
+      "team": "DEN",
+      "projectedPoints": 83.4,
+      "medianPoints": 83.9,
+      "vorpScore": -0.5,
+      "normalizedVorp": 64.17094398571747
+    },
+    {
+      "playerName": "Stefon Diggs",
+      "position": "WR",
+      "team": "NE",
+      "projectedPoints": 116.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -1.1499999999999915,
+      "normalizedVorp": 64.02588707877706
+    },
+    {
+      "playerName": "Cooper Kupp",
+      "position": "WR",
+      "team": "SEA",
+      "projectedPoints": 113.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -4.049999999999983,
+      "normalizedVorp": 63.37871010935059
+    },
+    {
+      "playerName": "Tyrone Tracy Jr.",
+      "position": "RB",
+      "team": "NYG",
+      "projectedPoints": 139.1,
+      "medianPoints": 113.05,
+      "vorpScore": 26.049999999999997,
+      "normalizedVorp": 70.0959607230529
+    },
+    {
+      "playerName": "Chris Godwin",
+      "position": "WR",
+      "team": "TB",
+      "projectedPoints": 119.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 1.6500000000000057,
+      "normalizedVorp": 64.65074760098193
+    },
+    {
+      "playerName": "Jakobi Meyers",
+      "position": "WR",
+      "team": "LV",
+      "projectedPoints": 128.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 10.550000000000011,
+      "normalizedVorp": 66.63691140370453
+    },
+    {
+      "playerName": "David Njoku",
+      "position": "TE",
+      "team": "CLE",
+      "projectedPoints": 101.1,
+      "medianPoints": 83.9,
+      "vorpScore": 17.19999999999999,
+      "normalizedVorp": 68.12095514394109
+    },
+    {
+      "playerName": "Jaylen Warren",
+      "position": "RB",
+      "team": "PIT",
+      "projectedPoints": 129,
+      "medianPoints": 113.05,
+      "vorpScore": 15.950000000000003,
+      "normalizedVorp": 67.84199955367104
+    },
+    {
+      "playerName": "Cam Skattebo",
+      "position": "RB",
+      "team": "NYG",
+      "projectedPoints": 99.3,
+      "medianPoints": 113.05,
+      "vorpScore": -13.75,
+      "normalizedVorp": 61.21401472885517
+    },
+    {
+      "playerName": "Jauan Jennings",
+      "position": "WR",
+      "team": "SF",
+      "projectedPoints": 126.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 8.350000000000009,
+      "normalizedVorp": 66.1459495648293
+    },
+    {
+      "playerName": "Matthew Golden",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 122.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 4.250000000000014,
+      "normalizedVorp": 65.23097522874359
+    },
+    {
+      "playerName": "Khalil Shakir",
+      "position": "WR",
+      "team": "BUF",
+      "projectedPoints": 109.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -8.049999999999983,
+      "normalizedVorp": 62.4860522204865
+    },
+    {
+      "playerName": "Travis Etienne Jr.",
+      "position": "RB",
+      "team": "JAC",
+      "projectedPoints": 112.6,
+      "medianPoints": 113.05,
+      "vorpScore": -0.45000000000000284,
+      "normalizedVorp": 64.18210220932828
+    },
+    {
+      "playerName": "Brock Purdy",
+      "position": "QB",
+      "team": "SF",
+      "projectedPoints": 290.1,
+      "medianPoints": 290.25,
+      "vorpScore": -0.14999999999997726,
+      "normalizedVorp": 64.24905155099309
+    },
+    {
+      "playerName": "Jared Goff",
+      "position": "QB",
+      "team": "DET",
+      "projectedPoints": 270.8,
+      "medianPoints": 290.25,
+      "vorpScore": -19.44999999999999,
+      "normalizedVorp": 59.94197723722383
+    },
+    {
+      "playerName": "Ricky Pearsall",
+      "position": "WR",
+      "team": "SF",
+      "projectedPoints": 114.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -3.3499999999999943,
+      "normalizedVorp": 63.53492523990182
+    },
+    {
+      "playerName": "Dak Prescott",
+      "position": "QB",
+      "team": "DAL",
+      "projectedPoints": 320.4,
+      "medianPoints": 290.25,
+      "vorpScore": 30.149999999999977,
+      "normalizedVorp": 71.01093505913857
+    },
+    {
+      "playerName": "Javonte Williams",
+      "position": "RB",
+      "team": "DAL",
+      "projectedPoints": 117.4,
+      "medianPoints": 113.05,
+      "vorpScore": 4.3500000000000085,
+      "normalizedVorp": 65.25329167596519
+    },
+    {
+      "playerName": "Justin Fields",
+      "position": "QB",
+      "team": "NYJ",
+      "projectedPoints": 301.1,
+      "medianPoints": 290.25,
+      "vorpScore": 10.850000000000023,
+      "normalizedVorp": 66.70386074536934
+    },
+    {
+      "playerName": "Tyler Warren",
+      "position": "TE",
+      "team": "IND",
+      "projectedPoints": 88.6,
+      "medianPoints": 83.9,
+      "vorpScore": 4.699999999999989,
+      "normalizedVorp": 65.33139924124079
+    },
+    {
+      "playerName": "Rhamondre Stevenson",
+      "position": "RB",
+      "team": "NE",
+      "projectedPoints": 113.5,
+      "medianPoints": 113.05,
+      "vorpScore": 0.45000000000000284,
+      "normalizedVorp": 64.38295023432269
+    },
+    {
+      "playerName": "Brandon Aubrey",
+      "position": "K",
+      "team": "DAL",
+      "projectedPoints": 141.6,
+      "medianPoints": 124.65,
+      "vorpScore": 16.94999999999999,
+      "normalizedVorp": 68.06516402588707
+    },
+    {
+      "playerName": "J.K. Dobbins",
+      "position": "RB",
+      "team": "DEN",
+      "projectedPoints": 118.9,
+      "medianPoints": 113.05,
+      "vorpScore": 5.8500000000000085,
+      "normalizedVorp": 65.58803838428922
+    },
+    {
+      "playerName": "Justin Herbert",
+      "position": "QB",
+      "team": "LAC",
+      "projectedPoints": 325.7,
+      "medianPoints": 290.25,
+      "vorpScore": 35.44999999999999,
+      "normalizedVorp": 72.1937067618835
+    },
+    {
+      "playerName": "Tucker Kraft",
+      "position": "TE",
+      "team": "GB",
+      "projectedPoints": 92.5,
+      "medianPoints": 83.9,
+      "vorpScore": 8.599999999999994,
+      "normalizedVorp": 66.20174068288328
+    },
+    {
+      "playerName": "Emeka Egbuka",
+      "position": "WR",
+      "team": "TB",
+      "projectedPoints": 89.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -28.64999999999999,
+      "normalizedVorp": 57.88886409283642
+    },
+    {
+      "playerName": "Jayden Reed",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 124.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 6.750000000000014,
+      "normalizedVorp": 65.78888640928365
+    },
+    {
+      "playerName": "Jordan Mason",
+      "position": "RB",
+      "team": "MIN",
+      "projectedPoints": 116.3,
+      "medianPoints": 113.05,
+      "vorpScore": 3.25,
+      "normalizedVorp": 65.00781075652756
+    },
+    {
+      "playerName": "Quinshon Judkins",
+      "position": "RB",
+      "team": "CLE",
+      "projectedPoints": 108.2,
+      "medianPoints": 113.05,
+      "vorpScore": -4.849999999999994,
+      "normalizedVorp": 63.20017853157778
+    },
+    {
+      "playerName": "Colston Loveland",
+      "position": "TE",
+      "team": "CHI",
+      "projectedPoints": 76.5,
+      "medianPoints": 83.9,
+      "vorpScore": -7.400000000000006,
+      "normalizedVorp": 62.63110912742691
+    },
+    {
+      "playerName": "Josh Downs",
+      "position": "WR",
+      "team": "IND",
+      "projectedPoints": 98.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -19.049999999999983,
+      "normalizedVorp": 60.03124302611024
+    },
+    {
+      "playerName": "Zach Charbonnet",
+      "position": "RB",
+      "team": "SEA",
+      "projectedPoints": 108.8,
+      "medianPoints": 113.05,
+      "vorpScore": -4.25,
+      "normalizedVorp": 63.33407721490739
+    },
+    {
+      "playerName": "Caleb Williams",
+      "position": "QB",
+      "team": "CHI",
+      "projectedPoints": 287.5,
+      "medianPoints": 290.25,
+      "vorpScore": -2.75,
+      "normalizedVorp": 63.66882392323142
+    },
+    {
+      "playerName": "Michael Pittman Jr.",
+      "position": "WR",
+      "team": "IND",
+      "projectedPoints": 107.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -10.649999999999991,
+      "normalizedVorp": 61.90582459272485
+    },
+    {
+      "playerName": "Keon Coleman",
+      "position": "WR",
+      "team": "BUF",
+      "projectedPoints": 118.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": 0.3500000000000085,
+      "normalizedVorp": 64.3606337871011
+    },
+    {
+      "playerName": "Najee Harris",
+      "position": "RB",
+      "team": "LAC",
+      "projectedPoints": 105.7,
+      "medianPoints": 113.05,
+      "vorpScore": -7.349999999999994,
+      "normalizedVorp": 62.64226735103772
+    },
+    {
+      "playerName": "Brandon Aiyuk",
+      "position": "WR",
+      "team": "SF",
+      "projectedPoints": 94.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -23.64999999999999,
+      "normalizedVorp": 59.00468645391654
+    },
+    {
+      "playerName": "Dalton Kincaid",
+      "position": "TE",
+      "team": "BUF",
+      "projectedPoints": 83.6,
+      "medianPoints": 83.9,
+      "vorpScore": -0.30000000000001137,
+      "normalizedVorp": 64.21557688016067
+    },
+    {
+      "playerName": "Jonnu Smith",
+      "position": "TE",
+      "team": "PIT",
+      "projectedPoints": 76.7,
+      "medianPoints": 83.9,
+      "vorpScore": -7.200000000000003,
+      "normalizedVorp": 62.67574202187012
+    },
+    {
+      "playerName": "Jake Bates",
+      "position": "K",
+      "team": "DET",
+      "projectedPoints": 130,
+      "medianPoints": 124.65,
+      "vorpScore": 5.349999999999994,
+      "normalizedVorp": 65.4764561481812
+    },
+    {
+      "playerName": "C.J. Stroud",
+      "position": "QB",
+      "team": "HOU",
+      "projectedPoints": 295.3,
+      "medianPoints": 290.25,
+      "vorpScore": 5.050000000000011,
+      "normalizedVorp": 65.4095068065164
+    },
+    {
+      "playerName": "Jordan Love",
+      "position": "QB",
+      "team": "GB",
+      "projectedPoints": 285.7,
+      "medianPoints": 290.25,
+      "vorpScore": -4.550000000000011,
+      "normalizedVorp": 63.26712787324258
+    },
+    {
+      "playerName": "Cameron Dicker",
+      "position": "K",
+      "team": "LAC",
+      "projectedPoints": 131.2,
+      "medianPoints": 124.65,
+      "vorpScore": 6.549999999999983,
+      "normalizedVorp": 65.74425351484044
+    },
+    {
+      "playerName": "Drake Maye",
+      "position": "QB",
+      "team": "NE",
+      "projectedPoints": 274,
+      "medianPoints": 290.25,
+      "vorpScore": -16.25,
+      "normalizedVorp": 60.65610354831511
+    },
+    {
+      "playerName": "Dallas Goedert",
+      "position": "TE",
+      "team": "PHI",
+      "projectedPoints": 85.8,
+      "medianPoints": 83.9,
+      "vorpScore": 1.8999999999999915,
+      "normalizedVorp": 64.70653871903592
+    },
+    {
+      "playerName": "Tyjae Spears",
+      "position": "RB",
+      "team": "TEN",
+      "projectedPoints": 101.3,
+      "medianPoints": 113.05,
+      "vorpScore": -11.75,
+      "normalizedVorp": 61.66034367328721
+    },
+    {
+      "playerName": "Rachaad White",
+      "position": "RB",
+      "team": "TB",
+      "projectedPoints": 101.7,
+      "medianPoints": 113.05,
+      "vorpScore": -11.349999999999994,
+      "normalizedVorp": 61.74960946217362
+    },
+    {
+      "playerName": "Darnell Mooney",
+      "position": "WR",
+      "team": "ATL",
+      "projectedPoints": 112.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -5.449999999999989,
+      "normalizedVorp": 63.066279848248165
+    },
+    {
+      "playerName": "Kyle Pitts Sr.",
+      "position": "TE",
+      "team": "ATL",
+      "projectedPoints": 83.2,
+      "medianPoints": 83.9,
+      "vorpScore": -0.7000000000000028,
+      "normalizedVorp": 64.12631109127427
+    },
+    {
+      "playerName": "Jake Ferguson",
+      "position": "TE",
+      "team": "DAL",
+      "projectedPoints": 82.5,
+      "medianPoints": 83.9,
+      "vorpScore": -1.4000000000000057,
+      "normalizedVorp": 63.970095960723036
+    },
+    {
+      "playerName": "Tank Bigsby",
+      "position": "RB",
+      "team": "JAC",
+      "projectedPoints": 98.1,
+      "medianPoints": 113.05,
+      "vorpScore": -14.950000000000003,
+      "normalizedVorp": 60.946217362195945
+    },
+    {
+      "playerName": "Jaydon Blue",
+      "position": "RB",
+      "team": "DAL",
+      "projectedPoints": 83.2,
+      "medianPoints": 113.05,
+      "vorpScore": -29.849999999999994,
+      "normalizedVorp": 57.6210667261772
+    },
+    {
+      "playerName": "Austin Ekeler",
+      "position": "RB",
+      "team": "WAS",
+      "projectedPoints": 111.2,
+      "medianPoints": 113.05,
+      "vorpScore": -1.8499999999999943,
+      "normalizedVorp": 63.86967194822585
+    },
+    {
+      "playerName": "J.J. McCarthy",
+      "position": "QB",
+      "team": "MIN",
+      "projectedPoints": 290.4,
+      "medianPoints": 290.25,
+      "vorpScore": 0.14999999999997726,
+      "normalizedVorp": 64.31600089265788
+    },
+    {
+      "playerName": "Chase McLaughlin",
+      "position": "K",
+      "team": "TB",
+      "projectedPoints": 136.4,
+      "medianPoints": 124.65,
+      "vorpScore": 11.75,
+      "normalizedVorp": 66.90470877036375
+    },
+    {
+      "playerName": "Jayden Higgins",
+      "position": "WR",
+      "team": "HOU",
+      "projectedPoints": 86.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -31.749999999999986,
+      "normalizedVorp": 57.19705422896675
+    },
+    {
+      "playerName": "Rashid Shaheed",
+      "position": "WR",
+      "team": "NO",
+      "projectedPoints": 113.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -4.1499999999999915,
+      "normalizedVorp": 63.356393662128994
+    },
+    {
+      "playerName": "Zach Ertz",
+      "position": "TE",
+      "team": "WAS",
+      "projectedPoints": 84.2,
+      "medianPoints": 83.9,
+      "vorpScore": 0.29999999999999716,
+      "normalizedVorp": 64.3494755634903
+    },
+    {
+      "playerName": "Marvin Mims Jr.",
+      "position": "WR",
+      "team": "DEN",
+      "projectedPoints": 106.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -11.449999999999989,
+      "normalizedVorp": 61.727293014952025
+    },
+    {
+      "playerName": "Isaac Guerendo",
+      "position": "RB",
+      "team": "SF",
+      "projectedPoints": 81.9,
+      "medianPoints": 113.05,
+      "vorpScore": -31.14999999999999,
+      "normalizedVorp": 57.33095291229636
+    },
+    {
+      "playerName": "Chris Boswell",
+      "position": "K",
+      "team": "PIT",
+      "projectedPoints": 126,
+      "medianPoints": 124.65,
+      "vorpScore": 1.3499999999999943,
+      "normalizedVorp": 64.5837982593171
+    },
+    {
+      "playerName": "Trevor Lawrence",
+      "position": "QB",
+      "team": "JAC",
+      "projectedPoints": 310.2,
+      "medianPoints": 290.25,
+      "vorpScore": 19.94999999999999,
+      "normalizedVorp": 68.73465744253514
+    },
+    {
+      "playerName": "Keenan Allen",
+      "position": "WR",
+      "team": "LAC",
+      "projectedPoints": 98.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -19.749999999999986,
+      "normalizedVorp": 59.87502789555903
+    },
+    {
+      "playerName": "Trey Benson",
+      "position": "RB",
+      "team": "ARI",
+      "projectedPoints": 95.5,
+      "medianPoints": 113.05,
+      "vorpScore": -17.549999999999997,
+      "normalizedVorp": 60.36598973443428
+    },
+    {
+      "playerName": "Bhayshul Tuten",
+      "position": "RB",
+      "team": "JAC",
+      "projectedPoints": 73.2,
+      "medianPoints": 113.05,
+      "vorpScore": -39.849999999999994,
+      "normalizedVorp": 55.389422004016964
+    },
+    {
+      "playerName": "Jerome Ford",
+      "position": "RB",
+      "team": "CLE",
+      "projectedPoints": 90.9,
+      "medianPoints": 113.05,
+      "vorpScore": -22.14999999999999,
+      "normalizedVorp": 59.339433162240574
+    },
+    {
+      "playerName": "Nick Chubb",
+      "position": "RB",
+      "team": "HOU",
+      "projectedPoints": 82,
+      "medianPoints": 113.05,
+      "vorpScore": -31.049999999999997,
+      "normalizedVorp": 57.35326935951797
+    },
+    {
+      "playerName": "Christian Kirk",
+      "position": "WR",
+      "team": "HOU",
+      "projectedPoints": 84.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -33.249999999999986,
+      "normalizedVorp": 56.862307520642716
+    },
+    {
+      "playerName": "Marquise Brown",
+      "position": "WR",
+      "team": "KC",
+      "projectedPoints": 93.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -24.749999999999986,
+      "normalizedVorp": 58.75920553447891
+    },
+    {
+      "playerName": "Tre' Harris",
+      "position": "WR",
+      "team": "LAC",
+      "projectedPoints": 80.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -37.849999999999994,
+      "normalizedVorp": 55.835750948449004
+    },
+    {
+      "playerName": "Tua Tagovailoa",
+      "position": "QB",
+      "team": "MIA",
+      "projectedPoints": 305.8,
+      "medianPoints": 290.25,
+      "vorpScore": 15.550000000000011,
+      "normalizedVorp": 67.75273376478465
+    },
+    {
+      "playerName": "Ka'imi Fairbairn",
+      "position": "K",
+      "team": "HOU",
+      "projectedPoints": 128.4,
+      "medianPoints": 124.65,
+      "vorpScore": 3.75,
+      "normalizedVorp": 65.11939299263557
+    },
+    {
+      "playerName": "Luther Burden III",
+      "position": "WR",
+      "team": "CHI",
+      "projectedPoints": 79.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -38.04999999999998,
+      "normalizedVorp": 55.79111805400581
+    },
+    {
+      "playerName": "Tyler Allgeier",
+      "position": "RB",
+      "team": "ATL",
+      "projectedPoints": 83.1,
+      "medianPoints": 113.05,
+      "vorpScore": -29.950000000000003,
+      "normalizedVorp": 57.59875027895559
+    },
+    {
+      "playerName": "Ray Davis",
+      "position": "RB",
+      "team": "BUF",
+      "projectedPoints": 87.1,
+      "medianPoints": 113.05,
+      "vorpScore": -25.950000000000003,
+      "normalizedVorp": 58.49140816781968
+    },
+    {
+      "playerName": "Hunter Henry",
+      "position": "TE",
+      "team": "NE",
+      "projectedPoints": 78.5,
+      "medianPoints": 83.9,
+      "vorpScore": -5.400000000000006,
+      "normalizedVorp": 63.07743807185895
+    },
+    {
+      "playerName": "Jake Elliott",
+      "position": "K",
+      "team": "PHI",
+      "projectedPoints": 134.1,
+      "medianPoints": 124.65,
+      "vorpScore": 9.449999999999989,
+      "normalizedVorp": 66.3914304842669
+    },
+    {
+      "playerName": "Rashod Bateman",
+      "position": "WR",
+      "team": "BAL",
+      "projectedPoints": 102.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -15.649999999999991,
+      "normalizedVorp": 60.79000223164472
+    },
+    {
+      "playerName": "Cameron Ward",
+      "position": "QB",
+      "team": "TEN",
+      "projectedPoints": 255,
+      "medianPoints": 290.25,
+      "vorpScore": -35.25,
+      "normalizedVorp": 56.41597857621067
+    },
+    {
+      "playerName": "Matthew Stafford",
+      "position": "QB",
+      "team": "LAR",
+      "projectedPoints": 266.6,
+      "medianPoints": 290.25,
+      "vorpScore": -23.649999999999977,
+      "normalizedVorp": 59.00468645391654
+    },
+    {
+      "playerName": "Adam Thielen",
+      "position": "WR",
+      "team": "CAR",
+      "projectedPoints": 91.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -26.249999999999986,
+      "normalizedVorp": 58.424458826154876
+    },
+    {
+      "playerName": "Harrison Butker",
+      "position": "K",
+      "team": "KC",
+      "projectedPoints": 128.3,
+      "medianPoints": 124.65,
+      "vorpScore": 3.6500000000000057,
+      "normalizedVorp": 65.09707654541398
+    },
+    {
+      "playerName": "Braelon Allen",
+      "position": "RB",
+      "team": "NYJ",
+      "projectedPoints": 71.9,
+      "medianPoints": 113.05,
+      "vorpScore": -41.14999999999999,
+      "normalizedVorp": 55.09930819013613
+    },
+    {
+      "playerName": "Dylan Sampson",
+      "position": "RB",
+      "team": "CLE",
+      "projectedPoints": 85.8,
+      "medianPoints": 113.05,
+      "vorpScore": -27.25,
+      "normalizedVorp": 58.20129435393885
+    },
+    {
+      "playerName": "Bryce Young",
+      "position": "QB",
+      "team": "CAR",
+      "projectedPoints": 262.5,
+      "medianPoints": 290.25,
+      "vorpScore": -27.75,
+      "normalizedVorp": 58.089712117830835
+    },
+    {
+      "playerName": "Xavier Legette",
+      "position": "WR",
+      "team": "CAR",
+      "projectedPoints": 87,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -30.94999999999999,
+      "normalizedVorp": 57.37558580673957
+    },
+    {
+      "playerName": "Michael Penix Jr.",
+      "position": "QB",
+      "team": "ATL",
+      "projectedPoints": 263.6,
+      "medianPoints": 290.25,
+      "vorpScore": -26.649999999999977,
+      "normalizedVorp": 58.335193037268475
+    },
+    {
+      "playerName": "Jason Sanders",
+      "position": "K",
+      "team": "MIA",
+      "projectedPoints": 133.4,
+      "medianPoints": 124.65,
+      "vorpScore": 8.75,
+      "normalizedVorp": 66.23521535371569
+    },
+    {
+      "playerName": "Isaiah Likely",
+      "position": "TE",
+      "team": "BAL",
+      "projectedPoints": 77,
+      "medianPoints": 83.9,
+      "vorpScore": -6.900000000000006,
+      "normalizedVorp": 62.74269136353492
+    },
+    {
+      "playerName": "Tyler Bass",
+      "position": "K",
+      "team": "BUF",
+      "projectedPoints": 132.2,
+      "medianPoints": 124.65,
+      "vorpScore": 7.549999999999983,
+      "normalizedVorp": 65.96741798705646
+    },
+    {
+      "playerName": "Jaylen Wright",
+      "position": "RB",
+      "team": "MIA",
+      "projectedPoints": 74.4,
+      "medianPoints": 113.05,
+      "vorpScore": -38.64999999999999,
+      "normalizedVorp": 55.657219370676195
+    },
+    {
+      "playerName": "Jack Bech",
+      "position": "WR",
+      "team": "LV",
+      "projectedPoints": 74.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -43.849999999999994,
+      "normalizedVorp": 54.49676411515287
+    },
+    {
+      "playerName": "Wil Lutz",
+      "position": "K",
+      "team": "DEN",
+      "projectedPoints": 124.7,
+      "medianPoints": 124.65,
+      "vorpScore": 0.04999999999999716,
+      "normalizedVorp": 64.29368444543628
+    },
+    {
+      "playerName": "Kyle Williams",
+      "position": "WR",
+      "team": "NE",
+      "projectedPoints": 67.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -50.64999999999999,
+      "normalizedVorp": 52.97924570408391
+    },
+    {
+      "playerName": "Kareem Hunt",
+      "position": "RB",
+      "team": "KC",
+      "projectedPoints": 68,
+      "medianPoints": 113.05,
+      "vorpScore": -45.05,
+      "normalizedVorp": 54.22896674849363
+    },
+    {
+      "playerName": "Wan'Dale Robinson",
+      "position": "WR",
+      "team": "NYG",
+      "projectedPoints": 81.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -36.349999999999994,
+      "normalizedVorp": 56.170497656773044
+    },
+    {
+      "playerName": "Geno Smith",
+      "position": "QB",
+      "team": "LV",
+      "projectedPoints": 275.1,
+      "medianPoints": 290.25,
+      "vorpScore": -15.149999999999977,
+      "normalizedVorp": 60.901584467752734
+    },
+    {
+      "playerName": "Jalen McMillan",
+      "position": "WR",
+      "team": "TB",
+      "projectedPoints": 71.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -46.04999999999998,
+      "normalizedVorp": 54.00580227627763
+    },
+    {
+      "playerName": "Brenton Strange",
+      "position": "TE",
+      "team": "JAC",
+      "projectedPoints": 73.3,
+      "medianPoints": 83.9,
+      "vorpScore": -10.600000000000009,
+      "normalizedVorp": 61.91698281633563
+    },
+    {
+      "playerName": "Pat Freiermuth",
+      "position": "TE",
+      "team": "PIT",
+      "projectedPoints": 68.7,
+      "medianPoints": 83.9,
+      "vorpScore": -15.200000000000003,
+      "normalizedVorp": 60.890426244141935
+    },
+    {
+      "playerName": "Cedric Tillman",
+      "position": "WR",
+      "team": "CLE",
+      "projectedPoints": 91.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -26.749999999999986,
+      "normalizedVorp": 58.31287659004687
+    },
+    {
+      "playerName": "Cade Otton",
+      "position": "TE",
+      "team": "TB",
+      "projectedPoints": 76,
+      "medianPoints": 83.9,
+      "vorpScore": -7.900000000000006,
+      "normalizedVorp": 62.51952689131889
+    },
+    {
+      "playerName": "Darren Waller",
+      "position": "TE",
+      "team": "MIA",
+      "projectedPoints": 77.9,
+      "medianPoints": 83.9,
+      "vorpScore": -6,
+      "normalizedVorp": 62.943539388529345
+    },
+    {
+      "playerName": "Aaron Rodgers",
+      "position": "QB",
+      "team": "PIT",
+      "projectedPoints": 237,
+      "medianPoints": 290.25,
+      "vorpScore": -53.25,
+      "normalizedVorp": 52.39901807632224
+    },
+    {
+      "playerName": "Evan McPherson",
+      "position": "K",
+      "team": "CIN",
+      "projectedPoints": 129.5,
+      "medianPoints": 124.65,
+      "vorpScore": 4.849999999999994,
+      "normalizedVorp": 65.36487391207318
+    },
+    {
+      "playerName": "Younghoe Koo",
+      "position": "K",
+      "team": "ATL",
+      "projectedPoints": 126.2,
+      "medianPoints": 124.65,
+      "vorpScore": 1.5499999999999972,
+      "normalizedVorp": 64.62843115376032
+    },
+    {
+      "playerName": "Romeo Doubs",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 82.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -35.64999999999999,
+      "normalizedVorp": 56.32671278732426
+    },
+    {
+      "playerName": "Cam Little",
+      "position": "K",
+      "team": "JAC",
+      "projectedPoints": 118.4,
+      "medianPoints": 124.65,
+      "vorpScore": -6.25,
+      "normalizedVorp": 62.88774827047534
+    },
+    {
+      "playerName": "Mike Gesicki",
+      "position": "TE",
+      "team": "CIN",
+      "projectedPoints": 72.7,
+      "medianPoints": 83.9,
+      "vorpScore": -11.200000000000003,
+      "normalizedVorp": 61.78308413300603
+    },
+    {
+      "playerName": "Anthony Richardson Sr.",
+      "position": "QB",
+      "team": "IND",
+      "projectedPoints": 203.1,
+      "medianPoints": 290.25,
+      "vorpScore": -87.15,
+      "normalizedVorp": 44.83374246819906
+    },
+    {
+      "playerName": "Justice Hill",
+      "position": "RB",
+      "team": "BAL",
+      "projectedPoints": 56.6,
+      "medianPoints": 113.05,
+      "vorpScore": -56.449999999999996,
+      "normalizedVorp": 51.68489176523098
+    },
+    {
+      "playerName": "Rico Dowdle",
+      "position": "RB",
+      "team": "CAR",
+      "projectedPoints": 80.9,
+      "medianPoints": 113.05,
+      "vorpScore": -32.14999999999999,
+      "normalizedVorp": 57.10778844008034
+    },
+    {
+      "playerName": "Will Reichard",
+      "position": "K",
+      "team": "MIN",
+      "projectedPoints": 124,
+      "medianPoints": 124.65,
+      "vorpScore": -0.6500000000000057,
+      "normalizedVorp": 64.13746931488507
+    },
+    {
+      "playerName": "DeAndre Hopkins",
+      "position": "WR",
+      "team": "BAL",
+      "projectedPoints": 64.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -53.04999999999998,
+      "normalizedVorp": 52.443650970765454
+    },
+    {
+      "playerName": "Jake Moody",
+      "position": "K",
+      "team": "SF",
+      "projectedPoints": 124,
+      "medianPoints": 124.65,
+      "vorpScore": -0.6500000000000057,
+      "normalizedVorp": 64.13746931488507
+    },
+    {
+      "playerName": "Quentin Johnston",
+      "position": "WR",
+      "team": "LAC",
+      "projectedPoints": 79.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -38.14999999999999,
+      "normalizedVorp": 55.7688016067842
+    },
+    {
+      "playerName": "Sam Darnold",
+      "position": "QB",
+      "team": "SEA",
+      "projectedPoints": 257,
+      "medianPoints": 290.25,
+      "vorpScore": -33.25,
+      "normalizedVorp": 56.862307520642716
+    },
+    {
+      "playerName": "Tyler Loop",
+      "position": "K",
+      "team": "BAL",
+      "projectedPoints": 129.6,
+      "medianPoints": 124.65,
+      "vorpScore": 4.949999999999989,
+      "normalizedVorp": 65.3871903592948
+    },
+    {
+      "playerName": "Joshua Palmer",
+      "position": "WR",
+      "team": "BUF",
+      "projectedPoints": 78.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -39.249999999999986,
+      "normalizedVorp": 55.523320687346576
+    },
+    {
+      "playerName": "Chig Okonkwo",
+      "position": "TE",
+      "team": "TEN",
+      "projectedPoints": 69.9,
+      "medianPoints": 83.9,
+      "vorpScore": -14,
+      "normalizedVorp": 61.15822361080115
+    },
+    {
+      "playerName": "DeMario Douglas",
+      "position": "WR",
+      "team": "NE",
+      "projectedPoints": 75.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -42.249999999999986,
+      "normalizedVorp": 54.85382727069851
+    },
+    {
+      "playerName": "Matt Gay",
+      "position": "K",
+      "team": "WAS",
+      "projectedPoints": 137.1,
+      "medianPoints": 124.65,
+      "vorpScore": 12.449999999999989,
+      "normalizedVorp": 67.06092390091497
+    },
+    {
+      "playerName": "Roschon Johnson",
+      "position": "RB",
+      "team": "CHI",
+      "projectedPoints": 78.7,
+      "medianPoints": 113.05,
+      "vorpScore": -34.349999999999994,
+      "normalizedVorp": 56.616826601205084
+    },
+    {
+      "playerName": "Elijah Arroyo",
+      "position": "TE",
+      "team": "SEA",
+      "projectedPoints": 60.1,
+      "medianPoints": 83.9,
+      "vorpScore": -23.800000000000004,
+      "normalizedVorp": 58.97121178308413
+    },
+    {
+      "playerName": "Daniel Carlson",
+      "position": "K",
+      "team": "LV",
+      "projectedPoints": 121.3,
+      "medianPoints": 124.65,
+      "vorpScore": -3.3500000000000085,
+      "normalizedVorp": 63.53492523990181
+    },
+    {
+      "playerName": "Dalton Schultz",
+      "position": "TE",
+      "team": "HOU",
+      "projectedPoints": 69.6,
+      "medianPoints": 83.9,
+      "vorpScore": -14.300000000000011,
+      "normalizedVorp": 61.091274269136356
+    },
+    {
+      "playerName": "Brandon McManus",
+      "position": "K",
+      "team": "GB",
+      "projectedPoints": 127.3,
+      "medianPoints": 124.65,
+      "vorpScore": 2.6499999999999915,
+      "normalizedVorp": 64.87391207319794
+    },
+    {
+      "playerName": "Will Shipley",
+      "position": "RB",
+      "team": "PHI",
+      "projectedPoints": 36.2,
+      "medianPoints": 113.05,
+      "vorpScore": -76.85,
+      "normalizedVorp": 47.132336532024105
+    },
+    {
+      "playerName": "Raheem Mostert",
+      "position": "RB",
+      "team": "LV",
+      "projectedPoints": 60,
+      "medianPoints": 113.05,
+      "vorpScore": -53.05,
+      "normalizedVorp": 52.443650970765454
+    },
+    {
+      "playerName": "MarShawn Lloyd",
+      "position": "RB",
+      "team": "GB",
+      "projectedPoints": 69.4,
+      "medianPoints": 113.05,
+      "vorpScore": -43.64999999999999,
+      "normalizedVorp": 54.54139700959608
+    },
+    {
+      "playerName": "Jacory Croskey-Merritt",
+      "position": "RB",
+      "team": "WAS",
+      "projectedPoints": 28.3,
+      "medianPoints": 113.05,
+      "vorpScore": -84.75,
+      "normalizedVorp": 45.36933720151752
+    },
+    {
+      "playerName": "Isaac TeSlaa",
+      "position": "WR",
+      "team": "DET",
+      "projectedPoints": 22.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -95.64999999999999,
+      "normalizedVorp": 42.93684445436287
+    },
+    {
+      "playerName": "Ja'Tavion Sanders",
+      "position": "TE",
+      "team": "CAR",
+      "projectedPoints": 51.1,
+      "medianPoints": 83.9,
+      "vorpScore": -32.800000000000004,
+      "normalizedVorp": 56.96273153313992
+    },
+    {
+      "playerName": "Trevor Etienne",
+      "position": "RB",
+      "team": "CAR",
+      "projectedPoints": 38.3,
+      "medianPoints": 113.05,
+      "vorpScore": -74.75,
+      "normalizedVorp": 47.60098192367775
+    },
+    {
+      "playerName": "Kendre Miller",
+      "position": "RB",
+      "team": "NO",
+      "projectedPoints": 64.5,
+      "medianPoints": 113.05,
+      "vorpScore": -48.55,
+      "normalizedVorp": 53.44789109573755
+    },
+    {
+      "playerName": "Blake Corum",
+      "position": "RB",
+      "team": "LAR",
+      "projectedPoints": 59.5,
+      "medianPoints": 113.05,
+      "vorpScore": -53.55,
+      "normalizedVorp": 52.33206873465745
+    },
+    {
+      "playerName": "Shedeur Sanders",
+      "position": "QB",
+      "team": "CLE",
+      "projectedPoints": 40.8,
+      "medianPoints": 290.25,
+      "vorpScore": -249.45,
+      "normalizedVorp": 8.614148627538501
+    },
+    {
+      "playerName": "Mason Taylor",
+      "position": "TE",
+      "team": "NYJ",
+      "projectedPoints": 59.4,
+      "medianPoints": 83.9,
+      "vorpScore": -24.500000000000007,
+      "normalizedVorp": 58.81499665253291
+    },
+    {
+      "playerName": "Taysom Hill",
+      "position": "TE",
+      "team": "NO",
+      "projectedPoints": 24.8,
+      "medianPoints": 83.9,
+      "vorpScore": -59.10000000000001,
+      "normalizedVorp": 51.09350591385851
+    },
+    {
+      "playerName": "Tory Horton",
+      "position": "WR",
+      "team": "SEA",
+      "projectedPoints": 54.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -63.54999999999999,
+      "normalizedVorp": 50.100424012497214
+    },
+    {
+      "playerName": "Miles Sanders",
+      "position": "RB",
+      "team": "DAL",
+      "projectedPoints": 64.6,
+      "medianPoints": 113.05,
+      "vorpScore": -48.45,
+      "normalizedVorp": 53.47020754295916
+    },
+    {
+      "playerName": "Alec Pierce",
+      "position": "WR",
+      "team": "IND",
+      "projectedPoints": 72.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -45.349999999999994,
+      "normalizedVorp": 54.16201740682883
+    },
+    {
+      "playerName": "DJ Giddens",
+      "position": "RB",
+      "team": "IND",
+      "projectedPoints": 27.6,
+      "medianPoints": 113.05,
+      "vorpScore": -85.44999999999999,
+      "normalizedVorp": 45.21312207096631
+    },
+    {
+      "playerName": "Jaxson Dart",
+      "position": "QB",
+      "team": "NYG",
+      "projectedPoints": 56.6,
+      "medianPoints": 290.25,
+      "vorpScore": -233.65,
+      "normalizedVorp": 12.140147288551663
+    },
+    {
+      "playerName": "Russell Wilson",
+      "position": "QB",
+      "team": "NYG",
+      "projectedPoints": 260.2,
+      "medianPoints": 290.25,
+      "vorpScore": -30.05000000000001,
+      "normalizedVorp": 57.576433831733986
+    },
+    {
+      "playerName": "Jalen Royals",
+      "position": "WR",
+      "team": "KC",
+      "projectedPoints": 27.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -90.54999999999998,
+      "normalizedVorp": 44.07498326266459
+    },
+    {
+      "playerName": "Cole Kmet",
+      "position": "TE",
+      "team": "CHI",
+      "projectedPoints": 41.7,
+      "medianPoints": 83.9,
+      "vorpScore": -42.2,
+      "normalizedVorp": 54.8649854943093
+    },
+    {
+      "playerName": "Calvin Austin III",
+      "position": "WR",
+      "team": "PIT",
+      "projectedPoints": 74.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -43.249999999999986,
+      "normalizedVorp": 54.630662798482476
+    },
+    {
+      "playerName": "Tyler Lockett",
+      "position": "WR",
+      "team": "TEN",
+      "projectedPoints": 78.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -39.44999999999999,
+      "normalizedVorp": 55.47868779290337
+    },
+    {
+      "playerName": "Dont'e Thornton Jr.",
+      "position": "WR",
+      "team": "LV",
+      "projectedPoints": 53,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -64.94999999999999,
+      "normalizedVorp": 49.78799375139478
+    },
+    {
+      "playerName": "Elijah Mitchell",
+      "position": "RB",
+      "team": "KC",
+      "projectedPoints": 42.1,
+      "medianPoints": 113.05,
+      "vorpScore": -70.94999999999999,
+      "normalizedVorp": 48.44900691809864
+    },
+    {
+      "playerName": "Joshua Karty",
+      "position": "K",
+      "team": "LAR",
+      "projectedPoints": 124.6,
+      "medianPoints": 124.65,
+      "vorpScore": -0.05000000000001137,
+      "normalizedVorp": 64.27136799821469
+    },
+    {
+      "playerName": "Keaton Mitchell",
+      "position": "RB",
+      "team": "BAL",
+      "projectedPoints": 54.1,
+      "medianPoints": 113.05,
+      "vorpScore": -58.949999999999996,
+      "normalizedVorp": 51.12698058469092
+    },
+    {
+      "playerName": "Jaleel McLaughlin",
+      "position": "RB",
+      "team": "DEN",
+      "projectedPoints": 34.3,
+      "medianPoints": 113.05,
+      "vorpScore": -78.75,
+      "normalizedVorp": 46.70832403481366
+    },
+    {
+      "playerName": "Kyle Monangai",
+      "position": "RB",
+      "team": "CHI",
+      "projectedPoints": 35,
+      "medianPoints": 113.05,
+      "vorpScore": -78.05,
+      "normalizedVorp": 46.864539165364874
+    },
+    {
+      "playerName": "Jalen Milroe",
+      "position": "QB",
+      "team": "SEA",
+      "projectedPoints": 23,
+      "medianPoints": 290.25,
+      "vorpScore": -267.25,
+      "normalizedVorp": 4.641821022093285
+    },
+    {
+      "playerName": "Noah Gray",
+      "position": "TE",
+      "team": "KC",
+      "projectedPoints": 43.8,
+      "medianPoints": 83.9,
+      "vorpScore": -40.10000000000001,
+      "normalizedVorp": 55.33363088596295
+    },
+    {
+      "playerName": "Tyler Higbee",
+      "position": "TE",
+      "team": "LAR",
+      "projectedPoints": 64.4,
+      "medianPoints": 83.9,
+      "vorpScore": -19.5,
+      "normalizedVorp": 59.93081901361303
+    },
+    {
+      "playerName": "Kayshon Boutte",
+      "position": "WR",
+      "team": "NE",
+      "projectedPoints": 41.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -76.04999999999998,
+      "normalizedVorp": 47.31086810979692
+    },
+    {
+      "playerName": "Jaylin Noel",
+      "position": "WR",
+      "team": "HOU",
+      "projectedPoints": 47.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -70.35,
+      "normalizedVorp": 48.58290560142826
+    },
+    {
+      "playerName": "Darius Slayton",
+      "position": "WR",
+      "team": "NYG",
+      "projectedPoints": 65.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -52.749999999999986,
+      "normalizedVorp": 52.510600312430256
+    },
+    {
+      "playerName": "Brashard Smith",
+      "position": "RB",
+      "team": "KC",
+      "projectedPoints": 25.5,
+      "medianPoints": 113.05,
+      "vorpScore": -87.55,
+      "normalizedVorp": 44.74447667931265
+    },
+    {
+      "playerName": "Woody Marks",
+      "position": "RB",
+      "team": "HOU",
+      "projectedPoints": 56.6,
+      "medianPoints": 113.05,
+      "vorpScore": -56.449999999999996,
+      "normalizedVorp": 51.68489176523098
+    },
+    {
+      "playerName": "Jordan James",
+      "position": "RB",
+      "team": "SF",
+      "projectedPoints": 26.1,
+      "medianPoints": 113.05,
+      "vorpScore": -86.94999999999999,
+      "normalizedVorp": 44.87837536264227
+    },
+    {
+      "playerName": "Joe Flacco",
+      "position": "QB",
+      "team": "CLE",
+      "projectedPoints": 127.4,
+      "medianPoints": 290.25,
+      "vorpScore": -162.85,
+      "normalizedVorp": 27.940191921446107
+    },
+    {
+      "playerName": "Dyami Brown",
+      "position": "WR",
+      "team": "JAC",
+      "projectedPoints": 70.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -47.349999999999994,
+      "normalizedVorp": 53.715688462396784
+    },
+    {
+      "playerName": "Michael Wilson",
+      "position": "WR",
+      "team": "ARI",
+      "projectedPoints": 76.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -41.54999999999998,
+      "normalizedVorp": 55.01004240124973
+    },
+    {
+      "playerName": "Pat Bryant",
+      "position": "WR",
+      "team": "DEN",
+      "projectedPoints": 52.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -65.24999999999999,
+      "normalizedVorp": 49.72104440972997
+    },
+    {
+      "playerName": "Jarquez Hunter",
+      "position": "RB",
+      "team": "LAR",
+      "projectedPoints": 43.9,
+      "medianPoints": 113.05,
+      "vorpScore": -69.15,
+      "normalizedVorp": 48.850702968087475
+    },
+    {
+      "playerName": "Dontayvion Wicks",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 52.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -65.14999999999999,
+      "normalizedVorp": 49.74336085695158
+    },
+    {
+      "playerName": "Ollie Gordon II",
+      "position": "RB",
+      "team": "MIA",
+      "projectedPoints": 21.5,
+      "medianPoints": 113.05,
+      "vorpScore": -91.55,
+      "normalizedVorp": 43.85181879044856
+    },
+    {
+      "playerName": "Troy Franklin",
+      "position": "WR",
+      "team": "DEN",
+      "projectedPoints": 50.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -67.04999999999998,
+      "normalizedVorp": 49.319348359741134
+    },
+    {
+      "playerName": "Terrance Ferguson",
+      "position": "TE",
+      "team": "LAR",
+      "projectedPoints": 34.1,
+      "medianPoints": 83.9,
+      "vorpScore": -49.800000000000004,
+      "normalizedVorp": 53.16893550546753
+    },
+    {
+      "playerName": "Jason Myers",
+      "position": "K",
+      "team": "SEA",
+      "projectedPoints": 116.2,
+      "medianPoints": 124.65,
+      "vorpScore": -8.450000000000003,
+      "normalizedVorp": 62.39678643160009
+    },
+    {
+      "playerName": "Tahj Brooks",
+      "position": "RB",
+      "team": "CIN",
+      "projectedPoints": 38,
+      "medianPoints": 113.05,
+      "vorpScore": -75.05,
+      "normalizedVorp": 47.53403258201294
+    },
+    {
+      "playerName": "Devin Neal",
+      "position": "RB",
+      "team": "NO",
+      "projectedPoints": 35.9,
+      "medianPoints": 113.05,
+      "vorpScore": -77.15,
+      "normalizedVorp": 47.065387190359296
+    },
+    {
+      "playerName": "Noah Fant",
+      "position": "TE",
+      "team": "CIN",
+      "projectedPoints": 51.6,
+      "medianPoints": 83.9,
+      "vorpScore": -32.300000000000004,
+      "normalizedVorp": 57.07431376924793
+    },
+    {
+      "playerName": "Cairo Santos",
+      "position": "K",
+      "team": "CHI",
+      "projectedPoints": 116,
+      "medianPoints": 124.65,
+      "vorpScore": -8.650000000000006,
+      "normalizedVorp": 62.35215353715687
+    },
+    {
+      "playerName": "Elic Ayomanor",
+      "position": "WR",
+      "team": "TEN",
+      "projectedPoints": 47.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -70.54999999999998,
+      "normalizedVorp": 48.538272706985055
+    },
+    {
+      "playerName": "Devin Singletary",
+      "position": "RB",
+      "team": "NYG",
+      "projectedPoints": 39,
+      "medianPoints": 113.05,
+      "vorpScore": -74.05,
+      "normalizedVorp": 47.75719705422897
+    },
+    {
+      "playerName": "Theo Johnson",
+      "position": "TE",
+      "team": "NYG",
+      "projectedPoints": 63,
+      "medianPoints": 83.9,
+      "vorpScore": -20.900000000000006,
+      "normalizedVorp": 59.61838875251059
+    },
+    {
+      "playerName": "A.J. Dillon",
+      "position": "RB",
+      "team": "PHI",
+      "projectedPoints": 32.7,
+      "medianPoints": 113.05,
+      "vorpScore": -80.35,
+      "normalizedVorp": 46.351260879268025
+    },
+    {
+      "playerName": "Samaje Perine",
+      "position": "RB",
+      "team": "CIN",
+      "projectedPoints": 53.5,
+      "medianPoints": 113.05,
+      "vorpScore": -59.55,
+      "normalizedVorp": 50.9930819013613
+    },
+    {
+      "playerName": "Juwan Johnson",
+      "position": "TE",
+      "team": "NO",
+      "projectedPoints": 69.5,
+      "medianPoints": 83.9,
+      "vorpScore": -14.400000000000006,
+      "normalizedVorp": 61.068957821914736
+    },
+    {
+      "playerName": "Andrei Iosivas",
+      "position": "WR",
+      "team": "CIN",
+      "projectedPoints": 56.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -61.34999999999999,
+      "normalizedVorp": 50.591385851372465
+    },
+    {
+      "playerName": "Jalen Coker",
+      "position": "WR",
+      "team": "CAR",
+      "projectedPoints": 55.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -62.44999999999999,
+      "normalizedVorp": 50.34590493193484
+    },
+    {
+      "playerName": "Ty Johnson",
+      "position": "RB",
+      "team": "BUF",
+      "projectedPoints": 51.6,
+      "medianPoints": 113.05,
+      "vorpScore": -61.449999999999996,
+      "normalizedVorp": 50.56906940415086
+    },
+    {
+      "playerName": "Diontae Johnson",
+      "position": "WR",
+      "team": "CLE",
+      "projectedPoints": 68.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -49.14999999999999,
+      "normalizedVorp": 53.31399241240795
+    },
+    {
+      "playerName": "Audric Estime",
+      "position": "RB",
+      "team": "DEN",
+      "projectedPoints": 25.1,
+      "medianPoints": 113.05,
+      "vorpScore": -87.94999999999999,
+      "normalizedVorp": 44.65521089042625
+    },
+    {
+      "playerName": "Ray-Ray McCloud III",
+      "position": "WR",
+      "team": "ATL",
+      "projectedPoints": 60.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -57.84999999999999,
+      "normalizedVorp": 51.372461504128545
+    },
+    {
+      "playerName": "Jalen Nailor",
+      "position": "WR",
+      "team": "MIN",
+      "projectedPoints": 57.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -60.249999999999986,
+      "normalizedVorp": 50.83686677081008
+    },
+    {
+      "playerName": "Antonio Gibson",
+      "position": "RB",
+      "team": "NE",
+      "projectedPoints": 42.4,
+      "medianPoints": 113.05,
+      "vorpScore": -70.65,
+      "normalizedVorp": 48.51595625976344
+    },
+    {
+      "playerName": "Tyler Shough",
+      "position": "QB",
+      "team": "NO",
+      "projectedPoints": 183.3,
+      "medianPoints": 290.25,
+      "vorpScore": -106.94999999999999,
+      "normalizedVorp": 40.41508591832181
+    },
+    {
+      "playerName": "Tyler Conklin",
+      "position": "TE",
+      "team": "LAC",
+      "projectedPoints": 49.8,
+      "medianPoints": 83.9,
+      "vorpScore": -34.10000000000001,
+      "normalizedVorp": 56.67261771925909
+    },
+    {
+      "playerName": "Sean Tucker",
+      "position": "RB",
+      "team": "TB",
+      "projectedPoints": 36.1,
+      "medianPoints": 113.05,
+      "vorpScore": -76.94999999999999,
+      "normalizedVorp": 47.1100200848025
+    },
+    {
+      "playerName": "Adonai Mitchell",
+      "position": "WR",
+      "team": "IND",
+      "projectedPoints": 51.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -66.04999999999998,
+      "normalizedVorp": 49.54251283195716
+    },
+    {
+      "playerName": "Luke McCaffrey",
+      "position": "WR",
+      "team": "WAS",
+      "projectedPoints": 29,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -88.94999999999999,
+      "normalizedVorp": 44.43204641821023
+    },
+    {
+      "playerName": "Roman Wilson",
+      "position": "WR",
+      "team": "PIT",
+      "projectedPoints": 39,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -78.94999999999999,
+      "normalizedVorp": 46.66369114037045
+    },
+    {
+      "playerName": "Dawson Knox",
+      "position": "TE",
+      "team": "BUF",
+      "projectedPoints": 35.3,
+      "medianPoints": 83.9,
+      "vorpScore": -48.60000000000001,
+      "normalizedVorp": 53.436732872126754
+    },
+    {
+      "playerName": "Kirk Cousins",
+      "position": "QB",
+      "team": "ATL",
+      "projectedPoints": 255.9,
+      "medianPoints": 290.25,
+      "vorpScore": -34.349999999999994,
+      "normalizedVorp": 56.616826601205084
+    },
+    {
+      "playerName": "Tank Dell",
+      "position": "WR",
+      "team": "HOU",
+      "projectedPoints": 2.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.54999999999998,
+      "normalizedVorp": 38.49587145726401
+    },
+    {
+      "playerName": "Andy Borregales",
+      "position": "K",
+      "team": "NE",
+      "projectedPoints": 105.1,
+      "medianPoints": 124.65,
+      "vorpScore": -19.55000000000001,
+      "normalizedVorp": 59.919660790002226
+    },
+    {
+      "playerName": "Tutu Atwell",
+      "position": "WR",
+      "team": "LAR",
+      "projectedPoints": 65.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -52.64999999999999,
+      "normalizedVorp": 52.53291675965187
+    },
+    {
+      "playerName": "Daniel Jones",
+      "position": "QB",
+      "team": "IND",
+      "projectedPoints": 115.3,
+      "medianPoints": 290.25,
+      "vorpScore": -174.95,
+      "normalizedVorp": 25.239901807632233
+    },
+    {
+      "playerName": "Dameon Pierce",
+      "position": "RB",
+      "team": "HOU",
+      "projectedPoints": 15.4,
+      "medianPoints": 113.05,
+      "vorpScore": -97.64999999999999,
+      "normalizedVorp": 42.49051550993082
+    },
+    {
+      "playerName": "Graham Gano",
+      "position": "K",
+      "team": "NYG",
+      "projectedPoints": 103.5,
+      "medianPoints": 124.65,
+      "vorpScore": -21.150000000000006,
+      "normalizedVorp": 59.56259763445658
+    },
+    {
+      "playerName": "Blake Grupe",
+      "position": "K",
+      "team": "NO",
+      "projectedPoints": 111,
+      "medianPoints": 124.65,
+      "vorpScore": -13.650000000000006,
+      "normalizedVorp": 61.23633117607676
+    },
+    {
+      "playerName": "Marquez Valdes-Scantling",
+      "position": "WR",
+      "team": "SEA",
+      "projectedPoints": 55.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -62.249999999999986,
+      "normalizedVorp": 50.39053782637804
+    },
+    {
+      "playerName": "Harold Fannin Jr.",
+      "position": "TE",
+      "team": "CLE",
+      "projectedPoints": 30,
+      "medianPoints": 83.9,
+      "vorpScore": -53.900000000000006,
+      "normalizedVorp": 52.25396116938184
+    },
+    {
+      "playerName": "KaVontae Turpin",
+      "position": "WR",
+      "team": "DAL",
+      "projectedPoints": 37.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -80.14999999999999,
+      "normalizedVorp": 46.39589377371124
+    },
+    {
+      "playerName": "Michael Mayer",
+      "position": "TE",
+      "team": "LV",
+      "projectedPoints": 35.2,
+      "medianPoints": 83.9,
+      "vorpScore": -48.7,
+      "normalizedVorp": 53.414416424905156
+    },
+    {
+      "playerName": "Chad Ryland",
+      "position": "K",
+      "team": "ARI",
+      "projectedPoints": 123.1,
+      "medianPoints": 124.65,
+      "vorpScore": -1.5500000000000114,
+      "normalizedVorp": 63.93662128989065
+    },
+    {
+      "playerName": "Jameis Winston",
+      "position": "QB",
+      "team": "NYG",
+      "projectedPoints": 16.3,
+      "medianPoints": 290.25,
+      "vorpScore": -273.95,
+      "normalizedVorp": 3.1466190582459324
+    },
+    {
+      "playerName": "Dustin Hopkins",
+      "position": "K",
+      "team": "CLE",
+      "projectedPoints": 93.2,
+      "medianPoints": 124.65,
+      "vorpScore": -31.450000000000003,
+      "normalizedVorp": 57.26400357063156
+    },
+    {
+      "playerName": "Christian Watson",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 51.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -66.35,
+      "normalizedVorp": 49.475563490292345
+    },
+    {
+      "playerName": "Hunter Renfrow",
+      "position": "WR",
+      "team": "CAR",
+      "projectedPoints": 11.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -106.44999999999999,
+      "normalizedVorp": 40.52666815442982
+    },
+    {
+      "playerName": "Luke Musgrave",
+      "position": "TE",
+      "team": "GB",
+      "projectedPoints": 27.1,
+      "medianPoints": 83.9,
+      "vorpScore": -56.800000000000004,
+      "normalizedVorp": 51.60678419995537
+    },
+    {
+      "playerName": "AJ Barner",
+      "position": "TE",
+      "team": "SEA",
+      "projectedPoints": 44.3,
+      "medianPoints": 83.9,
+      "vorpScore": -39.60000000000001,
+      "normalizedVorp": 55.44521312207096
+    },
+    {
+      "playerName": "Elijah Moore",
+      "position": "WR",
+      "team": "BUF",
+      "projectedPoints": 23.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -94.54999999999998,
+      "normalizedVorp": 43.182325373800495
+    },
+    {
+      "playerName": "Emanuel Wilson",
+      "position": "RB",
+      "team": "GB",
+      "projectedPoints": 35.6,
+      "medianPoints": 113.05,
+      "vorpScore": -77.44999999999999,
+      "normalizedVorp": 46.99843784869449
+    },
+    {
+      "playerName": "Joe Milton III",
+      "position": "QB",
+      "team": "DAL",
+      "projectedPoints": 9.7,
+      "medianPoints": 290.25,
+      "vorpScore": -280.55,
+      "normalizedVorp": 1.673733541620174
+    },
+    {
+      "playerName": "Jahan Dotson",
+      "position": "WR",
+      "team": "PHI",
+      "projectedPoints": 24.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -93.14999999999999,
+      "normalizedVorp": 43.49475563490293
+    },
+    {
+      "playerName": "Darnell Washington",
+      "position": "TE",
+      "team": "PIT",
+      "projectedPoints": 16.9,
+      "medianPoints": 83.9,
+      "vorpScore": -67,
+      "normalizedVorp": 49.33050658335193
+    },
+    {
+      "playerName": "Joey Slye",
+      "position": "K",
+      "team": "TEN",
+      "projectedPoints": 109.3,
+      "medianPoints": 124.65,
+      "vorpScore": -15.350000000000009,
+      "normalizedVorp": 60.85695157330952
+    },
+    {
+      "playerName": "Jordan Whittington",
+      "position": "WR",
+      "team": "LAR",
+      "projectedPoints": 55.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -62.34999999999999,
+      "normalizedVorp": 50.36822137915644
+    },
+    {
+      "playerName": "Will Dissly",
+      "position": "TE",
+      "team": "LAC",
+      "projectedPoints": 51.9,
+      "medianPoints": 83.9,
+      "vorpScore": -32.00000000000001,
+      "normalizedVorp": 57.141263110912746
+    },
+    {
+      "playerName": "Tanner McKee",
+      "position": "QB",
+      "team": "PHI",
+      "projectedPoints": 8.4,
+      "medianPoints": 290.25,
+      "vorpScore": -281.85,
+      "normalizedVorp": 1.3836197277393414
+    },
+    {
+      "playerName": "Austin Hooper",
+      "position": "TE",
+      "team": "NE",
+      "projectedPoints": 35.7,
+      "medianPoints": 83.9,
+      "vorpScore": -48.2,
+      "normalizedVorp": 53.525998661013176
+    },
+    {
+      "playerName": "Tim Patrick",
+      "position": "WR",
+      "team": "DET",
+      "projectedPoints": 37.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -80.35,
+      "normalizedVorp": 46.351260879268025
+    },
+    {
+      "playerName": "Zamir White",
+      "position": "RB",
+      "team": "LV",
+      "projectedPoints": 33.6,
+      "medianPoints": 113.05,
+      "vorpScore": -79.44999999999999,
+      "normalizedVorp": 46.55210890426245
+    },
+    {
+      "playerName": "Devaughn Vele",
+      "position": "WR",
+      "team": "DEN",
+      "projectedPoints": 40.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -77.85,
+      "normalizedVorp": 46.90917205980808
+    },
+    {
+      "playerName": "Spencer Shrader",
+      "position": "K",
+      "team": "IND",
+      "projectedPoints": 113.9,
+      "medianPoints": 124.65,
+      "vorpScore": -10.75,
+      "normalizedVorp": 61.88350814550323
+    },
+    {
+      "playerName": "Jalen Tolbert",
+      "position": "WR",
+      "team": "DAL",
+      "projectedPoints": 61.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -56.249999999999986,
+      "normalizedVorp": 51.729524659674176
+    },
+    {
+      "playerName": "Matthew Wright",
+      "position": "K",
+      "team": "CAR",
+      "projectedPoints": 65.5,
+      "medianPoints": 124.65,
+      "vorpScore": -59.150000000000006,
+      "normalizedVorp": 51.08234769024771
+    },
+    {
+      "playerName": "JuJu Smith-Schuster",
+      "position": "WR",
+      "team": "KC",
+      "projectedPoints": 29.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -88.64999999999999,
+      "normalizedVorp": 44.49899575987503
+    },
+    {
+      "playerName": "Damien Martinez",
+      "position": "RB",
+      "team": "SEA",
+      "projectedPoints": 15.7,
+      "medianPoints": 113.05,
+      "vorpScore": -97.35,
+      "normalizedVorp": 42.557464851595626
+    },
+    {
+      "playerName": "Curtis Samuel",
+      "position": "WR",
+      "team": "BUF",
+      "projectedPoints": 45.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -72.54999999999998,
+      "normalizedVorp": 48.09194376255301
+    },
+    {
+      "playerName": "Jimmy Horn Jr.",
+      "position": "WR",
+      "team": "CAR",
+      "projectedPoints": 1.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -116.14999999999999,
+      "normalizedVorp": 38.3619727739344
+    },
+    {
+      "playerName": "Mack Hollins",
+      "position": "WR",
+      "team": "NE",
+      "projectedPoints": 17.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -100.85,
+      "normalizedVorp": 41.776389198839546
+    },
+    {
+      "playerName": "Tre Tucker",
+      "position": "WR",
+      "team": "LV",
+      "projectedPoints": 57.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -60.34999999999999,
+      "normalizedVorp": 50.81455032358848
+    },
+    {
+      "playerName": "Mason Rudolph",
+      "position": "QB",
+      "team": "PIT",
+      "projectedPoints": 18.8,
+      "medianPoints": 290.25,
+      "vorpScore": -271.45,
+      "normalizedVorp": 3.7045302387859897
+    },
+    {
+      "playerName": "Xavier Restrepo",
+      "position": "WR",
+      "team": "TEN",
+      "projectedPoints": 16.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -101.24999999999999,
+      "normalizedVorp": 41.68712340995314
+    },
+    {
+      "playerName": "Olamide Zaccheaus",
+      "position": "WR",
+      "team": "CHI",
+      "projectedPoints": 12.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -105.24999999999999,
+      "normalizedVorp": 40.79446552108904
+    },
+    {
+      "playerName": "Ben Sinnott",
+      "position": "TE",
+      "team": "WAS",
+      "projectedPoints": 29.5,
+      "medianPoints": 83.9,
+      "vorpScore": -54.400000000000006,
+      "normalizedVorp": 52.142378933273825
+    },
+    {
+      "playerName": "Luke Schoonmaker",
+      "position": "TE",
+      "team": "DAL",
+      "projectedPoints": 20.3,
+      "medianPoints": 83.9,
+      "vorpScore": -63.60000000000001,
+      "normalizedVorp": 50.08926578888641
+    },
+    {
+      "playerName": "Nick Westbrook-Ikhine",
+      "position": "WR",
+      "team": "MIA",
+      "projectedPoints": 64.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -53.64999999999999,
+      "normalizedVorp": 52.30975228743584
+    },
+    {
+      "playerName": "Allen Lazard",
+      "position": "WR",
+      "team": "NYJ",
+      "projectedPoints": 54.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -63.749999999999986,
+      "normalizedVorp": 50.055791118054
+    },
+    {
+      "playerName": "Malik Willis",
+      "position": "QB",
+      "team": "GB",
+      "projectedPoints": 16.2,
+      "medianPoints": 290.25,
+      "vorpScore": -274.05,
+      "normalizedVorp": 3.124302611024325
+    },
+    {
+      "playerName": "Oronde Gadsden II",
+      "position": "TE",
+      "team": "LAC",
+      "projectedPoints": 25.1,
+      "medianPoints": 83.9,
+      "vorpScore": -58.800000000000004,
+      "normalizedVorp": 51.16045525552332
+    },
+    {
+      "playerName": "Josh Oliver",
+      "position": "TE",
+      "team": "MIN",
+      "projectedPoints": 28.4,
+      "medianPoints": 83.9,
+      "vorpScore": -55.50000000000001,
+      "normalizedVorp": 51.8968980138362
+    },
+    {
+      "playerName": "Jake Bobo",
+      "position": "WR",
+      "team": "SEA",
+      "projectedPoints": 19,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -98.94999999999999,
+      "normalizedVorp": 42.200401696049994
+    },
+    {
+      "playerName": "Will Howard",
+      "position": "QB",
+      "team": "PIT",
+      "projectedPoints": 4.7,
+      "medianPoints": 290.25,
+      "vorpScore": -285.55,
+      "normalizedVorp": 0.557911180540058
+    },
+    {
+      "playerName": "Nick Folk",
+      "position": "K",
+      "team": "NYJ",
+      "projectedPoints": 111.8,
+      "medianPoints": 124.65,
+      "vorpScore": -12.850000000000009,
+      "normalizedVorp": 61.41486275384958
+    },
+    {
+      "playerName": "Julian Hill",
+      "position": "TE",
+      "team": "MIA",
+      "projectedPoints": 17.9,
+      "medianPoints": 83.9,
+      "vorpScore": -66,
+      "normalizedVorp": 49.55367105556795
+    },
+    {
+      "playerName": "Craig Reynolds",
+      "position": "RB",
+      "team": "DET",
+      "projectedPoints": 12.4,
+      "medianPoints": 113.05,
+      "vorpScore": -100.64999999999999,
+      "normalizedVorp": 41.82102209328276
+    },
+    {
+      "playerName": "Elijah Higgins",
+      "position": "TE",
+      "team": "ARI",
+      "projectedPoints": 17.4,
+      "medianPoints": 83.9,
+      "vorpScore": -66.5,
+      "normalizedVorp": 49.44208881945994
+    },
+    {
+      "playerName": "Spencer Rattler",
+      "position": "QB",
+      "team": "NO",
+      "projectedPoints": 77.1,
+      "medianPoints": 290.25,
+      "vorpScore": -213.15,
+      "normalizedVorp": 16.71501896898014
+    },
+    {
+      "playerName": "Brandin Cooks",
+      "position": "WR",
+      "team": "NO",
+      "projectedPoints": 60.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -57.249999999999986,
+      "normalizedVorp": 51.50636018745816
+    },
+    {
+      "playerName": "KeAndre Lambert-Smith",
+      "position": "WR",
+      "team": "LAC",
+      "projectedPoints": 11.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -106.54999999999998,
+      "normalizedVorp": 40.50435170720822
+    },
+    {
+      "playerName": "Ryan Fitzgerald",
+      "position": "K",
+      "team": "CAR",
+      "projectedPoints": 115.5,
+      "medianPoints": 124.65,
+      "vorpScore": -9.150000000000006,
+      "normalizedVorp": 62.24057130104887
+    },
+    {
+      "playerName": "Grant Calcaterra",
+      "position": "TE",
+      "team": "PHI",
+      "projectedPoints": 16,
+      "medianPoints": 83.9,
+      "vorpScore": -67.9,
+      "normalizedVorp": 49.129658558357505
+    },
+    {
+      "playerName": "Jimmy Garoppolo",
+      "position": "QB",
+      "team": "LAR",
+      "projectedPoints": 12.5,
+      "medianPoints": 290.25,
+      "vorpScore": -277.75,
+      "normalizedVorp": 2.2985940638250413
+    },
+    {
+      "playerName": "Brock Wright",
+      "position": "TE",
+      "team": "DET",
+      "projectedPoints": 26.4,
+      "medianPoints": 83.9,
+      "vorpScore": -57.50000000000001,
+      "normalizedVorp": 51.45056906940415
+    },
+    {
+      "playerName": "Ty Chandler",
+      "position": "RB",
+      "team": "MIN",
+      "projectedPoints": 18.3,
+      "medianPoints": 113.05,
+      "vorpScore": -94.75,
+      "normalizedVorp": 43.137692479357284
+    },
+    {
+      "playerName": "Robert Woods",
+      "position": "WR",
+      "team": "PIT",
+      "projectedPoints": 28.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -89.54999999999998,
+      "normalizedVorp": 44.29814773488061
+    },
+    {
+      "playerName": "Tez Johnson",
+      "position": "WR",
+      "team": "TB",
+      "projectedPoints": 2.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.64999999999999,
+      "normalizedVorp": 38.47355501004241
+    },
+    {
+      "playerName": "Mitchell Trubisky",
+      "position": "QB",
+      "team": "BUF",
+      "projectedPoints": 8.9,
+      "medianPoints": 290.25,
+      "vorpScore": -281.35,
+      "normalizedVorp": 1.495201963847353
+    },
+    {
+      "playerName": "Mac Jones",
+      "position": "QB",
+      "team": "SF",
+      "projectedPoints": 12.2,
+      "medianPoints": 290.25,
+      "vorpScore": -278.05,
+      "normalizedVorp": 2.231644722160232
+    },
+    {
+      "playerName": "Tai Felton",
+      "position": "WR",
+      "team": "MIN",
+      "projectedPoints": 32.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -85.35,
+      "normalizedVorp": 45.235438518187905
+    },
+    {
+      "playerName": "Carson Steele",
+      "position": "RB",
+      "team": "KC",
+      "projectedPoints": 10.2,
+      "medianPoints": 113.05,
+      "vorpScore": -102.85,
+      "normalizedVorp": 41.3300602544075
+    },
+    {
+      "playerName": "Kalif Raymond",
+      "position": "WR",
+      "team": "DET",
+      "projectedPoints": 24.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -93.35,
+      "normalizedVorp": 43.45012274045972
+    },
+    {
+      "playerName": "Demarcus Robinson",
+      "position": "WR",
+      "team": "SF",
+      "projectedPoints": 36.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -81.85,
+      "normalizedVorp": 46.01651417094399
+    },
+    {
+      "playerName": "Joshua Dobbs",
+      "position": "QB",
+      "team": "NE",
+      "projectedPoints": 12.1,
+      "medianPoints": 290.25,
+      "vorpScore": -278.15,
+      "normalizedVorp": 2.209328274938637
+    },
+    {
+      "playerName": "Jermaine Burton",
+      "position": "WR",
+      "team": "CIN",
+      "projectedPoints": 35.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -82.24999999999999,
+      "normalizedVorp": 45.92724838205758
+    },
+    {
+      "playerName": "Jarrett Stidham",
+      "position": "QB",
+      "team": "DEN",
+      "projectedPoints": 8.8,
+      "medianPoints": 290.25,
+      "vorpScore": -281.45,
+      "normalizedVorp": 1.4728855166257582
+    },
+    {
+      "playerName": "Deshaun Watson",
+      "position": "QB",
+      "team": "CLE",
+      "projectedPoints": 250.6,
+      "medianPoints": 290.25,
+      "vorpScore": -39.650000000000006,
+      "normalizedVorp": 55.43405489846016
+    },
+    {
+      "playerName": "Cooper Rush",
+      "position": "QB",
+      "team": "BAL",
+      "projectedPoints": 8.7,
+      "medianPoints": 290.25,
+      "vorpScore": -281.55,
+      "normalizedVorp": 1.4505690694041509
+    },
+    {
+      "playerName": "Kenneth Gainwell",
+      "position": "RB",
+      "team": "PIT",
+      "projectedPoints": 37.7,
+      "medianPoints": 113.05,
+      "vorpScore": -75.35,
+      "normalizedVorp": 47.46708324034814
+    },
+    {
+      "playerName": "Parker Washington",
+      "position": "WR",
+      "team": "JAC",
+      "projectedPoints": 37.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -80.14999999999999,
+      "normalizedVorp": 46.39589377371124
+    },
+    {
+      "playerName": "Savion Williams",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 17.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -100.44999999999999,
+      "normalizedVorp": 41.86565498772596
+    },
+    {
+      "playerName": "Kendrick Bourne",
+      "position": "WR",
+      "team": "NE",
+      "projectedPoints": 27,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -90.94999999999999,
+      "normalizedVorp": 43.98571747377818
+    },
+    {
+      "playerName": "Andy Dalton",
+      "position": "QB",
+      "team": "CAR",
+      "projectedPoints": 8.2,
+      "medianPoints": 290.25,
+      "vorpScore": -282.05,
+      "normalizedVorp": 1.3389868332961392
+    },
+    {
+      "playerName": "Tommy Tremble",
+      "position": "TE",
+      "team": "CAR",
+      "projectedPoints": 28,
+      "medianPoints": 83.9,
+      "vorpScore": -55.900000000000006,
+      "normalizedVorp": 51.807632224949785
+    },
+    {
+      "playerName": "Deuce Vaughn",
+      "position": "RB",
+      "team": "DAL",
+      "projectedPoints": 7,
+      "medianPoints": 113.05,
+      "vorpScore": -106.05,
+      "normalizedVorp": 40.61593394331622
+    },
+    {
+      "playerName": "Noah Brown",
+      "position": "WR",
+      "team": "WAS",
+      "projectedPoints": 51.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -66.24999999999999,
+      "normalizedVorp": 49.49787993751395
+    },
+    {
+      "playerName": "Quinn Ewers",
+      "position": "QB",
+      "team": "MIA",
+      "projectedPoints": 7.4,
+      "medianPoints": 290.25,
+      "vorpScore": -282.85,
+      "normalizedVorp": 1.160455255523318
+    },
+    {
+      "playerName": "J.J. Taylor",
+      "position": "RB",
+      "team": "HOU",
+      "projectedPoints": 4.1,
+      "medianPoints": 113.05,
+      "vorpScore": -108.95,
+      "normalizedVorp": 39.96875697388976
+    },
+    {
+      "playerName": "Adam Trautman",
+      "position": "TE",
+      "team": "DEN",
+      "projectedPoints": 21.8,
+      "medianPoints": 83.9,
+      "vorpScore": -62.10000000000001,
+      "normalizedVorp": 50.424012497210434
+    },
+    {
+      "playerName": "LaJohntay Wester",
+      "position": "WR",
+      "team": "BAL",
+      "projectedPoints": 1.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -116.74999999999999,
+      "normalizedVorp": 38.22807409060477
+    },
+    {
+      "playerName": "Cam Akers",
+      "position": "RB",
+      "team": "NO",
+      "projectedPoints": 18,
+      "medianPoints": 113.05,
+      "vorpScore": -95.05,
+      "normalizedVorp": 43.07074313769248
+    },
+    {
+      "playerName": "David Moore",
+      "position": "WR",
+      "team": "CAR",
+      "projectedPoints": 9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -108.94999999999999,
+      "normalizedVorp": 39.96875697388976
+    },
+    {
+      "playerName": "Mecole Hardman Jr.",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 3.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -114.14999999999999,
+      "normalizedVorp": 38.80830171836644
+    },
+    {
+      "playerName": "Malik Washington",
+      "position": "WR",
+      "team": "MIA",
+      "projectedPoints": 40.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -77.44999999999999,
+      "normalizedVorp": 46.99843784869449
+    },
+    {
+      "playerName": "Jalin Hyatt",
+      "position": "WR",
+      "team": "NYG",
+      "projectedPoints": 22.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -95.14999999999999,
+      "normalizedVorp": 43.04842669047088
+    },
+    {
+      "playerName": "Marcus Mariota",
+      "position": "QB",
+      "team": "WAS",
+      "projectedPoints": 13.1,
+      "medianPoints": 290.25,
+      "vorpScore": -277.15,
+      "normalizedVorp": 2.4324927471546602
+    },
+    {
+      "playerName": "Khalil Herbert",
+      "position": "RB",
+      "team": "IND",
+      "projectedPoints": 51.8,
+      "medianPoints": 113.05,
+      "vorpScore": -61.25,
+      "normalizedVorp": 50.61370229859406
+    },
+    {
+      "playerName": "Ainias Smith",
+      "position": "WR",
+      "team": "PHI",
+      "projectedPoints": 3.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -114.64999999999999,
+      "normalizedVorp": 38.69671948225843
+    },
+    {
+      "playerName": "Kyle Juszczyk",
+      "position": "RB",
+      "team": "SF",
+      "projectedPoints": 24.2,
+      "medianPoints": 113.05,
+      "vorpScore": -88.85,
+      "normalizedVorp": 44.454362865431825
+    },
+    {
+      "playerName": "Brandon Allen",
+      "position": "QB",
+      "team": "TEN",
+      "projectedPoints": 7.8,
+      "medianPoints": 290.25,
+      "vorpScore": -282.45,
+      "normalizedVorp": 1.2497210444097349
+    },
+    {
+      "playerName": "Trey Lance",
+      "position": "QB",
+      "team": "LAC",
+      "projectedPoints": 7,
+      "medianPoints": 290.25,
+      "vorpScore": -283.25,
+      "normalizedVorp": 1.0711894666369137
+    },
+    {
+      "playerName": "Mo Alie-Cox",
+      "position": "TE",
+      "team": "IND",
+      "projectedPoints": 5.2,
+      "medianPoints": 83.9,
+      "vorpScore": -78.7,
+      "normalizedVorp": 46.71948225842446
+    },
+    {
+      "playerName": "Kenny Pickett",
+      "position": "QB",
+      "team": "CLE",
+      "projectedPoints": 55,
+      "medianPoints": 290.25,
+      "vorpScore": -235.25,
+      "normalizedVorp": 11.783084133006028
+    },
+    {
+      "playerName": "Sterling Shepard",
+      "position": "WR",
+      "team": "TB",
+      "projectedPoints": 5.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -112.85,
+      "normalizedVorp": 39.098415532247266
+    },
+    {
+      "playerName": "Gardner Minshew II",
+      "position": "QB",
+      "team": "KC",
+      "projectedPoints": 10.2,
+      "medianPoints": 290.25,
+      "vorpScore": -280.05,
+      "normalizedVorp": 1.7853157777281854
+    },
+    {
+      "playerName": "Mitchell Evans",
+      "position": "TE",
+      "team": "CAR",
+      "projectedPoints": 4.3,
+      "medianPoints": 83.9,
+      "vorpScore": -79.60000000000001,
+      "normalizedVorp": 46.518634233430035
+    },
+    {
+      "playerName": "Drew Lock",
+      "position": "QB",
+      "team": "SEA",
+      "projectedPoints": 8.4,
+      "medianPoints": 290.25,
+      "vorpScore": -281.85,
+      "normalizedVorp": 1.3836197277393414
+    },
+    {
+      "playerName": "Jake Browning",
+      "position": "QB",
+      "team": "CIN",
+      "projectedPoints": 11.2,
+      "medianPoints": 290.25,
+      "vorpScore": -279.05,
+      "normalizedVorp": 2.008480249944209
+    },
+    {
+      "playerName": "Zach Wilson",
+      "position": "QB",
+      "team": "MIA",
+      "projectedPoints": 11.8,
+      "medianPoints": 290.25,
+      "vorpScore": -278.45,
+      "normalizedVorp": 2.1423789332738274
+    },
+    {
+      "playerName": "Scott Matlock",
+      "position": "RB",
+      "team": "LAC",
+      "projectedPoints": 1.8,
+      "medianPoints": 113.05,
+      "vorpScore": -111.25,
+      "normalizedVorp": 39.455478687792905
+    },
+    {
+      "playerName": "Daniel Bellinger",
+      "position": "TE",
+      "team": "NYG",
+      "projectedPoints": 18.6,
+      "medianPoints": 83.9,
+      "vorpScore": -65.30000000000001,
+      "normalizedVorp": 49.70988618611917
+    },
+    {
+      "playerName": "Sam Howell",
+      "position": "QB",
+      "team": "MIN",
+      "projectedPoints": 300.5,
+      "medianPoints": 290.25,
+      "vorpScore": 10.25,
+      "normalizedVorp": 66.56996206203972
+    },
+    {
+      "playerName": "C.J. Ham",
+      "position": "RB",
+      "team": "MIN",
+      "projectedPoints": 11.3,
+      "medianPoints": 113.05,
+      "vorpScore": -101.75,
+      "normalizedVorp": 41.575541173845124
+    },
+    {
+      "playerName": "Hendon Hooker",
+      "position": "QB",
+      "team": "DET",
+      "projectedPoints": 9.2,
+      "medianPoints": 290.25,
+      "vorpScore": -281.05,
+      "normalizedVorp": 1.5621513055121625
+    },
+    {
+      "playerName": "Jamari Thrash",
+      "position": "WR",
+      "team": "CLE",
+      "projectedPoints": 4.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -113.35,
+      "normalizedVorp": 38.98683329613925
+    },
+    {
+      "playerName": "Jaylin Lane",
+      "position": "WR",
+      "team": "WAS",
+      "projectedPoints": 18.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -99.24999999999999,
+      "normalizedVorp": 42.133452354385184
+    },
+    {
+      "playerName": "Patrick Ricard",
+      "position": "RB",
+      "team": "BAL",
+      "projectedPoints": 7.5,
+      "medianPoints": 113.05,
+      "vorpScore": -105.55,
+      "normalizedVorp": 40.727516179424235
+    },
+    {
+      "playerName": "Gunnar Helm",
+      "position": "TE",
+      "team": "TEN",
+      "projectedPoints": 20.9,
+      "medianPoints": 83.9,
+      "vorpScore": -63.00000000000001,
+      "normalizedVorp": 50.22316447221602
+    },
+    {
+      "playerName": "Drew Sample",
+      "position": "TE",
+      "team": "CIN",
+      "projectedPoints": 13,
+      "medianPoints": 83.9,
+      "vorpScore": -70.9,
+      "normalizedVorp": 48.46016514170944
+    },
+    {
+      "playerName": "Van Jefferson",
+      "position": "WR",
+      "team": "TEN",
+      "projectedPoints": 41,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -76.94999999999999,
+      "normalizedVorp": 47.1100200848025
+    },
+    {
+      "playerName": "Tylan Wallace",
+      "position": "WR",
+      "team": "BAL",
+      "projectedPoints": 14.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -103.64999999999999,
+      "normalizedVorp": 41.15152867663468
+    },
+    {
+      "playerName": "Lil'Jordan Humphrey",
+      "position": "WR",
+      "team": "NYG",
+      "projectedPoints": 4.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -113.54999999999998,
+      "normalizedVorp": 38.942200401696056
+    },
+    {
+      "playerName": "Josh Reynolds",
+      "position": "WR",
+      "team": "NYJ",
+      "projectedPoints": 59.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -58.34999999999999,
+      "normalizedVorp": 51.26087926802053
+    },
+    {
+      "playerName": "Greg Dortch",
+      "position": "WR",
+      "team": "ARI",
+      "projectedPoints": 41.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -76.14999999999999,
+      "normalizedVorp": 47.28855166257532
+    },
+    {
+      "playerName": "Julius Chestnut",
+      "position": "RB",
+      "team": "TEN",
+      "projectedPoints": 7.9,
+      "medianPoints": 113.05,
+      "vorpScore": -105.14999999999999,
+      "normalizedVorp": 40.81678196831065
+    },
+    {
+      "playerName": "Trey Palmer",
+      "position": "WR",
+      "team": "TB",
+      "projectedPoints": 1.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -116.44999999999999,
+      "normalizedVorp": 38.29502343226959
+    },
+    {
+      "playerName": "Trey Sermon",
+      "position": "RB",
+      "team": "PIT",
+      "projectedPoints": 3.9,
+      "medianPoints": 113.05,
+      "vorpScore": -109.14999999999999,
+      "normalizedVorp": 39.92412407944656
+    },
+    {
+      "playerName": "Jonathan Mingo",
+      "position": "WR",
+      "team": "DAL",
+      "projectedPoints": 6.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -111.44999999999999,
+      "normalizedVorp": 39.4108457933497
+    },
+    {
+      "playerName": "Frank Gore Jr.",
+      "position": "RB",
+      "team": "BUF",
+      "projectedPoints": 7.7,
+      "medianPoints": 113.05,
+      "vorpScore": -105.35,
+      "normalizedVorp": 40.77214907386744
+    },
+    {
+      "playerName": "Cade Stover",
+      "position": "TE",
+      "team": "HOU",
+      "projectedPoints": 19.4,
+      "medianPoints": 83.9,
+      "vorpScore": -64.5,
+      "normalizedVorp": 49.888417763891994
+    },
+    {
+      "playerName": "Jordan Watkins",
+      "position": "WR",
+      "team": "SF",
+      "projectedPoints": 6.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -111.85,
+      "normalizedVorp": 39.32158000446329
+    },
+    {
+      "playerName": "Connor Heyward",
+      "position": "TE",
+      "team": "PIT",
+      "projectedPoints": 15.7,
+      "medianPoints": 83.9,
+      "vorpScore": -68.2,
+      "normalizedVorp": 49.06270921669271
+    },
+    {
+      "playerName": "George Holani",
+      "position": "RB",
+      "team": "SEA",
+      "projectedPoints": 1.2,
+      "medianPoints": 113.05,
+      "vorpScore": -111.85,
+      "normalizedVorp": 39.32158000446329
+    },
+    {
+      "playerName": "Braxton Berrios",
+      "position": "WR",
+      "team": "HOU",
+      "projectedPoints": 1.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -116.64999999999999,
+      "normalizedVorp": 38.250390537826384
+    },
+    {
+      "playerName": "Phil Mafah",
+      "position": "RB",
+      "team": "DAL",
+      "projectedPoints": 1.4,
+      "medianPoints": 113.05,
+      "vorpScore": -111.64999999999999,
+      "normalizedVorp": 39.3662128989065
+    },
+    {
+      "playerName": "Nick Mullens",
+      "position": "QB",
+      "team": "JAC",
+      "projectedPoints": 8.8,
+      "medianPoints": 290.25,
+      "vorpScore": -281.45,
+      "normalizedVorp": 1.4728855166257582
+    },
+    {
+      "playerName": "Arian Smith",
+      "position": "WR",
+      "team": "NYJ",
+      "projectedPoints": 17.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -100.14999999999999,
+      "normalizedVorp": 41.93260432939076
+    },
+    {
+      "playerName": "Foster Moreau",
+      "position": "TE",
+      "team": "NO",
+      "projectedPoints": 37.2,
+      "medianPoints": 83.9,
+      "vorpScore": -46.7,
+      "normalizedVorp": 53.8607453693372
+    },
+    {
+      "playerName": "John Bates",
+      "position": "TE",
+      "team": "WAS",
+      "projectedPoints": 9.3,
+      "medianPoints": 83.9,
+      "vorpScore": -74.60000000000001,
+      "normalizedVorp": 47.63445659451015
+    },
+    {
+      "playerName": "Kalel Mullings",
+      "position": "RB",
+      "team": "TEN",
+      "projectedPoints": 15.8,
+      "medianPoints": 113.05,
+      "vorpScore": -97.25,
+      "normalizedVorp": 42.579781298817224
+    },
+    {
+      "playerName": "Kimani Vidal",
+      "position": "RB",
+      "team": "LAC",
+      "projectedPoints": 20,
+      "medianPoints": 113.05,
+      "vorpScore": -93.05,
+      "normalizedVorp": 43.51707208212453
+    },
+    {
+      "playerName": "Johnny Wilson",
+      "position": "WR",
+      "team": "PHI",
+      "projectedPoints": 8.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -109.85,
+      "normalizedVorp": 39.76790894889534
+    },
+    {
+      "playerName": "Jeremy McNichols",
+      "position": "RB",
+      "team": "WAS",
+      "projectedPoints": 13.1,
+      "medianPoints": 113.05,
+      "vorpScore": -99.95,
+      "normalizedVorp": 41.97723722383397
+    },
+    {
+      "playerName": "Scotty Miller",
+      "position": "WR",
+      "team": "PIT",
+      "projectedPoints": 4.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -113.74999999999999,
+      "normalizedVorp": 38.897567507252845
+    },
+    {
+      "playerName": "Charlie Jones",
+      "position": "WR",
+      "team": "CIN",
+      "projectedPoints": 6.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -111.54999999999998,
+      "normalizedVorp": 39.388529346128095
+    },
+    {
+      "playerName": "Cedrick Wilson Jr.",
+      "position": "WR",
+      "team": "NO",
+      "projectedPoints": 12.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -105.85,
+      "normalizedVorp": 40.66056683775943
+    },
+    {
+      "playerName": "Michael Carter",
+      "position": "RB",
+      "team": "ARI",
+      "projectedPoints": 11.3,
+      "medianPoints": 113.05,
+      "vorpScore": -101.75,
+      "normalizedVorp": 41.575541173845124
+    },
+    {
+      "playerName": "Raheem Blackshear",
+      "position": "RB",
+      "team": "CAR",
+      "projectedPoints": 13.2,
+      "medianPoints": 113.05,
+      "vorpScore": -99.85,
+      "normalizedVorp": 41.999553671055565
+    },
+    {
+      "playerName": "Josh Whyle",
+      "position": "TE",
+      "team": "TEN",
+      "projectedPoints": 19.5,
+      "medianPoints": 83.9,
+      "vorpScore": -64.4,
+      "normalizedVorp": 49.91073421111359
+    },
+    {
+      "playerName": "Devontez Walker",
+      "position": "WR",
+      "team": "BAL",
+      "projectedPoints": 10.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -107.14999999999999,
+      "normalizedVorp": 40.3704530238786
+    },
+    {
+      "playerName": "Clyde Edwards-Helaire",
+      "position": "RB",
+      "team": "NO",
+      "projectedPoints": 22.1,
+      "medianPoints": 113.05,
+      "vorpScore": -90.94999999999999,
+      "normalizedVorp": 43.98571747377818
+    },
+    {
+      "playerName": "Riley Leonard",
+      "position": "QB",
+      "team": "IND",
+      "projectedPoints": 4.1,
+      "medianPoints": 290.25,
+      "vorpScore": -286.15,
+      "normalizedVorp": 0.4240124972104517
+    },
+    {
+      "playerName": "Colby Parkinson",
+      "position": "TE",
+      "team": "LAR",
+      "projectedPoints": 15.8,
+      "medianPoints": 83.9,
+      "vorpScore": -68.10000000000001,
+      "normalizedVorp": 49.0850256639143
+    },
+    {
+      "playerName": "Dillon Gabriel",
+      "position": "QB",
+      "team": "CLE",
+      "projectedPoints": 47.6,
+      "medianPoints": 290.25,
+      "vorpScore": -242.65,
+      "normalizedVorp": 10.131667038607455
+    },
+    {
+      "playerName": "Rasheen Ali",
+      "position": "RB",
+      "team": "BAL",
+      "projectedPoints": 13.6,
+      "medianPoints": 113.05,
+      "vorpScore": -99.45,
+      "normalizedVorp": 42.08881945994198
+    },
+    {
+      "playerName": "Derius Davis",
+      "position": "WR",
+      "team": "LAC",
+      "projectedPoints": 7.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -110.44999999999999,
+      "normalizedVorp": 39.63401026556572
+    },
+    {
+      "playerName": "Zay Jones",
+      "position": "WR",
+      "team": "ARI",
+      "projectedPoints": 25.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -92.35,
+      "normalizedVorp": 43.673287212675746
+    },
+    {
+      "playerName": "Jeremy Ruckert",
+      "position": "TE",
+      "team": "NYJ",
+      "projectedPoints": 23.4,
+      "medianPoints": 83.9,
+      "vorpScore": -60.50000000000001,
+      "normalizedVorp": 50.78107565275608
+    },
+    {
+      "playerName": "Ihmir Smith-Marsette",
+      "position": "WR",
+      "team": "NYG",
+      "projectedPoints": 0.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -117.44999999999999,
+      "normalizedVorp": 38.07185896005356
+    },
+    {
+      "playerName": "Patrick Taylor Jr.",
+      "position": "RB",
+      "team": "SF",
+      "projectedPoints": 14.5,
+      "medianPoints": 113.05,
+      "vorpScore": -98.55,
+      "normalizedVorp": 42.289667484936395
+    },
+    {
+      "playerName": "Emari Demercado",
+      "position": "RB",
+      "team": "ARI",
+      "projectedPoints": 19.1,
+      "medianPoints": 113.05,
+      "vorpScore": -93.94999999999999,
+      "normalizedVorp": 43.31622405713011
+    },
+    {
+      "playerName": "Tyson Bagent",
+      "position": "QB",
+      "team": "CHI",
+      "projectedPoints": 8.2,
+      "medianPoints": 290.25,
+      "vorpScore": -282.05,
+      "normalizedVorp": 1.3389868332961392
+    },
+    {
+      "playerName": "Isaiah Davis",
+      "position": "RB",
+      "team": "NYJ",
+      "projectedPoints": 23.7,
+      "medianPoints": 113.05,
+      "vorpScore": -89.35,
+      "normalizedVorp": 44.34278062932381
+    },
+    {
+      "playerName": "Justin Watson",
+      "position": "WR",
+      "team": "HOU",
+      "projectedPoints": 7.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -110.24999999999999,
+      "normalizedVorp": 39.678643160008924
+    },
+    {
+      "playerName": "Darrynton Evans",
+      "position": "RB",
+      "team": "BUF",
+      "projectedPoints": 4.9,
+      "medianPoints": 113.05,
+      "vorpScore": -108.14999999999999,
+      "normalizedVorp": 40.14728855166258
+    },
+    {
+      "playerName": "Tyler Johnson",
+      "position": "WR",
+      "team": "NYJ",
+      "projectedPoints": 29.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -88.04999999999998,
+      "normalizedVorp": 44.63289444320465
+    },
+    {
+      "playerName": "Hassan Haskins",
+      "position": "RB",
+      "team": "LAC",
+      "projectedPoints": 8.9,
+      "medianPoints": 113.05,
+      "vorpScore": -104.14999999999999,
+      "normalizedVorp": 41.03994644052668
+    },
+    {
+      "playerName": "John Metchie III",
+      "position": "WR",
+      "team": "HOU",
+      "projectedPoints": 5.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -112.74999999999999,
+      "normalizedVorp": 39.12073197946887
+    },
+    {
+      "playerName": "Sincere McCormick",
+      "position": "RB",
+      "team": "LV",
+      "projectedPoints": 19.2,
+      "medianPoints": 113.05,
+      "vorpScore": -93.85,
+      "normalizedVorp": 43.338540504351705
+    },
+    {
+      "playerName": "Aidan O'Connell",
+      "position": "QB",
+      "team": "LV",
+      "projectedPoints": 11.1,
+      "medianPoints": 290.25,
+      "vorpScore": -279.15,
+      "normalizedVorp": 1.9861638027226143
+    },
+    {
+      "playerName": "Gavin Bartholomew",
+      "position": "TE",
+      "team": "MIN",
+      "projectedPoints": 11,
+      "medianPoints": 83.9,
+      "vorpScore": -72.9,
+      "normalizedVorp": 48.01383619727739
+    },
+    {
+      "playerName": "Hunter Luepke",
+      "position": "RB",
+      "team": "DAL",
+      "projectedPoints": 5,
+      "medianPoints": 113.05,
+      "vorpScore": -108.05,
+      "normalizedVorp": 40.169604998884175
+    },
+    {
+      "playerName": "Chimere Dike",
+      "position": "WR",
+      "team": "TEN",
+      "projectedPoints": 35.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -82.85,
+      "normalizedVorp": 45.793349698727965
+    },
+    {
+      "playerName": "Chris Brooks",
+      "position": "RB",
+      "team": "GB",
+      "projectedPoints": 23.2,
+      "medianPoints": 113.05,
+      "vorpScore": -89.85,
+      "normalizedVorp": 44.231198393215806
+    },
+    {
+      "playerName": "Tommy Mellott",
+      "position": "WR",
+      "team": "LV",
+      "projectedPoints": 8.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -109.14999999999999,
+      "normalizedVorp": 39.92412407944656
+    },
+    {
+      "playerName": "Jacob Cowing",
+      "position": "WR",
+      "team": "SF",
+      "projectedPoints": 2.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.04999999999998,
+      "normalizedVorp": 38.607453693372015
+    },
+    {
+      "playerName": "Michael Burton",
+      "position": "RB",
+      "team": "DEN",
+      "projectedPoints": 13,
+      "medianPoints": 113.05,
+      "vorpScore": -100.05,
+      "normalizedVorp": 41.95492077661236
+    },
+    {
+      "playerName": "Devin Duvernay",
+      "position": "WR",
+      "team": "CHI",
+      "projectedPoints": 3.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -114.14999999999999,
+      "normalizedVorp": 38.80830171836644
+    },
+    {
+      "playerName": "David Bell",
+      "position": "WR",
+      "team": "CLE",
+      "projectedPoints": 4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -113.94999999999999,
+      "normalizedVorp": 38.85293461280964
+    },
+    {
+      "playerName": "Charlie Kolar",
+      "position": "TE",
+      "team": "BAL",
+      "projectedPoints": 9.9,
+      "medianPoints": 83.9,
+      "vorpScore": -74,
+      "normalizedVorp": 47.76835527783977
+    },
+    {
+      "playerName": "Nick Nash",
+      "position": "WR",
+      "team": "ATL",
+      "projectedPoints": 3.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -114.44999999999999,
+      "normalizedVorp": 38.741352376701634
+    },
+    {
+      "playerName": "DJ Chark Jr.",
+      "position": "WR",
+      "team": "ATL",
+      "projectedPoints": 18.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -99.54999999999998,
+      "normalizedVorp": 42.06650301272038
+    },
+    {
+      "playerName": "Tyler Badie",
+      "position": "RB",
+      "team": "DEN",
+      "projectedPoints": 1.4,
+      "medianPoints": 113.05,
+      "vorpScore": -111.64999999999999,
+      "normalizedVorp": 39.3662128989065
+    },
+    {
+      "playerName": "Sione Vaki",
+      "position": "RB",
+      "team": "DET",
+      "projectedPoints": 0.8,
+      "medianPoints": 113.05,
+      "vorpScore": -112.25,
+      "normalizedVorp": 39.23231421557688
+    },
+    {
+      "playerName": "Tyler Goodson",
+      "position": "RB",
+      "team": "IND",
+      "projectedPoints": 13.7,
+      "medianPoints": 113.05,
+      "vorpScore": -99.35,
+      "normalizedVorp": 42.111135907163586
+    },
+    {
+      "playerName": "Tyquan Thornton",
+      "position": "WR",
+      "team": "KC",
+      "projectedPoints": 1.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -116.35,
+      "normalizedVorp": 38.317339879491186
+    },
+    {
+      "playerName": "Trent Sherfield Sr.",
+      "position": "WR",
+      "team": "DEN",
+      "projectedPoints": 2.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.35,
+      "normalizedVorp": 38.54050435170721
+    },
+    {
+      "playerName": "Luke Farrell",
+      "position": "TE",
+      "team": "SF",
+      "projectedPoints": 9.1,
+      "medianPoints": 83.9,
+      "vorpScore": -74.80000000000001,
+      "normalizedVorp": 47.589823700066944
+    },
+    {
+      "playerName": "Nikko Remigio",
+      "position": "WR",
+      "team": "KC",
+      "projectedPoints": 1.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -116.54999999999998,
+      "normalizedVorp": 38.27270698504798
+    },
+    {
+      "playerName": "KhaDarel Hodge",
+      "position": "WR",
+      "team": "ATL",
+      "projectedPoints": 15.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -102.85,
+      "normalizedVorp": 41.3300602544075
+    },
+    {
+      "playerName": "Nate Adkins",
+      "position": "TE",
+      "team": "DEN",
+      "projectedPoints": 16.5,
+      "medianPoints": 83.9,
+      "vorpScore": -67.4,
+      "normalizedVorp": 49.24124079446552
+    },
+    {
+      "playerName": "Tanner Hudson",
+      "position": "TE",
+      "team": "CIN",
+      "projectedPoints": 3.7,
+      "medianPoints": 83.9,
+      "vorpScore": -80.2,
+      "normalizedVorp": 46.38473555010042
+    },
+    {
+      "playerName": "Davis Allen",
+      "position": "TE",
+      "team": "LAR",
+      "projectedPoints": 5.1,
+      "medianPoints": 83.9,
+      "vorpScore": -78.80000000000001,
+      "normalizedVorp": 46.69716581120286
+    },
+    {
+      "playerName": "Travis Homer",
+      "position": "RB",
+      "team": "CHI",
+      "projectedPoints": 12.3,
+      "medianPoints": 113.05,
+      "vorpScore": -100.75,
+      "normalizedVorp": 41.798705646061144
+    },
+    {
+      "playerName": "Charlie Woerner",
+      "position": "TE",
+      "team": "ATL",
+      "projectedPoints": 19.2,
+      "medianPoints": 83.9,
+      "vorpScore": -64.7,
+      "normalizedVorp": 49.84378486944879
+    },
+    {
+      "playerName": "Michael Gallup",
+      "position": "WR",
+      "team": "WAS",
+      "projectedPoints": 19.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -98.74999999999999,
+      "normalizedVorp": 42.24503459049319
+    },
+    {
+      "playerName": "Tyler Scott",
+      "position": "WR",
+      "team": "CHI",
+      "projectedPoints": 3.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -114.04999999999998,
+      "normalizedVorp": 38.83061816558804
+    },
+    {
+      "playerName": "Ja'Lynn Polk",
+      "position": "WR",
+      "team": "NE",
+      "projectedPoints": 40.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -77.14999999999999,
+      "normalizedVorp": 47.065387190359296
+    },
+    {
+      "playerName": "Skyy Moore",
+      "position": "WR",
+      "team": "KC",
+      "projectedPoints": 35.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -82.74999999999999,
+      "normalizedVorp": 45.815666145949564
+    },
+    {
+      "playerName": "Josh Johnson",
+      "position": "QB",
+      "team": "WAS",
+      "projectedPoints": 5,
+      "medianPoints": 290.25,
+      "vorpScore": -285.25,
+      "normalizedVorp": 0.6248605222048674
+    },
+    {
+      "playerName": "Jacoby Brissett",
+      "position": "QB",
+      "team": "ARI",
+      "projectedPoints": 10.5,
+      "medianPoints": 290.25,
+      "vorpScore": -279.75,
+      "normalizedVorp": 1.8522651193929949
+    },
+    {
+      "playerName": "Malachi Corley",
+      "position": "WR",
+      "team": "NYJ",
+      "projectedPoints": 21.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -96.04999999999998,
+      "normalizedVorp": 42.84757866547646
+    },
+    {
+      "playerName": "Miles Boykin",
+      "position": "WR",
+      "team": "CHI",
+      "projectedPoints": 2.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.64999999999999,
+      "normalizedVorp": 38.47355501004241
+    },
+    {
+      "playerName": "Eric Gray",
+      "position": "RB",
+      "team": "NYG",
+      "projectedPoints": 6,
+      "medianPoints": 113.05,
+      "vorpScore": -107.05,
+      "normalizedVorp": 40.392769471100195
+    },
+    {
+      "playerName": "Dare Ogunbowale",
+      "position": "RB",
+      "team": "HOU",
+      "projectedPoints": 8,
+      "medianPoints": 113.05,
+      "vorpScore": -105.05,
+      "normalizedVorp": 40.83909841553224
+    },
+    {
+      "playerName": "Avery Williams",
+      "position": "RB",
+      "team": "PHI",
+      "projectedPoints": 1.2,
+      "medianPoints": 113.05,
+      "vorpScore": -111.85,
+      "normalizedVorp": 39.32158000446329
+    },
+    {
+      "playerName": "Dante Pettis",
+      "position": "WR",
+      "team": "NO",
+      "projectedPoints": 8.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -109.44999999999999,
+      "normalizedVorp": 39.85717473778175
+    },
+    {
+      "playerName": "Ian Thomas",
+      "position": "TE",
+      "team": "LV",
+      "projectedPoints": 8.3,
+      "medianPoints": 83.9,
+      "vorpScore": -75.60000000000001,
+      "normalizedVorp": 47.41129212229412
+    },
+    {
+      "playerName": "Bub Means",
+      "position": "WR",
+      "team": "NO",
+      "projectedPoints": 24.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -93.54999999999998,
+      "normalizedVorp": 43.40548984601652
+    },
+    {
+      "playerName": "Trayveon Williams",
+      "position": "RB",
+      "team": "CLE",
+      "projectedPoints": 1.4,
+      "medianPoints": 113.05,
+      "vorpScore": -111.64999999999999,
+      "normalizedVorp": 39.3662128989065
+    },
+    {
+      "playerName": "Jaheim Bell",
+      "position": "TE",
+      "team": "NE",
+      "projectedPoints": 9.8,
+      "medianPoints": 83.9,
+      "vorpScore": -74.10000000000001,
+      "normalizedVorp": 47.74603883061816
+    },
+    {
+      "playerName": "Israel Abanikanda",
+      "position": "RB",
+      "team": "GB",
+      "projectedPoints": 9.2,
+      "medianPoints": 113.05,
+      "vorpScore": -103.85,
+      "normalizedVorp": 41.10689578219148
+    },
+    {
+      "playerName": "Drew Ogletree",
+      "position": "TE",
+      "team": "IND",
+      "projectedPoints": 13.7,
+      "medianPoints": 83.9,
+      "vorpScore": -70.2,
+      "normalizedVorp": 48.616380272260656
+    },
+    {
+      "playerName": "Jared Wiley",
+      "position": "TE",
+      "team": "KC",
+      "projectedPoints": 7.7,
+      "medianPoints": 83.9,
+      "vorpScore": -76.2,
+      "normalizedVorp": 47.27739343896452
+    },
+    {
+      "playerName": "Harrison Bryant",
+      "position": "TE",
+      "team": "PHI",
+      "projectedPoints": 0.6,
+      "medianPoints": 83.9,
+      "vorpScore": -83.30000000000001,
+      "normalizedVorp": 45.69292568623075
+    },
+    {
+      "playerName": "Robbie Ouzts",
+      "position": "RB",
+      "team": "SEA",
+      "projectedPoints": 1.9,
+      "medianPoints": 113.05,
+      "vorpScore": -111.14999999999999,
+      "normalizedVorp": 39.47779513501451
+    },
+    {
+      "playerName": "Tim Jones",
+      "position": "WR",
+      "team": "MIN",
+      "projectedPoints": 11.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -106.54999999999998,
+      "normalizedVorp": 40.50435170720822
+    },
+    {
+      "playerName": "Kylen Granson",
+      "position": "TE",
+      "team": "PHI",
+      "projectedPoints": 4.3,
+      "medianPoints": 83.9,
+      "vorpScore": -79.60000000000001,
+      "normalizedVorp": 46.518634233430035
+    },
+    {
+      "playerName": "Xavier Hutchinson",
+      "position": "WR",
+      "team": "HOU",
+      "projectedPoints": 21.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -96.85,
+      "normalizedVorp": 42.66904708770364
+    },
+    {
+      "playerName": "Xavier Smith",
+      "position": "WR",
+      "team": "LAR",
+      "projectedPoints": 0.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -117.54999999999998,
+      "normalizedVorp": 38.04954251283196
+    },
+    {
+      "playerName": "Payne Durham",
+      "position": "TE",
+      "team": "TB",
+      "projectedPoints": 17.9,
+      "medianPoints": 83.9,
+      "vorpScore": -66,
+      "normalizedVorp": 49.55367105556795
+    },
+    {
+      "playerName": "Chris Rodriguez Jr.",
+      "position": "RB",
+      "team": "WAS",
+      "projectedPoints": 19.1,
+      "medianPoints": 113.05,
+      "vorpScore": -93.94999999999999,
+      "normalizedVorp": 43.31622405713011
+    },
+    {
+      "playerName": "Ryan Flournoy",
+      "position": "WR",
+      "team": "DAL",
+      "projectedPoints": 2.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.04999999999998,
+      "normalizedVorp": 38.607453693372015
+    },
+    {
+      "playerName": "Terrell Jennings",
+      "position": "RB",
+      "team": "NE",
+      "projectedPoints": 3.3,
+      "medianPoints": 113.05,
+      "vorpScore": -109.75,
+      "normalizedVorp": 39.79022539611694
+    },
+    {
+      "playerName": "Tyrod Taylor",
+      "position": "QB",
+      "team": "NYJ",
+      "projectedPoints": 11.9,
+      "medianPoints": 290.25,
+      "vorpScore": -278.35,
+      "normalizedVorp": 2.1646953804954223
+    },
+    {
+      "playerName": "Case Keenum",
+      "position": "QB",
+      "team": "CHI",
+      "projectedPoints": 6.3,
+      "medianPoints": 290.25,
+      "vorpScore": -283.95,
+      "normalizedVorp": 0.9149743360857002
+    },
+    {
+      "playerName": "DeAndre Carter",
+      "position": "WR",
+      "team": "CLE",
+      "projectedPoints": 15,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -102.94999999999999,
+      "normalizedVorp": 41.3077438071859
+    },
+    {
+      "playerName": "Taylor Heinicke",
+      "position": "QB",
+      "team": "LAC",
+      "projectedPoints": 2.6,
+      "medianPoints": 290.25,
+      "vorpScore": -287.65,
+      "normalizedVorp": 0.0892657888864169
+    },
+    {
+      "playerName": "Chris Moore",
+      "position": "WR",
+      "team": "WAS",
+      "projectedPoints": 0.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -117.24999999999999,
+      "normalizedVorp": 38.116491854496765
+    },
+    {
+      "playerName": "Eric Saubert",
+      "position": "TE",
+      "team": "SEA",
+      "projectedPoints": 6.6,
+      "medianPoints": 83.9,
+      "vorpScore": -77.30000000000001,
+      "normalizedVorp": 47.03191251952689
+    },
+    {
+      "playerName": "Jamal Agnew",
+      "position": "WR",
+      "team": "ATL",
+      "projectedPoints": 12.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -105.04999999999998,
+      "normalizedVorp": 40.83909841553225
+    },
+    {
+      "playerName": "Johnny Mundt",
+      "position": "TE",
+      "team": "JAC",
+      "projectedPoints": 16.8,
+      "medianPoints": 83.9,
+      "vorpScore": -67.10000000000001,
+      "normalizedVorp": 49.30819013613033
+    },
+    {
+      "playerName": "Zach Pascal",
+      "position": "WR",
+      "team": "NYG",
+      "projectedPoints": 2.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.64999999999999,
+      "normalizedVorp": 38.47355501004241
+    },
+    {
+      "playerName": "Pharaoh Brown",
+      "position": "TE",
+      "team": "MIA",
+      "projectedPoints": 12.1,
+      "medianPoints": 83.9,
+      "vorpScore": -71.80000000000001,
+      "normalizedVorp": 48.25931711671502
+    },
+    {
+      "playerName": "Anthony Miller",
+      "position": "WR",
+      "team": "BAL",
+      "projectedPoints": 44.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -73.85,
+      "normalizedVorp": 47.80182994867218
+    },
+    {
+      "playerName": "Durham Smythe",
+      "position": "TE",
+      "team": "CHI",
+      "projectedPoints": 4,
+      "medianPoints": 83.9,
+      "vorpScore": -79.9,
+      "normalizedVorp": 46.45168489176523
+    },
+    {
+      "playerName": "Jeff Wilson Jr.",
+      "position": "RB",
+      "team": "SF",
+      "projectedPoints": 1.4,
+      "medianPoints": 113.05,
+      "vorpScore": -111.64999999999999,
+      "normalizedVorp": 39.3662128989065
+    },
+    {
+      "playerName": "Ross Dwelley",
+      "position": "TE",
+      "team": "SF",
+      "projectedPoints": 7.7,
+      "medianPoints": 83.9,
+      "vorpScore": -76.2,
+      "normalizedVorp": 47.27739343896452
+    },
+    {
+      "playerName": "Alec Ingold",
+      "position": "RB",
+      "team": "MIA",
+      "projectedPoints": 14,
+      "medianPoints": 113.05,
+      "vorpScore": -99.05,
+      "normalizedVorp": 42.17808524882838
+    },
+    {
+      "playerName": "Irv Smith Jr.",
+      "position": "TE",
+      "team": "HOU",
+      "projectedPoints": 5,
+      "medianPoints": 83.9,
+      "vorpScore": -78.9,
+      "normalizedVorp": 46.67484936398125
+    },
+    {
+      "playerName": "Trenton Irwin",
+      "position": "WR",
+      "team": "JAC",
+      "projectedPoints": 0.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -117.44999999999999,
+      "normalizedVorp": 38.07185896005356
+    },
+    {
+      "playerName": "Steven Sims Jr.",
+      "position": "WR",
+      "team": "SEA",
+      "projectedPoints": 2.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.44999999999999,
+      "normalizedVorp": 38.51818790448561
+    },
+    {
+      "playerName": "Tyler Huntley",
+      "position": "QB",
+      "team": "CLE",
+      "projectedPoints": 2.2,
+      "medianPoints": 290.25,
+      "vorpScore": -288.05,
+      "normalizedVorp": 0
+    },
+    {
+      "playerName": "Giovanni Ricci",
+      "position": "TE",
+      "team": "MIN",
+      "projectedPoints": 9.6,
+      "medianPoints": 83.9,
+      "vorpScore": -74.30000000000001,
+      "normalizedVorp": 47.70140593617496
+    },
+    {
+      "playerName": "Cody White",
+      "position": "WR",
+      "team": "SEA",
+      "projectedPoints": 5.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -112.54999999999998,
+      "normalizedVorp": 39.165364873912075
+    },
+    {
+      "playerName": "Trishton Jackson",
+      "position": "WR",
+      "team": "ARI",
+      "projectedPoints": 6.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -111.85,
+      "normalizedVorp": 39.32158000446329
+    },
+    {
+      "playerName": "K.J. Osborn",
+      "position": "WR",
+      "team": "WAS",
+      "projectedPoints": 46.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -71.04999999999998,
+      "normalizedVorp": 48.42669047087704
+    },
+    {
+      "playerName": "DeeJay Dallas",
+      "position": "RB",
+      "team": "ARI",
+      "projectedPoints": 4.4,
+      "medianPoints": 113.05,
+      "vorpScore": -108.64999999999999,
+      "normalizedVorp": 40.03570631555457
+    },
+    {
+      "playerName": "Kenny Yeboah",
+      "position": "TE",
+      "team": "DET",
+      "projectedPoints": 9.2,
+      "medianPoints": 83.9,
+      "vorpScore": -74.7,
+      "normalizedVorp": 47.61214014728856
+    },
+    {
+      "playerName": "Davis Mills",
+      "position": "QB",
+      "team": "HOU",
+      "projectedPoints": 8.6,
+      "medianPoints": 290.25,
+      "vorpScore": -281.65,
+      "normalizedVorp": 1.428252622182556
+    },
+    {
+      "playerName": "Ben Skowronek",
+      "position": "WR",
+      "team": "PIT",
+      "projectedPoints": 10.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -107.64999999999999,
+      "normalizedVorp": 40.25887078777059
+    },
+    {
+      "playerName": "Zach Davidson",
+      "position": "TE",
+      "team": "BUF",
+      "projectedPoints": 2.9,
+      "medianPoints": 83.9,
+      "vorpScore": -81,
+      "normalizedVorp": 46.2062039723276
+    },
+    {
+      "playerName": "Gary Brightwell",
+      "position": "RB",
+      "team": "CIN",
+      "projectedPoints": 6.8,
+      "medianPoints": 113.05,
+      "vorpScore": -106.25,
+      "normalizedVorp": 40.57130104887302
+    },
+    {
+      "playerName": "Dee Eskridge",
+      "position": "WR",
+      "team": "MIA",
+      "projectedPoints": 4.7,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -113.24999999999999,
+      "normalizedVorp": 39.00914974336086
+    },
+    {
+      "playerName": "Kyle Trask",
+      "position": "QB",
+      "team": "TB",
+      "projectedPoints": 7.3,
+      "medianPoints": 290.25,
+      "vorpScore": -282.95,
+      "normalizedVorp": 1.1381388083017234
+    },
+    {
+      "playerName": "Austin Trammell",
+      "position": "WR",
+      "team": "JAC",
+      "projectedPoints": 5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -112.94999999999999,
+      "normalizedVorp": 39.07609908502567
+    },
+    {
+      "playerName": "Jack Stoll",
+      "position": "TE",
+      "team": "NO",
+      "projectedPoints": 2.6,
+      "medianPoints": 83.9,
+      "vorpScore": -81.30000000000001,
+      "normalizedVorp": 46.1392546306628
+    },
+    {
+      "playerName": "Pierre Strong Jr.",
+      "position": "RB",
+      "team": "CLE",
+      "projectedPoints": 10.8,
+      "medianPoints": 113.05,
+      "vorpScore": -102.25,
+      "normalizedVorp": 41.46395893773711
+    },
+    {
+      "playerName": "Irvin Charles",
+      "position": "WR",
+      "team": "NYJ",
+      "projectedPoints": 18.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -99.44999999999999,
+      "normalizedVorp": 42.08881945994198
+    },
+    {
+      "playerName": "Zonovan Knight",
+      "position": "RB",
+      "team": "ARI",
+      "projectedPoints": 3.6,
+      "medianPoints": 113.05,
+      "vorpScore": -109.45,
+      "normalizedVorp": 39.85717473778175
+    },
+    {
+      "playerName": "Britain Covey",
+      "position": "WR",
+      "team": "LAR",
+      "projectedPoints": 4.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -113.14999999999999,
+      "normalizedVorp": 39.031466190582464
+    },
+    {
+      "playerName": "Bo Melton",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 10.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -107.14999999999999,
+      "normalizedVorp": 40.3704530238786
+    },
+    {
+      "playerName": "Kendric Pryor",
+      "position": "WR",
+      "team": "CIN",
+      "projectedPoints": 6.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -111.74999999999999,
+      "normalizedVorp": 39.34389645168489
+    },
+    {
+      "playerName": "Lucas Krull",
+      "position": "TE",
+      "team": "DEN",
+      "projectedPoints": 10.3,
+      "medianPoints": 83.9,
+      "vorpScore": -73.60000000000001,
+      "normalizedVorp": 47.857621066726175
+    },
+    {
+      "playerName": "Jashaun Corbin",
+      "position": "RB",
+      "team": "ATL",
+      "projectedPoints": 5.7,
+      "medianPoints": 113.05,
+      "vorpScore": -107.35,
+      "normalizedVorp": 40.3258201294354
+    },
+    {
+      "playerName": "Ronnie Rivers",
+      "position": "RB",
+      "team": "LAR",
+      "projectedPoints": 12.2,
+      "medianPoints": 113.05,
+      "vorpScore": -100.85,
+      "normalizedVorp": 41.776389198839546
+    },
+    {
+      "playerName": "Stone Smartt",
+      "position": "TE",
+      "team": "NYJ",
+      "projectedPoints": 8.2,
+      "medianPoints": 83.9,
+      "vorpScore": -75.7,
+      "normalizedVorp": 47.38897567507253
+    },
+    {
+      "playerName": "Tucker Fisk",
+      "position": "TE",
+      "team": "LAC",
+      "projectedPoints": 3.2,
+      "medianPoints": 83.9,
+      "vorpScore": -80.7,
+      "normalizedVorp": 46.27315331399242
+    },
+    {
+      "playerName": "Thomas Fidone II",
+      "position": "TE",
+      "team": "NYG",
+      "projectedPoints": 8.1,
+      "medianPoints": 83.9,
+      "vorpScore": -75.80000000000001,
+      "normalizedVorp": 47.366659227850924
+    },
+    {
+      "playerName": "Jalen Brooks",
+      "position": "WR",
+      "team": "DAL",
+      "projectedPoints": 5.3,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -112.64999999999999,
+      "normalizedVorp": 39.14304842669048
+    },
+    {
+      "playerName": "Kyle McCord",
+      "position": "QB",
+      "team": "PHI",
+      "projectedPoints": 4.8,
+      "medianPoints": 290.25,
+      "vorpScore": -285.45,
+      "normalizedVorp": 0.5802276277616654
+    },
+    {
+      "playerName": "Will Mallory",
+      "position": "TE",
+      "team": "IND",
+      "projectedPoints": 5.1,
+      "medianPoints": 83.9,
+      "vorpScore": -78.80000000000001,
+      "normalizedVorp": 46.69716581120286
+    },
+    {
+      "playerName": "Jake Haener",
+      "position": "QB",
+      "team": "NO",
+      "projectedPoints": 5.4,
+      "medianPoints": 290.25,
+      "vorpScore": -284.85,
+      "normalizedVorp": 0.7141263110912717
+    },
+    {
+      "playerName": "Malik Heath",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 8.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -109.04999999999998,
+      "normalizedVorp": 39.946440526668155
+    },
+    {
+      "playerName": "Xavier Gipson",
+      "position": "WR",
+      "team": "NYJ",
+      "projectedPoints": 4.9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -113.04999999999998,
+      "normalizedVorp": 39.05378263780407
+    },
+    {
+      "playerName": "Carlos Washington Jr.",
+      "position": "RB",
+      "team": "ATL",
+      "projectedPoints": 1.9,
+      "medianPoints": 113.05,
+      "vorpScore": -111.14999999999999,
+      "normalizedVorp": 39.47779513501451
+    },
+    {
+      "playerName": "Jordan Mims",
+      "position": "RB",
+      "team": "TEN",
+      "projectedPoints": 9.9,
+      "medianPoints": 113.05,
+      "vorpScore": -103.14999999999999,
+      "normalizedVorp": 41.2631109127427
+    },
+    {
+      "playerName": "Raheim Sanders",
+      "position": "RB",
+      "team": "LAC",
+      "projectedPoints": 1.8,
+      "medianPoints": 113.05,
+      "vorpScore": -111.25,
+      "normalizedVorp": 39.455478687792905
+    },
+    {
+      "playerName": "Blake Whiteheart",
+      "position": "TE",
+      "team": "CLE",
+      "projectedPoints": 2.4,
+      "medianPoints": 83.9,
+      "vorpScore": -81.5,
+      "normalizedVorp": 46.094621736219594
+    },
+    {
+      "playerName": "Isaiah Neyor",
+      "position": "WR",
+      "team": "GB",
+      "projectedPoints": 2.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.54999999999998,
+      "normalizedVorp": 38.49587145726401
+    },
+    {
+      "playerName": "Jase McClellan",
+      "position": "RB",
+      "team": "TB",
+      "projectedPoints": 13,
+      "medianPoints": 113.05,
+      "vorpScore": -100.05,
+      "normalizedVorp": 41.95492077661236
+    },
+    {
+      "playerName": "Erick All Jr.",
+      "position": "TE",
+      "team": "CIN",
+      "projectedPoints": 3.1,
+      "medianPoints": 83.9,
+      "vorpScore": -80.80000000000001,
+      "normalizedVorp": 46.250836866770804
+    },
+    {
+      "playerName": "Tanner McLachlan",
+      "position": "TE",
+      "team": "CIN",
+      "projectedPoints": 9.9,
+      "medianPoints": 83.9,
+      "vorpScore": -74,
+      "normalizedVorp": 47.76835527783977
+    },
+    {
+      "playerName": "Keilan Robinson",
+      "position": "RB",
+      "team": "PHI",
+      "projectedPoints": 0.9,
+      "medianPoints": 113.05,
+      "vorpScore": -112.14999999999999,
+      "normalizedVorp": 39.25463066279849
+    },
+    {
+      "playerName": "Dylan Laube",
+      "position": "RB",
+      "team": "LV",
+      "projectedPoints": 2.1,
+      "medianPoints": 113.05,
+      "vorpScore": -110.95,
+      "normalizedVorp": 39.522428029457714
+    },
+    {
+      "playerName": "Tip Reiman",
+      "position": "TE",
+      "team": "ARI",
+      "projectedPoints": 8.5,
+      "medianPoints": 83.9,
+      "vorpScore": -75.4,
+      "normalizedVorp": 47.45592501673733
+    },
+    {
+      "playerName": "Devin Culp",
+      "position": "TE",
+      "team": "TB",
+      "projectedPoints": 10.3,
+      "medianPoints": 83.9,
+      "vorpScore": -73.60000000000001,
+      "normalizedVorp": 47.857621066726175
+    },
+    {
+      "playerName": "Xavier Weaver",
+      "position": "WR",
+      "team": "ARI",
+      "projectedPoints": 9,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -108.94999999999999,
+      "normalizedVorp": 39.96875697388976
+    },
+    {
+      "playerName": "David Martin-Robinson",
+      "position": "TE",
+      "team": "TEN",
+      "projectedPoints": 2.6,
+      "medianPoints": 83.9,
+      "vorpScore": -81.30000000000001,
+      "normalizedVorp": 46.1392546306628
+    },
+    {
+      "playerName": "Bryce Oliver",
+      "position": "WR",
+      "team": "TEN",
+      "projectedPoints": 5.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -112.85,
+      "normalizedVorp": 39.098415532247266
+    },
+    {
+      "playerName": "Graham Mertz",
+      "position": "QB",
+      "team": "HOU",
+      "projectedPoints": 4.8,
+      "medianPoints": 290.25,
+      "vorpScore": -285.45,
+      "normalizedVorp": 0.5802276277616654
+    },
+    {
+      "playerName": "LeQuint Allen Jr.",
+      "position": "RB",
+      "team": "JAC",
+      "projectedPoints": 10.6,
+      "medianPoints": 113.05,
+      "vorpScore": -102.45,
+      "normalizedVorp": 41.41932604329391
+    },
+    {
+      "playerName": "Jake Briningstool",
+      "position": "TE",
+      "team": "KC",
+      "projectedPoints": 18.1,
+      "medianPoints": 83.9,
+      "vorpScore": -65.80000000000001,
+      "normalizedVorp": 49.59830395001116
+    },
+    {
+      "playerName": "Cam Miller",
+      "position": "QB",
+      "team": "LV",
+      "projectedPoints": 4.8,
+      "medianPoints": 290.25,
+      "vorpScore": -285.45,
+      "normalizedVorp": 0.5802276277616654
+    },
+    {
+      "playerName": "Robert Tonyan",
+      "position": "TE",
+      "team": "KC",
+      "projectedPoints": 6.3,
+      "medianPoints": 83.9,
+      "vorpScore": -77.60000000000001,
+      "normalizedVorp": 46.96496317786208
+    },
+    {
+      "playerName": "Russell Gage Jr.",
+      "position": "WR",
+      "team": "SF",
+      "projectedPoints": 51,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -66.94999999999999,
+      "normalizedVorp": 49.34166480696273
+    },
+    {
+      "playerName": "Ashton Dulin",
+      "position": "WR",
+      "team": "IND",
+      "projectedPoints": 2.6,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.35,
+      "normalizedVorp": 38.54050435170721
+    },
+    {
+      "playerName": "Lawrence Cager",
+      "position": "TE",
+      "team": "WAS",
+      "projectedPoints": 11.7,
+      "medianPoints": 83.9,
+      "vorpScore": -72.2,
+      "normalizedVorp": 48.17005132782861
+    },
+    {
+      "playerName": "Dominique Dafney",
+      "position": "TE",
+      "team": "CAR",
+      "projectedPoints": 4.5,
+      "medianPoints": 83.9,
+      "vorpScore": -79.4,
+      "normalizedVorp": 46.563267127873246
+    },
+    {
+      "playerName": "Simi Fehoko",
+      "position": "WR",
+      "team": "ARI",
+      "projectedPoints": 13.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -104.85,
+      "normalizedVorp": 40.88373130997545
+    },
+    {
+      "playerName": "Hunter Long",
+      "position": "TE",
+      "team": "JAC",
+      "projectedPoints": 9.7,
+      "medianPoints": 83.9,
+      "vorpScore": -74.2,
+      "normalizedVorp": 47.72372238339656
+    },
+    {
+      "playerName": "Quintin Morris",
+      "position": "TE",
+      "team": "JAC",
+      "projectedPoints": 10,
+      "medianPoints": 83.9,
+      "vorpScore": -73.9,
+      "normalizedVorp": 47.790671725061365
+    },
+    {
+      "playerName": "Feleipe Franks",
+      "position": "TE",
+      "team": "ATL",
+      "projectedPoints": 2.5,
+      "medianPoints": 83.9,
+      "vorpScore": -81.4,
+      "normalizedVorp": 46.1169381834412
+    },
+    {
+      "playerName": "Velus Jones Jr.",
+      "position": "RB",
+      "team": "NO",
+      "projectedPoints": 3.4,
+      "medianPoints": 113.05,
+      "vorpScore": -109.64999999999999,
+      "normalizedVorp": 39.81254184333854
+    },
+    {
+      "playerName": "Greg Dulcich",
+      "position": "TE",
+      "team": "NYG",
+      "projectedPoints": 7.3,
+      "medianPoints": 83.9,
+      "vorpScore": -76.60000000000001,
+      "normalizedVorp": 47.1881276500781
+    },
+    {
+      "playerName": "Samori Toure",
+      "position": "WR",
+      "team": "CHI",
+      "projectedPoints": 9.2,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -108.74999999999999,
+      "normalizedVorp": 40.01338986833296
+    },
+    {
+      "playerName": "Teagan Quitoriano",
+      "position": "TE",
+      "team": "ATL",
+      "projectedPoints": 12,
+      "medianPoints": 83.9,
+      "vorpScore": -71.9,
+      "normalizedVorp": 48.23700066949341
+    },
+    {
+      "playerName": "Jelani Woods",
+      "position": "TE",
+      "team": "IND",
+      "projectedPoints": 17.7,
+      "medianPoints": 83.9,
+      "vorpScore": -66.2,
+      "normalizedVorp": 49.50903816112475
+    },
+    {
+      "playerName": "Erik Ezukanma",
+      "position": "WR",
+      "team": "MIA",
+      "projectedPoints": 16.8,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -101.14999999999999,
+      "normalizedVorp": 41.70943985717474
+    },
+    {
+      "playerName": "Dareke Young",
+      "position": "WR",
+      "team": "SEA",
+      "projectedPoints": 5.4,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -112.54999999999998,
+      "normalizedVorp": 39.165364873912075
+    },
+    {
+      "playerName": "Tanner Conner",
+      "position": "TE",
+      "team": "MIA",
+      "projectedPoints": 9.3,
+      "medianPoints": 83.9,
+      "vorpScore": -74.60000000000001,
+      "normalizedVorp": 47.63445659451015
+    },
+    {
+      "playerName": "Anthony Gould",
+      "position": "WR",
+      "team": "IND",
+      "projectedPoints": 2.5,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -115.44999999999999,
+      "normalizedVorp": 38.51818790448561
+    },
+    {
+      "playerName": "Brenden Bates",
+      "position": "TE",
+      "team": "CLE",
+      "projectedPoints": 9.4,
+      "medianPoints": 83.9,
+      "vorpScore": -74.5,
+      "normalizedVorp": 47.65677304173175
+    },
+    {
+      "playerName": "Cam Grandy",
+      "position": "TE",
+      "team": "CIN",
+      "projectedPoints": 8.1,
+      "medianPoints": 83.9,
+      "vorpScore": -75.80000000000001,
+      "normalizedVorp": 47.366659227850924
+    },
+    {
+      "playerName": "Brevyn Spann-Ford",
+      "position": "TE",
+      "team": "DAL",
+      "projectedPoints": 10.8,
+      "medianPoints": 83.9,
+      "vorpScore": -73.10000000000001,
+      "normalizedVorp": 47.96920330283419
+    },
+    {
+      "playerName": "Isaiah Williams",
+      "position": "WR",
+      "team": "CIN",
+      "projectedPoints": 3.1,
+      "medianPoints": 117.94999999999999,
+      "vorpScore": -114.85,
+      "normalizedVorp": 38.65208658781522
+    },
+    {
+      "playerName": "Jackson Hawes",
+      "position": "TE",
+      "team": "BUF",
+      "projectedPoints": 8,
+      "medianPoints": 83.9,
+      "vorpScore": -75.9,
+      "normalizedVorp": 47.344342780629326
+    },
+    {
+      "playerName": "Amar Johnson",
+      "position": "RB",
+      "team": "GB",
+      "projectedPoints": 25,
+      "medianPoints": 113.05,
+      "vorpScore": -88.05,
+      "normalizedVorp": 44.63289444320464
+    }
+  ]
+}
