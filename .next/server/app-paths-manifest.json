@@ -1,5 +1,3 @@
 {
-  "/api/cheat-sheet/vorp/route": "app/api/cheat-sheet/vorp/route.js",
-  "/cheat-sheet/page": "app/cheat-sheet/page.js",
-  "/api/cheat-sheet/adp/route": "app/api/cheat-sheet/adp/route.js"
+  "/cheat-sheet/page": "app/cheat-sheet/page.js"
 }

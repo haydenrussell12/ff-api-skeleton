@@ -37,13 +37,20 @@ export default function CheatSheetPage() {
       setLoading(true);
       setError('');
       
+      console.log('🔄 Starting to load player data...');
+      
       // Load data from multiple sources
       const [adpData, vorpData] = await Promise.all([
         fetch('/api/cheat-sheet/adp').then(res => res.json()),
         fetch('/api/cheat-sheet/vorp').then(res => res.json())
       ]);
 
+      console.log('📊 ADP data received:', adpData);
+      console.log('📊 VORP data received:', vorpData);
+
       if (adpData.success && vorpData.success) {
+        console.log('✅ Both data sources successful, combining data...');
+        
         // Combine ADP and VORP data
         const combinedPlayers = adpData.data.map((adpPlayer: any) => {
           // Clean up position format (remove numbers like "WR1" -> "WR")
@@ -53,6 +60,10 @@ export default function CheatSheetPage() {
           const vorpPlayer = vorpData.data.find((v: any) => 
             v.name.toLowerCase() === adpPlayer.Player.toLowerCase()
           );
+          
+          if (!vorpPlayer) {
+            console.log(`⚠️ No VORP data found for: ${adpPlayer.Player}`);
+          }
           
           return {
             playerName: adpPlayer.Player,
@@ -67,8 +78,12 @@ export default function CheatSheetPage() {
           };
         });
 
+        console.log('🎯 Combined players:', combinedPlayers.length);
+        console.log('📋 Sample combined player:', combinedPlayers[0]);
+
         setPlayers(combinedPlayers);
       } else {
+        console.error('❌ Data source failed:', { adpData, vorpData });
         throw new Error('Failed to load player data');
       }
     } catch (err) {
