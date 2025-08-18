@@ -9,6 +9,7 @@
     "dev-new": "node scripts/server-new.js",
     "start": "node scripts/server-prod.js",
     "build": "echo 'Build completed successfully' && node -e \"console.log('✅ Build script executed')\"",
+    "test-endpoints": "node scripts/test-endpoints.js",
     "load-data": "node scripts/load_rankings_csv.js data/rankings.csv",
     "fetch-projections": "node scripts/fetch-projections.js",
     "populate-fantasypros-adp": "node scripts/populate-fantasypros-adp.js",
