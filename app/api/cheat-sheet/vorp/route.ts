@@ -17,19 +17,17 @@ export async function GET() {
       points: number;
     }> = [];
     
-    // Add top players from each position
-    Object.entries(vorpData.positionStats).forEach(([position, stats]: [string, any]) => {
-      if (stats.topPlayers && Array.isArray(stats.topPlayers)) {
-        stats.topPlayers.forEach((player: any) => {
-          players.push({
-            name: player.name,
-            position: position,
-            vorp: player.vorp,
-            points: player.points
-          });
+    // Use the vorpScores array which contains all players
+    if (vorpData.vorpScores && Array.isArray(vorpData.vorpScores)) {
+      vorpData.vorpScores.forEach((player: any) => {
+        players.push({
+          name: player.playerName,
+          position: player.position,
+          vorp: player.vorpScore,
+          points: player.projectedPoints
         });
-      }
-    });
+      });
+    }
 
     return NextResponse.json({
       success: true,

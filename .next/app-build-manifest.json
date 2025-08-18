@@ -1,24 +1,14 @@
 {
   "pages": {
-    "/draft-analyzer/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/draft-analyzer/page.js"
-    ],
-    "/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/layout.js"
-    ],
     "/cheat-sheet/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/cheat-sheet/page.js"
     ],
-    "/page": [
+    "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/layout.js"
     ]
   }
 }

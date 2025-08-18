@@ -46,13 +46,17 @@ export default function CheatSheetPage() {
       if (adpData.success && vorpData.success) {
         // Combine ADP and VORP data
         const combinedPlayers = adpData.data.map((adpPlayer: any) => {
+          // Clean up position format (remove numbers like "WR1" -> "WR")
+          const cleanPosition = adpPlayer.POS.replace(/\d+$/, '');
+          
+          // Find matching VORP player by name (case-insensitive)
           const vorpPlayer = vorpData.data.find((v: any) => 
             v.name.toLowerCase() === adpPlayer.Player.toLowerCase()
           );
           
           return {
             playerName: adpPlayer.Player,
-            position: adpPlayer.POS,
+            position: cleanPosition,
             team: adpPlayer.Team,
             projectedPoints: vorpPlayer?.points || 0,
             vorpScore: vorpPlayer?.vorp || 0,
