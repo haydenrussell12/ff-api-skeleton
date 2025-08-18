@@ -1,5 +1,6 @@
 "use client";
 
+// Updated for Vercel deployment - buttons should work now!
 export default function Home() {
   return (
     <div dangerouslySetInnerHTML={{
