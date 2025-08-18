@@ -56,7 +56,7 @@ export default function DraftAnalyzerPage() {
       } else {
         throw new Error(result.error || 'Analysis failed');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error analyzing draft:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setError(`Analysis failed: ${errorMessage}`);
