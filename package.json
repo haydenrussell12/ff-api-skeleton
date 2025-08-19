@@ -9,21 +9,9 @@
     "start": "next start",
     "build": "next build",
     "vercel:build": "next build",
-    "test-endpoints": "node scripts/test-endpoints.js",
     "load-data": "node scripts/load_rankings_csv.js data/rankings.csv",
     "fetch-projections": "node scripts/fetch-projections.js",
-    "populate-fantasypros-adp": "node scripts/populate-fantasypros-adp.js",
-    "populate-complete-adp": "node scripts/populate-complete-adp.js",
-    "setup-historical-data": "node scripts/setup-historical-database.js",
-    "load-2025-adp": "node scripts/load-2025-adp-to-existing.js",
-    "populate-full-2025-adp": "node scripts/populate-full-2025-adp.js",
-    "consolidate-all-data": "node scripts/consolidated-all-data.js",
-    "migrate-schema": "node scripts/migrate-schema-simple.js",
-    "verify-migration": "node scripts/verify-migration.js",
-    "connect-league": "node scripts/league-connector.js",
-    "fetch-sleeper": "node scripts/fetch-sleeper-projections.js",
-    "calculate-vorp": "node scripts/calculate-vorp-scores.js",
-    "upload-vorp": "node scripts/upload-vorp-to-supabase.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "fantasy-football",
