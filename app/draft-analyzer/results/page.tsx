@@ -225,7 +225,7 @@ function ResultsContent() {
                 </thead>
                 <tbody>
                   {sortedTeams.map((team: any, idx: number) => {
-                    const gradeLetter = team?.positionGrades?.overallGrade?.grade ?? '—';
+                    const gradeLetter = team?.overallGrade?.grade ?? team?.positionGrades?.overallGrade?.grade ?? '—';
                     const optimalPts = team?.optimalLineupPoints ?? 0;
                     const benchPts = team?.benchPoints ?? 0;
                     const totalPts = team?.totalProjectedPoints ?? 0;
@@ -278,7 +278,7 @@ function ResultsContent() {
                       <div style={{ opacity: 0.9, fontSize: 14 }}>Draft Slot {team.draftSlot}</div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <Badge text={team?.positionGrades?.overallGrade?.grade ?? '—'} color="rgba(255,255,255,0.9)" style={{ fontSize: '16px', padding: '6px 16px' }} />
+                      <Badge text={team?.overallGrade?.grade ?? team?.positionGrades?.overallGrade?.grade ?? '—'} color="rgba(255,255,255,0.9)" style={{ fontSize: '16px', padding: '6px 16px' }} />
                     </div>
                   </div>
                   
