@@ -35,35 +35,25 @@ export default class PositionGradeEngine {
       };
     });
     
-    // Calculate overall grades using percentile ranking
+    // Calculate overall grades based on actual performance, not forced percentiles
     const teamsWithOverallScores = teamsWithPositionGrades.map(team => {
-      // Calculate overall score based on optimal lineup points (primary factor)
+      // Calculate overall score based on optimal lineup points
       const overallScore = team.optimalLineupPoints || 0;
-      return {
-        ...team,
-        overallScore
-      };
-    });
-    
-    // Sort teams by overall score to determine percentiles
-    const sortedTeams = [...teamsWithOverallScores].sort((a, b) => b.overallScore - a.overallScore);
-    
-    // Assign grades based on percentile ranking
-    const gradedTeams = sortedTeams.map((team, index) => {
-      const percentile = (1 - (index / sortedTeams.length)) * 100; // Higher is better
-      const overallGrade = this.percentileToGrade(percentile);
+      
+      // Convert to letter grade based on actual performance thresholds
+      const overallGrade = this.scoreToGrade(overallScore);
       
       return {
         ...team,
         overallGrade: {
           grade: overallGrade,
-          score: team.overallScore,
-          percentile: Math.round(percentile)
+          score: overallScore,
+          rawScore: overallScore
         }
       };
     });
     
-    return gradedTeams;
+    return teamsWithOverallScores;
   }
 
   private calculateTeamPositionGrades(team: any, positionRequirements: string[]) {
@@ -233,19 +223,21 @@ export default class PositionGradeEngine {
   }
 
   private scoreToGrade(score: number): string {
-    if (score >= 90) return 'A+';
-    if (score >= 85) return 'A';
-    if (score >= 80) return 'A-';
-    if (score >= 75) return 'B+';
-    if (score >= 70) return 'B';
-    if (score >= 65) return 'B-';
-    if (score >= 60) return 'C+';
-    if (score >= 55) return 'C';
-    if (score >= 50) return 'C-';
-    if (score >= 45) return 'D+';
-    if (score >= 40) return 'D';
-    if (score >= 35) return 'D-';
-    return 'F';
+    // Realistic scoring thresholds based on actual fantasy football performance
+    // These thresholds allow for genuine grade distribution based on team quality
+    
+    if (score >= 200) return 'A+';      // Exceptional team
+    if (score >= 185) return 'A';       // Excellent team  
+    if (score >= 170) return 'A-';      // Very good team
+    if (score >= 155) return 'B+';      // Good team
+    if (score >= 140) return 'B';       // Above average team
+    if (score >= 125) return 'B-';      // Slightly above average
+    if (score >= 110) return 'C+';      // Average team
+    if (score >= 95) return 'C';        // Below average team
+    if (score >= 80) return 'C-';       // Poor team
+    if (score >= 65) return 'D+';       // Very poor team
+    if (score >= 50) return 'D';        // Terrible team
+    return 'F';                          // Complete failure
   }
 
   private generatePositionReason(grade: string, zScore: number, position: string): string {
@@ -315,19 +307,5 @@ export default class PositionGradeEngine {
     };
     
     return requirements[leagueType as keyof typeof requirements] || requirements.standard;
-  }
-
-  private percentileToGrade(percentile: number): string {
-    if (percentile >= 90) return 'A+';
-    if (percentile >= 80) return 'A';
-    if (percentile >= 70) return 'A-';
-    if (percentile >= 60) return 'B+';
-    if (percentile >= 50) return 'B';
-    if (percentile >= 40) return 'B-';
-    if (percentile >= 30) return 'C+';
-    if (percentile >= 20) return 'C';
-    if (percentile >= 10) return 'C-';
-    if (percentile >= 5) return 'D+';
-    return 'D';
   }
 } 
