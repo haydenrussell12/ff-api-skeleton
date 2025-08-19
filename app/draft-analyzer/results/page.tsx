@@ -32,7 +32,24 @@ function SectionCard({ title, children }: { title: string; children: any }) {
 function TeamLineup({ team }: { team: any }) {
   const lineup = team?.optimalLineup || {};
   const bench = team?.benchPlayers || [];
-  const posGrades = team?.positionGrades?.positionGrades || {};
+  const posGrades = team?.positionGrades || {};
+
+  // Get position order based on league type
+  const getPositionOrder = () => {
+    // Check if team has lineupAnalysis to determine league type
+    const hasSuperflex = team?.lineupAnalysis?.requirements?.SUPERFLEX;
+    const hasMultipleQB = team?.lineupAnalysis?.requirements?.QB === 2;
+    
+    if (hasSuperflex) {
+      return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX', 'DEF', 'K'];
+    } else if (hasMultipleQB) {
+      return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'DEF', 'K'];
+    } else {
+      return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'DEF', 'K'];
+    }
+  };
+
+  const positionOrder = getPositionOrder();
 
   const renderPlayers = (players: any[]) => (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, minmax(0, 1fr))', gap: 8 }}>
@@ -67,7 +84,7 @@ function TeamLineup({ team }: { team: any }) {
           Starters
         </h4>
         <div style={{ display: 'grid', gap: 16 }}>
-          {['QB','RB','WR','TE','FLEX','DEF','K'].map((pos) => {
+          {positionOrder.map((pos) => {
             const players = lineup[pos] || [];
             const grade = posGrades[pos];
             if (players.length === 0) return null;
@@ -89,7 +106,7 @@ function TeamLineup({ team }: { team: any }) {
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <Badge text={pos} color="#4f46e5" />
-                    {grade && <Badge text={grade.grade} color="#16a34a" />}
+                    {grade && <Badge text={grade.grade} color={getGradeColor(grade.grade)} />}
                   </div>
                   <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>
                     {players.reduce((sum: number, p: any) => sum + (p.projectedPoints || 0), 0).toFixed(1)} pts
@@ -126,9 +143,20 @@ function TeamLineup({ team }: { team: any }) {
   );
 }
 
+// Helper function to get grade colors
+function getGradeColor(grade: string): string {
+  if (grade.startsWith('A')) return '#16a34a'; // Green for A grades
+  if (grade.startsWith('B')) return '#22c55e'; // Light green for B grades
+  if (grade.startsWith('C')) return '#f59e0b'; // Yellow for C grades
+  if (grade.startsWith('D')) return '#f97316'; // Orange for D grades
+  if (grade.startsWith('F')) return '#ef4444'; // Red for F grades
+  return '#64748b'; // Default gray
+}
+
 function ResultsContent() {
   const searchParams = useSearchParams();
   const draftUrl = useMemo(() => searchParams.get('draftUrl') || '', [searchParams]);
+  const leagueType = useMemo(() => searchParams.get('leagueType') || 'standard', [searchParams]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -146,7 +174,7 @@ function ResultsContent() {
         const response = await fetch('/api/analyze-draft', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ draftUrl })
+          body: JSON.stringify({ draftUrl, leagueType })
         });
         const json = await response.json();
         if (!response.ok || !json.success) {
@@ -161,7 +189,7 @@ function ResultsContent() {
       }
     };
     run();
-  }, [draftUrl]);
+  }, [draftUrl, leagueType]);
 
   // Helper: derive sorted teams for scoreboard (rank by optimal lineup projected points)
   const sortedTeams = useMemo(() => {
@@ -172,6 +200,18 @@ function ResultsContent() {
     });
     return withRankKey.sort((a: any, b: any) => (b.__rankScore || 0) - (a.__rankScore || 0));
   }, [results]);
+
+  // Helper: get league type display info
+  const getLeagueTypeInfo = (type: string) => {
+    const leagueTypes = {
+      standard: { name: 'Standard (1 QB)', starters: 9, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1' },
+      superflex: { name: '🦸 Superflex', starters: 10, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, K: 1, DEF: 1' },
+      '2qb': { name: '⚖️ 2 QB', starters: 10, description: 'QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1' }
+    };
+    return leagueTypes[type as keyof typeof leagueTypes] || leagueTypes.standard;
+  };
+
+  const leagueInfo = getLeagueTypeInfo(leagueType);
 
   return (
     <div>
@@ -203,7 +243,7 @@ function ResultsContent() {
             </SectionCard>
 
             <SectionCard title="Settings">
-              <div style={{ color: '#64748b', fontSize: 12 }}>Assumed PPR with 1QB/2RB/2WR/1TE/1FLEX/K/DEF</div>
+              <div style={{ color: '#64748b', fontSize: 12 }}>Assumed PPR with {leagueInfo.description}</div>
             </SectionCard>
           </div>
 

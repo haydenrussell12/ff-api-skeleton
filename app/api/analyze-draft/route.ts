@@ -298,7 +298,7 @@ class DraftAnalyzer {
         return direct?.vorp_score || direct?.vorpScore ? parseFloat(direct.vorp_score || direct.vorpScore) : 0;
     }
 
-    async analyzeDraft(draftUrl: string) {
+    async analyzeDraft(draftUrl: string, leagueType: string = 'standard') {
         await this.initialize();
 
         const draftId = this.parseSleeperDraftUrl(draftUrl);
@@ -570,32 +570,44 @@ class DraftAnalyzer {
 
         // First calculate optimal lineups for all teams
         const analysisTeams = Object.entries(teams).map(([id, team]) => {
-            const lineup = lineupEngine.calculateOptimalLineup(team.roster, { scoring: 'ppr' });
+            const lineup = lineupEngine.calculateOptimalLineup(team.roster, { leagueType, scoring: 'ppr' });
             
             // Calculate average ADP
             const adpValues = team.roster.map((p: any) => p.adpValue || 0).filter((v: number) => v !== 0);
             const averageAdpValue = adpValues.length > 0 ? adpValues.reduce((s: number, v: number) => s + v, 0) / adpValues.length : 0;
             
+            // Calculate average VORP
+            const vorpValues = team.roster.map((p: any) => p.vorpScore || 0).filter((v: number) => v !== 0);
+            const averageVorpScore = vorpValues.length > 0 ? vorpValues.reduce((s: number, v: number) => s + v, 0) / vorpValues.length : 0;
+            
+            // Calculate optimal lineup points
+            const optimalLineupPoints = lineupEngine.calculateTotalProjectedPoints(lineup);
+            
+            // Get bench players and points
+            const benchPlayers = lineupEngine.getBenchPlayers(team.roster, lineup);
+            const benchPoints = lineupEngine.calculateTotalProjectedPoints(benchPlayers);
+            
+            // Get lineup analysis
+            const lineupAnalysis = lineupEngine.analyzeLineup(lineup, { leagueType, scoring: 'ppr' });
+            
             return {
-                teamId: Number(id),
+                teamId: id,
                 teamName: team.teamName,
                 draftSlot: team.draftSlot,
-                optimalLineup: lineup.optimalLineup,
-                optimalLineupPoints: lineup.totalProjectedPoints,
-                benchPlayers: lineup.benchPlayers,
-                benchPoints: lineup.benchPoints,
-                lineupAnalysis: lineup.analysis,
-                totalProjectedPoints: lineup.totalProjectedPoints + lineup.benchPoints,
-                averageProjectedPoints: team.roster.length > 0 ? (team.roster.reduce((s: number, p: any) => s + (p.projectedPoints || 0), 0) / team.roster.length) : 0,
-                averageAdpValue: averageAdpValue,
-                averageVorpScore: team.roster.length > 0 ? (team.roster.reduce((s: number, p: any) => s + (p.vorpScore || 0), 0) / team.roster.length) : 0,
-                players: team.roster,
-                roster: team.roster, // Add roster for grading engine
+                roster: team.roster,
+                optimalLineup: lineup,
+                optimalLineupPoints,
+                benchPlayers,
+                benchPoints,
+                totalProjectedPoints: team.totalProjectedPoints,
+                averageAdpValue,
+                averageVorpScore,
+                lineupAnalysis
             };
         });
 
         // Now calculate position grades using the new system that considers all teams
-        const gradedTeams = gradeEngine.calculatePositionGrades(analysisTeams, { scoring: 'ppr' });
+        const gradedTeams = gradeEngine.calculatePositionGrades(analysisTeams, { leagueType, scoring: 'ppr' });
 
         // Map the graded teams back to the expected format for the frontend
         const finalTeams = gradedTeams.map(gradedTeam => {
@@ -606,23 +618,20 @@ class DraftAnalyzer {
                 teamId: gradedTeam.teamId,
                 teamName: gradedTeam.teamName,
                 draftSlot: originalTeam?.draftSlot || 0,
-                optimalLineup: originalTeam?.optimalLineup || [],
+                optimalLineup: originalTeam?.optimalLineup || {},
                 optimalLineupPoints: originalTeam?.optimalLineupPoints || 0,
                 benchPlayers: originalTeam?.benchPlayers || [],
                 benchPoints: originalTeam?.benchPoints || 0,
-                lineupAnalysis: originalTeam?.lineupAnalysis || {},
                 positionGrades: gradedTeam.positionGrades || {},
                 totalProjectedPoints: originalTeam?.totalProjectedPoints || 0,
-                averageProjectedPoints: originalTeam?.averageProjectedPoints || 0,
+                averageProjectedPoints: (() => {
+                    if (!originalTeam?.roster?.length) return 0;
+                    return originalTeam.roster.reduce((sum: number, p: any) => sum + (p.projectedPoints || 0), 0) / originalTeam.roster.length;
+                })(),
                 averageAdpValue: originalTeam?.averageAdpValue || 0,
                 averageVorpScore: originalTeam?.averageVorpScore || 0,
-                players: originalTeam?.players || [],
-                // Add the new grading data
-                overallGrade: gradedTeam.overallGrade || { grade: 'C', score: 0, percentile: 50 },
-                starterScores: gradedTeam.starterScores || {},
-                depthScore: gradedTeam.depthScore || 0,
-                balancePenalty: gradedTeam.balancePenalty || 0,
-                totalScore: gradedTeam.totalScore || 0
+                players: originalTeam?.roster || [],
+                roster: originalTeam?.roster || []
             };
         });
 
@@ -635,38 +644,31 @@ class DraftAnalyzer {
     }
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const { draftUrl } = await request.json();
-    if (!draftUrl) {
-      return NextResponse.json(
-        { success: false, error: 'Draft URL is required' },
-        { status: 400 }
-      );
+export async function POST(request: Request) {
+    try {
+        const { draftUrl, leagueType = 'standard' } = await request.json();
+        
+        if (!draftUrl) {
+            return NextResponse.json({ success: false, error: 'Draft URL is required' });
+        }
+
+        console.log('🚀 Starting draft analysis...');
+        console.log('🔍 Draft URL:', draftUrl);
+        console.log('🏈 League Type:', leagueType);
+
+        const analyzer = new DraftAnalyzer();
+        await analyzer.initialize();
+        
+        const result = await analyzer.analyzeDraft(draftUrl, leagueType);
+        
+        return NextResponse.json({ success: true, data: result });
+    } catch (error) {
+        console.error('❌ Error in draft analysis:', error);
+        return NextResponse.json({ 
+            success: false, 
+            error: error instanceof Error ? error.message : 'Unknown error occurred' 
+        });
     }
-    console.log('🚀 Starting draft analysis for URL:', draftUrl);
-
-    const analyzer = new DraftAnalyzer();
-    const results = await analyzer.analyzeDraft(draftUrl);
-
-    return NextResponse.json({
-      success: true,
-      message: 'Draft analysis completed successfully',
-      draftUrl: draftUrl,
-      status: 'completed',
-      data: results
-    });
-  } catch (error) {
-    console.error('❌ Draft analysis failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    return NextResponse.json(
-      {
-        success: false,
-        error: `Draft analysis failed: ${errorMessage}`
-      },
-      { status: 500 }
-    );
-  }
 }
 
 export function GET() {

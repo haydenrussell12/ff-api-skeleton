@@ -6,6 +6,7 @@ type LeagueSettings = {
   includeK?: boolean;
   includeDST?: boolean;
   scoring?: string;
+  leagueType?: string;
 };
 
 export default class PositionGradeEngine {
@@ -17,27 +18,190 @@ export default class PositionGradeEngine {
     vorpArray.forEach((p) => {
       const name = (p.playerName || '').toLowerCase();
       const val = (p as any).vorpScore ?? p.vorp_score ?? 0;
-      if (name) this.vorpLookup[name] = Number(val) || 0;
+      if (name) this.vorpLookup[name] = Number(val);
     });
   }
 
   calculatePositionGrades(teams: any[], settings: LeagueSettings = {}) {
-    const numTeams = teams.length || 12; // Default to 12-team league
+    const leagueType = settings.leagueType || 'standard';
+    const positionRequirements = this.getPositionRequirements(leagueType);
     
-    // Calculate league averages and standard deviations for each position
-    this.calculateLeagueStats(teams);
+    // Calculate league-wide statistics for each position
+    this.calculateLeagueStats(teams, positionRequirements);
     
-    const teamGrades = teams.map(team => this.gradeTeam(team, numTeams, settings));
+    const gradedTeams = teams.map(team => {
+      const positionGrades = this.calculateTeamPositionGrades(team, positionRequirements);
+      const overallGrade = this.calculateOverallGrade(team, positionGrades);
+      
+      return {
+        ...team,
+        positionGrades,
+        overallGrade
+      };
+    });
     
-    // Normalize grades across all teams
-    return this.normalizeGrades(teamGrades);
+    return gradedTeams;
   }
 
-  private calculateLeagueStats(teams: any[]) {
+  private calculateTeamPositionGrades(team: any, positionRequirements: string[]) {
+    const positionGrades: Record<string, any> = {};
+    
+    positionRequirements.forEach(pos => {
+      if (pos === 'FLEX' || pos === 'SUPERFLEX') {
+        // Handle flex positions specially
+        const flexPlayers = this.getFlexPlayers(team, pos);
+        if (flexPlayers.length > 0) {
+          const grade = this.gradePosition(flexPlayers, pos);
+          positionGrades[pos] = grade;
+        }
+      } else {
+        // Handle regular positions
+        const players = this.getPositionPlayers(team, pos);
+        if (players.length > 0) {
+          const grade = this.gradePosition(players, pos);
+          positionGrades[pos] = grade;
+        }
+      }
+    });
+    
+    return positionGrades;
+  }
+
+  private getFlexPlayers(team: any, flexType: string) {
+    const flexPositions = flexType === 'SUPERFLEX' ? ['QB', 'RB', 'WR', 'TE'] : ['RB', 'WR', 'TE'];
+    const allFlexPlayers: any[] = [];
+    
+    flexPositions.forEach(pos => {
+      const players = this.getPositionPlayers(team, pos);
+      allFlexPlayers.push(...players);
+    });
+    
+    // Sort by projected points and take top players
+    return allFlexPlayers
+      .sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0))
+      .slice(0, 3); // Top 3 for flex grading
+  }
+
+  private getPositionPlayers(team: any, position: string) {
+    if (!team.optimalLineup || !team.optimalLineup[position]) return [];
+    return team.optimalLineup[position] || [];
+  }
+
+  private gradePosition(players: any[], position: string) {
+    if (players.length === 0) return { grade: '—', score: 0, reason: 'No players' };
+    
+    const totalPoints = players.reduce((sum, p) => sum + (p.projectedPoints || 0), 0);
+    const avgVorp = players.reduce((sum, p) => sum + (p.vorpScore || 0), 0) / players.length;
+    
+    // Get league average for this position
+    const leagueAvg = this.leagueAverages[position] || 0;
+    const leagueStdDev = this.leagueStdDevs[position] || 1;
+    
+    // Calculate z-score
+    const zScore = leagueStdDev > 0 ? (totalPoints - leagueAvg) / leagueStdDev : 0;
+    
+    // Convert to grade
+    const grade = this.zScoreToGrade(zScore);
+    
+    return {
+      grade,
+      score: totalPoints,
+      zScore,
+      avgVorp,
+      reason: this.generatePositionReason(grade, zScore, position)
+    };
+  }
+
+  private calculateOverallGrade(team: any, positionGrades: Record<string, any>) {
+    // Calculate weighted overall score based on position grades
+    const positionWeights: Record<string, number> = {
+      'QB': 1.2,    // QB gets slight premium
+      'RB': 1.0,    // RB is baseline
+      'WR': 1.0,    // WR is baseline
+      'TE': 0.9,    // TE slightly less important
+      'FLEX': 0.8,  // Flex is bonus
+      'SUPERFLEX': 1.1, // Superflex is premium
+      'K': 0.3,     // Kicker much less important
+      'DEF': 0.4    // Defense less important
+    };
+    
+    let totalWeightedScore = 0;
+    let totalWeight = 0;
+    
+    Object.entries(positionGrades).forEach(([pos, grade]) => {
+      if (grade && grade.grade !== '—') {
+        const weight = positionWeights[pos] || 1.0;
+        const gradeScore = this.gradeToScore(grade.grade);
+        totalWeightedScore += gradeScore * weight;
+        totalWeight += weight;
+      }
+    });
+    
+    if (totalWeight === 0) return { grade: '—', score: 0 };
+    
+    const overallScore = totalWeightedScore / totalWeight;
+    const overallGrade = this.scoreToGrade(overallScore);
+    
+    return {
+      grade: overallGrade,
+      score: overallScore,
+      totalWeightedScore,
+      totalWeight
+    };
+  }
+
+  private zScoreToGrade(zScore: number): string {
+    if (zScore >= 1.5) return 'A+';
+    if (zScore >= 1.0) return 'A';
+    if (zScore >= 0.5) return 'B+';
+    if (zScore >= 0.0) return 'B';
+    if (zScore >= -0.5) return 'C+';
+    if (zScore >= -1.0) return 'C';
+    if (zScore >= -1.5) return 'D+';
+    if (zScore >= -2.0) return 'D';
+    return 'F';
+  }
+
+  private gradeToScore(grade: string): number {
+    const gradeScores: Record<string, number> = {
+      'A+': 95, 'A': 90, 'A-': 85,
+      'B+': 80, 'B': 75, 'B-': 70,
+      'C+': 65, 'C': 60, 'C-': 55,
+      'D+': 50, 'D': 45, 'D-': 40,
+      'F': 30
+    };
+    return gradeScores[grade] || 50;
+  }
+
+  private scoreToGrade(score: number): string {
+    if (score >= 90) return 'A+';
+    if (score >= 85) return 'A';
+    if (score >= 80) return 'A-';
+    if (score >= 75) return 'B+';
+    if (score >= 70) return 'B';
+    if (score >= 65) return 'B-';
+    if (score >= 60) return 'C+';
+    if (score >= 55) return 'C';
+    if (score >= 50) return 'C-';
+    if (score >= 45) return 'D+';
+    if (score >= 40) return 'D';
+    if (score >= 35) return 'D-';
+    return 'F';
+  }
+
+  private generatePositionReason(grade: string, zScore: number, position: string): string {
+    if (grade.startsWith('A')) return `Excellent ${position} performance`;
+    if (grade.startsWith('B')) return `Good ${position} performance`;
+    if (grade.startsWith('C')) return `Average ${position} performance`;
+    if (grade.startsWith('D')) return `Below average ${position} performance`;
+    return `Poor ${position} performance`;
+  }
+
+  private calculateLeagueStats(teams: any[], positionRequirements: string[]) {
     const positionStats: Record<string, { points: number[], vorp: number[] }> = {};
     
     // Initialize position stats
-    ['QB', 'RB', 'WR', 'TE', 'K', 'DEF'].forEach(pos => {
+    positionRequirements.forEach(pos => {
       positionStats[pos] = { points: [], vorp: [] };
     });
 
@@ -78,241 +242,19 @@ export default class PositionGradeEngine {
     return Math.sqrt(variance);
   }
 
-  private gradeTeam(team: any, numTeams: number, settings: LeagueSettings) {
-    const roster = team.roster || [];
-    
-    // 1. Baseline Setup - Fill optimal starting lineup
-    const starters = this.fillOptimalLineup(roster, settings);
-    
-    // 2. Calculate VORP and z-scores for starters
-    const starterScores = this.calculateStarterScores(starters, numTeams);
-    
-    // 3. Calculate depth score from bench players
-    const depthScore = this.calculateDepthScore(roster, starters);
-    
-    // 4. Calculate positional balance penalties
-    const balancePenalty = this.calculatePositionalBalance(starters, numTeams);
-    
-    // 5. Combine scores with proper weighting
-    const totalScore = this.combineScores(starterScores, depthScore, balancePenalty);
-    
-    return {
-      teamId: team.teamId,
-      teamName: team.teamName,
-      totalScore,
-      starterScores,
-      depthScore,
-      balancePenalty,
-      starters,
-      positionGrades: this.calculateIndividualPositionGrades(starters, numTeams)
-    };
-  }
-
-  private fillOptimalLineup(roster: any[], settings: LeagueSettings) {
-    const starters: Record<string, any[]> = {
-      QB: [], RB: [], WR: [], TE: [], K: [], DEF: [], FLEX: []
-    };
-    
-    // Sort players by projected points within each position
-    const byPosition: Record<string, any[]> = {};
-    ['QB', 'RB', 'WR', 'TE', 'K', 'DEF'].forEach(pos => {
-      byPosition[pos] = roster
-        .filter(p => (p.position || '').toUpperCase() === pos)
-        .sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0));
-    });
-
-    // Fill QB slots (1 or 2 for superflex)
-    const qbSlots = settings.isSuperflex ? 2 : 1;
-    starters.QB = byPosition.QB.slice(0, qbSlots);
-    
-    // Fill RB slots (typically 2-3)
-    const rbSlots = Math.min(2, byPosition.RB.length);
-    starters.RB = byPosition.RB.slice(0, rbSlots);
-    
-    // Fill WR slots (typically 2-4)
-    const wrSlots = Math.min(3, byPosition.WR.length);
-    starters.WR = byPosition.WR.slice(0, wrSlots);
-    
-    // Fill TE slots (1 or 2 for premium)
-    const teSlots = settings.isTEPremium ? 2 : 1;
-    starters.TE = byPosition.TE.slice(0, teSlots);
-    
-    // Fill K and DEF (1 each)
-    starters.K = byPosition.K.slice(0, 1);
-    starters.DEF = byPosition.DEF.slice(0, 1);
-    
-    // Fill FLEX with best remaining RB/WR/TE
-    const flexCandidates = [
-      ...byPosition.RB.slice(rbSlots),
-      ...byPosition.WR.slice(wrSlots),
-      ...byPosition.TE.slice(teSlots)
-    ].sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0));
-    
-    starters.FLEX = flexCandidates.slice(0, 1);
-    
-    return starters;
-  }
-
-  private calculateStarterScores(starters: Record<string, any[]>, numTeams: number) {
-    const scores: Record<string, number> = {};
-    
-    Object.keys(starters).forEach(pos => {
-      const players = starters[pos];
-      if (players.length === 0) {
-        scores[pos] = 0;
-        return;
-      }
-      
-      let totalScore = 0;
-      players.forEach(player => {
-        const points = player.projectedPoints || 0;
-        const vorp = this.getPlayerVorp(player.playerName || player.name || '');
-        
-        // Calculate z-score for this position
-        const avg = this.leagueAverages[pos] || 0;
-        const stdDev = this.leagueStdDevs[pos] || 1;
-        const zScore = stdDev > 0 ? (points - avg) / stdDev : 0;
-        
-        // Combine VORP and z-score (VORP gets higher weight)
-        const playerScore = (vorp * 0.7) + (zScore * 0.3);
-        totalScore += playerScore;
-      });
-      
-      // Apply position-specific weights
-      if (pos === 'K' || pos === 'DEF') {
-        totalScore *= 0.5; // Reduce weight for high-variance positions
-      }
-      
-      scores[pos] = totalScore;
-    });
-    
-    return scores;
-  }
-
-  private calculateDepthScore(roster: any[], starters: Record<string, any[]>): number {
-    // Get all players not in starters
-    const starterIds = new Set();
-    Object.values(starters).flat().forEach(player => {
-      starterIds.add(player.playerId || player.player_id);
-    });
-    
-    const benchPlayers = roster.filter(player => 
-      !starterIds.has(player.playerId || player.player_id)
-    );
-    
-    // Calculate bench VORP with reduced weight
-    let depthScore = 0;
-    benchPlayers.forEach(player => {
-      const vorp = this.getPlayerVorp(player.playerName || player.name || '');
-      depthScore += vorp * 0.25; // 25% weight for bench players
-    });
-    
-    return depthScore;
-  }
-
-  private calculatePositionalBalance(starters: Record<string, any[]>, numTeams: number): number {
-    let penalty = 0;
-    
-    // Check each position for extreme weakness
-    Object.entries(starters).forEach(([pos, players]) => {
-      if (players.length === 0) {
-        penalty += 2; // Heavy penalty for missing starters
-        return;
-      }
-      
-      const avgPoints = players.reduce((sum, p) => sum + (p.projectedPoints || 0), 0) / players.length;
-      const leagueAvg = this.leagueAverages[pos] || 0;
-      
-      // Penalty if significantly below league average
-      if (avgPoints < leagueAvg * 0.7) {
-        penalty += (leagueAvg * 0.7 - avgPoints) / leagueAvg;
-      }
-    });
-    
-    return penalty;
-  }
-
-  private combineScores(starterScores: Record<string, number>, depthScore: number, balancePenalty: number): number {
-    const starterTotal = Object.values(starterScores).reduce((sum, score) => sum + score, 0);
-    const totalScore = starterTotal + depthScore - balancePenalty;
-    
-    return Math.max(0, totalScore); // Ensure non-negative
-  }
-
-  private calculateIndividualPositionGrades(starters: Record<string, any[]>, numTeams: number) {
-    const grades: Record<string, any> = {};
-    
-    Object.entries(starters).forEach(([pos, players]) => {
-      if (players.length === 0) {
-        grades[pos] = { grade: 'F', score: 0, projectedPoints: 0, playerCount: 0 };
-        return;
-      }
-      
-      const totalPoints = players.reduce((sum, p) => sum + (p.projectedPoints || 0), 0);
-      const avgPoints = totalPoints / players.length;
-      
-      // Grade based on comparison to league average
-      const leagueAvg = this.leagueAverages[pos] || 0;
-      const score = leagueAvg > 0 ? (avgPoints / leagueAvg) * 100 : 0;
-      
-      grades[pos] = {
-        grade: this.scoreToGrade(score),
-        score: score,
-        projectedPoints: totalPoints,
-        playerCount: players.length
-      };
-    });
-    
-    return grades;
-  }
-
-  private normalizeGrades(teamGrades: any[]) {
-    if (teamGrades.length === 0) return teamGrades;
-    
-    // Sort by total score to determine percentiles
-    const sorted = [...teamGrades].sort((a, b) => b.totalScore - a.totalScore);
-    
-    return sorted.map((team, index) => {
-      const percentile = (index / sorted.length) * 100;
-      const overallGrade = this.percentileToGrade(percentile);
-      
-      return {
-        ...team,
-        overallGrade: { grade: overallGrade, score: team.totalScore, percentile }
-      };
-    });
-  }
-
-  private percentileToGrade(percentile: number): string {
-    if (percentile >= 90) return 'A+';
-    if (percentile >= 80) return 'A';
-    if (percentile >= 70) return 'A-';
-    if (percentile >= 60) return 'B+';
-    if (percentile >= 50) return 'B';
-    if (percentile >= 40) return 'B-';
-    if (percentile >= 30) return 'C+';
-    if (percentile >= 20) return 'C';
-    if (percentile >= 10) return 'C-';
-    return 'D';
-  }
-
-  private scoreToGrade(score: number): string {
-    if (score >= 120) return 'A+';
-    if (score >= 110) return 'A';
-    if (score >= 100) return 'A-';
-    if (score >= 90) return 'B+';
-    if (score >= 80) return 'B';
-    if (score >= 70) return 'B-';
-    if (score >= 60) return 'C+';
-    if (score >= 50) return 'C';
-    if (score >= 40) return 'C-';
-    if (score >= 30) return 'D';
-    return 'F';
-  }
-
   private getPlayerVorp(playerName: string): number {
     if (!playerName) return 0;
     const normalizedName = playerName.toLowerCase();
     return this.vorpLookup[normalizedName] || 0;
+  }
+
+  private getPositionRequirements(leagueType: string = 'standard') {
+    const requirements = {
+      standard: ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DEF'],
+      superflex: ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX', 'K', 'DEF'],
+      '2qb': ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DEF']
+    };
+    
+    return requirements[leagueType as keyof typeof requirements] || requirements.standard;
   }
 } 

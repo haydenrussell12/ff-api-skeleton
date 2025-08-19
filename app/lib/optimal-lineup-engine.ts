@@ -1,129 +1,158 @@
-export type LeagueSettings = {
-  qb?: number;
-  rb?: number;
-  wr?: number;
-  te?: number;
-  flex?: number;
-  def?: number;
-  k?: number;
-  superflex?: boolean;
-  scoring?: 'standard' | 'ppr' | 'half-ppr';
+type LeagueSettings = {
+  scoring?: string;
+  leagueType?: string;
 };
 
 export default class OptimalLineupEngine {
-  private defaultLeagueSettings: LeagueSettings = {
-    qb: 1,
-    rb: 2,
-    wr: 2,
-    te: 1,
-    flex: 1,
-    def: 1,
-    k: 1,
-    superflex: false,
-    scoring: 'ppr',
-  };
-
-  calculateOptimalLineup(roster: any[], leagueSettings: LeagueSettings = {}) {
-    const settings: Required<LeagueSettings> = { ...this.defaultLeagueSettings, ...leagueSettings } as any;
-
-    const playersByPosition = this.groupPlayersByPosition(roster);
-    const optimalLineup = this.findOptimalLineup(playersByPosition, settings);
-    const totalProjectedPoints = this.calculateTotalProjectedPoints(optimalLineup);
-    const benchPlayers = this.getBenchPlayers(roster, optimalLineup);
-    const benchPoints = this.calculateTotalProjectedPoints(benchPlayers);
-
-    return {
-      optimalLineup,
-      totalProjectedPoints,
-      benchPlayers,
-      benchPoints,
-      analysis: this.analyzeLineup(optimalLineup, settings),
+  private getRosterRequirements(leagueType: string = 'standard') {
+    const requirements = {
+      standard: {
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1,
+        totalStarters: 9,
+        flexPositions: ['RB', 'WR', 'TE']
+      },
+      superflex: {
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, K: 1, DEF: 1,
+        totalStarters: 10,
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexPositions: ['QB', 'RB', 'WR', 'TE']
+      },
+      '2qb': {
+        QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1,
+        totalStarters: 10,
+        flexPositions: ['RB', 'WR', 'TE']
+      }
     };
+    
+    return requirements[leagueType as keyof typeof requirements] || requirements.standard;
+  }
+
+  calculateOptimalLineup(roster: any[], settings: LeagueSettings = {}) {
+    const leagueType = settings.leagueType || 'standard';
+    const requirements = this.getRosterRequirements(leagueType);
+    
+    // Group players by position
+    const positionGroups = this.groupPlayersByPosition(roster);
+    
+    // Start building optimal lineup
+    const optimalLineup: Record<string, any[]> = {};
+    const usedPlayers = new Set();
+    
+    // Fill required positions first
+    Object.entries(requirements).forEach(([position, count]) => {
+      if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions') return;
+      
+      if (typeof count === 'number' && count > 0) {
+        optimalLineup[position] = [];
+        
+        // Get best players for this position
+        const availablePlayers = positionGroups[position] || [];
+        const sortedPlayers = availablePlayers
+          .filter((p: any) => !usedPlayers.has(p.playerId || p.playerName))
+          .sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))
+          .slice(0, count);
+        
+        optimalLineup[position] = sortedPlayers;
+        sortedPlayers.forEach((p: any) => usedPlayers.add(p.playerId || p.playerName));
+      }
+    });
+    
+    // Handle FLEX position
+    if (requirements.flexPositions) {
+      const flexPlayers = requirements.flexPositions.flatMap(pos => 
+        (positionGroups[pos] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName))
+      );
+      
+      if (flexPlayers.length > 0) {
+        const bestFlexPlayer = flexPlayers
+          .sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+        
+        if (bestFlexPlayer) {
+          optimalLineup.FLEX = [bestFlexPlayer];
+          usedPlayers.add(bestFlexPlayer.playerId || bestFlexPlayer.playerName);
+        }
+      }
+    }
+    
+    // Handle SUPERFLEX position (if applicable)
+    if ('superflexPositions' in requirements && requirements.superflexPositions && leagueType === 'superflex') {
+      const superflexPlayers = requirements.superflexPositions.flatMap(pos => 
+        (positionGroups[pos] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName))
+      );
+      
+      if (superflexPlayers.length > 0) {
+        const bestSuperflexPlayer = superflexPlayers
+          .sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+        
+        if (bestSuperflexPlayer) {
+          optimalLineup.SUPERFLEX = [bestSuperflexPlayer];
+          usedPlayers.add(bestSuperflexPlayer.playerId || bestSuperflexPlayer.playerName);
+        }
+      }
+    }
+    
+    return optimalLineup;
   }
 
   private groupPlayersByPosition(roster: any[]) {
-    const positions: Record<string, any[]> = {};
+    const groups: Record<string, any[]> = {};
+    
     roster.forEach((player) => {
-      const pos = (player.position || '').toUpperCase();
-      if (!pos) return;
-      if (!positions[pos]) positions[pos] = [];
-      positions[pos].push({ ...player, projectedPoints: player.projectedPoints || 0 });
+      const position = (player.position || '').toUpperCase();
+      if (!position) return;
+      
+      if (!groups[position]) {
+        groups[position] = [];
+      }
+      groups[position].push(player);
     });
-    Object.keys(positions).forEach((pos) => {
-      positions[pos].sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0));
-    });
-    return positions;
+    
+    return groups;
   }
 
-  private findOptimalLineup(playersByPosition: Record<string, any[]>, settings: Required<LeagueSettings>) {
-    const lineup: Record<string, any[]> = { QB: [], RB: [], WR: [], TE: [], FLEX: [], DEF: [], K: [] };
-    // Required slots
-    if (settings.qb && playersByPosition.QB) lineup.QB = playersByPosition.QB.slice(0, settings.qb);
-    if (settings.rb && playersByPosition.RB) lineup.RB = playersByPosition.RB.slice(0, settings.rb);
-    if (settings.wr && playersByPosition.WR) lineup.WR = playersByPosition.WR.slice(0, settings.wr);
-    if (settings.te && playersByPosition.TE) lineup.TE = playersByPosition.TE.slice(0, settings.te);
-    if (settings.def && playersByPosition.DEF) lineup.DEF = playersByPosition.DEF.slice(0, settings.def);
-    if (settings.k && playersByPosition.K) lineup.K = playersByPosition.K.slice(0, settings.k);
-
-    // Flex
-    if (settings.flex && settings.flex > 0) {
-      const used = new Set<string>();
-      Object.values(lineup).forEach((arr) => {
-        (arr || []).forEach((p: any) => used.add(p.playerId || p.playerName || p.name));
-      });
-      const candidates: any[] = [];
-      ['RB', 'WR', 'TE'].forEach((p) => {
-        (playersByPosition[p] || []).forEach((pl) => {
-          const id = pl.playerId || pl.playerName || pl.name;
-          if (!used.has(id)) candidates.push(pl);
-        });
-      });
-      if (settings.superflex) {
-        (playersByPosition.QB || []).forEach((pl) => {
-          const id = pl.playerId || pl.playerName || pl.name;
-          if (!used.has(id)) candidates.push(pl);
+  getBenchPlayers(roster: any[], optimalLineup: Record<string, any[]>): any[] {
+    const usedPlayers = new Set();
+    
+    // Collect all players used in optimal lineup
+    Object.values(optimalLineup).forEach((players: any[]) => {
+      if (Array.isArray(players)) {
+        players.forEach((p: any) => {
+          usedPlayers.add(p.playerId || p.playerName);
         });
       }
-      candidates.sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0));
-      lineup.FLEX = candidates.slice(0, settings.flex);
-    }
-
-    return lineup;
-  }
-
-  private calculateTotalProjectedPoints(lineupOrArray: any): number {
-    let total = 0;
-    if (Array.isArray(lineupOrArray)) {
-      lineupOrArray.forEach((p) => (total += p.projectedPoints || 0));
-    } else {
-      Object.values(lineupOrArray).forEach((arr: any) => {
-        (arr || []).forEach((p: any) => (total += p.projectedPoints || 0));
-      });
-    }
-    return Math.round(total * 100) / 100;
-  }
-
-  private getBenchPlayers(roster: any[], optimalLineup: Record<string, any[]>) {
-    const used = new Set<string>();
-    Object.values(optimalLineup).forEach((arr) => {
-      (arr || []).forEach((p: any) => used.add(p.playerId || p.playerName || p.name));
     });
-    return roster.filter((p) => !used.has(p.playerId || p.playerName || p.name));
+    
+    // Return players not used in optimal lineup
+    return roster.filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
   }
 
-  private analyzeLineup(lineup: Record<string, any[]>, settings: Required<LeagueSettings>) {
-    const positionBreakdown: Record<string, number> = {};
-    Object.keys(lineup).forEach((pos) => (positionBreakdown[pos] = (lineup[pos] || []).length));
-
-    const recommendations: Array<{ type: string; message: string; priority: 'low' | 'medium' | 'high' }> = [];
-    // Simple recommendations baseline
-    if ((lineup.RB || []).length < (settings.rb || 0)) {
-      recommendations.push({ type: 'depth', message: 'Consider adding RB depth.', priority: 'medium' });
+  calculateTotalProjectedPoints(players: any[] | Record<string, any[]>): number {
+    if (Array.isArray(players)) {
+      return players.reduce((total, player) => total + (player.projectedPoints || 0), 0);
     }
-    if ((lineup.WR || []).length < (settings.wr || 0)) {
-      recommendations.push({ type: 'depth', message: 'Consider adding WR depth.', priority: 'medium' });
-    }
+    
+    // Handle object format
+    let total = 0;
+    Object.values(players).forEach((positionPlayers: any) => {
+      if (Array.isArray(positionPlayers)) {
+        total += positionPlayers.reduce((sum: number, p: any) => sum + (p.projectedPoints || 0), 0);
+      }
+    });
+    
+    return total;
+  }
 
-    return { positionBreakdown, recommendations };
+  analyzeLineup(optimalLineup: Record<string, any[]>, settings: LeagueSettings = {}) {
+    const leagueType = settings.leagueType || 'standard';
+    const requirements = this.getRosterRequirements(leagueType);
+    
+    return {
+      totalStarters: requirements.totalStarters,
+      leagueType,
+      requirements,
+      positionCounts: Object.entries(requirements)
+        .filter(([key]) => !['totalStarters', 'flexPositions', 'superflexPositions'].includes(key))
+        .reduce((acc, [pos, count]) => ({ ...acc, [pos]: count }), {})
+    };
   }
 } 
