@@ -24,22 +24,47 @@ class DraftAnalyzer {
                 import('../../../adp_data.json')
             ]);
 
+            console.log('🔍 Loaded modules:', {
+                masterPlayers: !!masterPlayersModule,
+                nameLookup: !!nameLookupModule,
+                vorpData: !!vorpDataModule,
+                adpData: !!adpDataModule
+            });
+
             // Create lookup by player name (case-insensitive)
             const masterPlayers = (masterPlayersModule as any).default.players;
+            console.log('🔍 Master players structure:', {
+                hasDefault: !!(masterPlayersModule as any).default,
+                hasPlayers: !!masterPlayers,
+                playerCount: masterPlayers?.length || 0,
+                samplePlayer: masterPlayers?.[0]
+            });
+            
             this.consolidatedData = {};
             
             masterPlayers.forEach((player: any) => {
                 if (player.full_name) {
+                    // Store by both full_name and player_id for flexibility
                     this.consolidatedData[player.full_name.toLowerCase()] = player;
+                    if (player.player_id) {
+                        this.consolidatedData[player.player_id.toLowerCase()] = player;
+                    }
                 }
             });
 
             this.nameLookupIndex = (nameLookupModule as any).default;
             this.vorpData = (vorpDataModule as any).default.vorpScores || (vorpDataModule as any).default;
             
-            // Create ADP lookup by player name
+            // Create ADP lookup by player name - adp_data.json has players array
             this.adpData = {};
             const adpPlayers = (adpDataModule as any).default.players || [];
+            console.log('🔍 ADP data structure:', {
+                hasDefault: !!(adpDataModule as any).default,
+                hasPlayers: !!adpPlayers,
+                playerCount: adpPlayers?.length || 0,
+                samplePlayer: adpPlayers?.[0]
+            });
+            
             adpPlayers.forEach((player: any) => {
                 if (player.full_name) {
                     this.adpData[player.full_name.toLowerCase()] = player;
@@ -47,6 +72,8 @@ class DraftAnalyzer {
             });
 
             console.log(`✅ Draft Analyzer initialized with ${Object.keys(this.consolidatedData).length} players and ${Object.keys(this.adpData).length} ADP records.`);
+            console.log(`🔍 Sample consolidated players:`, Object.keys(this.consolidatedData).slice(0, 5));
+            console.log(`🔍 Sample ADP players:`, Object.keys(this.adpData).slice(0, 5));
         } catch (error) {
             console.error('❌ Failed to initialize Draft Analyzer:', error);
             throw new Error('Failed to load necessary data for analysis.');
@@ -95,11 +122,20 @@ class DraftAnalyzer {
             return player;
         }
         
+        // Try exact match with original name (case-insensitive)
+        player = this.consolidatedData[playerName.toLowerCase()];
+        if (player) {
+            console.log(`✅ Found exact match with original name: ${playerName}`);
+            return player;
+        }
+        
         // Try fuzzy matching by removing suffixes and checking partial matches
         const nameParts = normalizedName.split(' ');
         if (nameParts.length >= 2) {
             const firstName = nameParts[0];
             const lastName = nameParts[nameParts.length - 1];
+            
+            console.log(`🔍 Trying fuzzy match: firstName="${firstName}", lastName="${lastName}"`);
             
             // Look for players with matching first and last name
             for (const [key, data] of Object.entries(this.consolidatedData)) {
@@ -116,7 +152,20 @@ class DraftAnalyzer {
             }
         }
         
+        // Last resort: try to find any player whose name contains the search name
+        for (const [key, data] of Object.entries(this.consolidatedData)) {
+            if (key.includes(normalizedName) || normalizedName.includes(key)) {
+                console.log(`✅ Found partial match: "${playerName}" -> "${key}"`);
+                return data;
+            }
+        }
+        
         console.log(`❌ No match found for: ${playerName}`);
+        console.log(`🔍 Available players starting with similar names:`, 
+            Object.keys(this.consolidatedData)
+                .filter(k => k.includes(normalizedName.split(' ')[0]))
+                .slice(0, 5)
+        );
         return null;
     }
 
