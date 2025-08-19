@@ -78,7 +78,15 @@ class DraftAnalyzer {
         }
 
         const posKey = position?.toLowerCase();
-        const fpts = player.projections[posKey]?.fpts;
+        let fpts = player.projections[posKey]?.fpts;
+        
+        // Handle defense projections - try different position keys
+        if (!fpts && posKey === 'def') {
+            fpts = player.projections['def']?.fpts || 
+                   player.projections['DEF']?.fpts || 
+                   player.projections['defense']?.fpts;
+        }
+        
         return fpts ? parseFloat(fpts) : 0;
     }
 
@@ -140,13 +148,19 @@ class DraftAnalyzer {
         (participants || []).forEach((p: any) => {
             const slotKey = String(p?.slot ?? '');
             if (!slotKey) return;
-            const name = p?.name || p?.display_name || p?.username || p?.user_name;
+            
+            // Try multiple fields for username
+            const name = p?.name || p?.display_name || p?.username || p?.user_name || p?.metadata?.name || p?.metadata?.display_name;
+            
             if (name) {
                 slotToName[slotKey] = name;
                 console.log(`📝 Mapped slot ${slotKey} to name: ${name}`);
+            } else {
+                console.log(`⚠️ No name found for slot ${slotKey}, participant data:`, p);
             }
         });
         console.log('🔍 Final slot to name mapping:', slotToName);
+        console.log('🔍 Slot to roster mapping:', slotToRosterId);
 
         const draftInfo = {
             name: draftData.metadata?.name || `Draft ${draftId}`,
@@ -157,12 +171,14 @@ class DraftAnalyzer {
 
         const teams: { [rosterId: number]: any } = {};
         Object.entries(slotToRosterId).forEach(([slot, rosterId]) => {
+            const teamName = slotToName[String(slot)] || `Team ${rosterId}`;
             teams[rosterId] = {
                 teamId: rosterId,
-                teamName: slotToName[String(slot)] || `Team ${rosterId}`,
+                teamName: teamName,
                 draftSlot: parseInt(slot, 10),
                 roster: [] as any[],
             };
+            console.log(`🏈 Created team ${rosterId} for slot ${slot} with name: "${teamName}"`);
         });
 
         for (const pick of draftPicks || []) {
