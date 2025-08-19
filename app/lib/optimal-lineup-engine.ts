@@ -37,6 +37,8 @@ export default class OptimalLineupEngine {
     const superflexSlots = settings.superflexSlots || 0;
     const requirements = this.getRosterRequirements(leagueType, superflexSlots);
     
+    console.log('🔍 Calculating optimal lineup:', { leagueType, superflexSlots, requirements });
+    
     // Group players by position
     const positionGroups = this.groupPlayersByPosition(roster);
     
@@ -44,19 +46,27 @@ export default class OptimalLineupEngine {
     const optimalLineup: Record<string, any[]> = {};
     const usedPlayers = new Set();
     
+    console.log('🔍 Filling required positions...');
+    
     // Fill required positions first (excluding special positions)
     Object.entries(requirements).forEach(([position, count]) => {
       if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions' || position === 'superflexSlots') return;
+      
+      console.log(`🔍 Processing position: ${position}, count: ${count}`);
       
       if (typeof count === 'number' && count > 0) {
         optimalLineup[position] = [];
         
         // Get best players for this position
         const availablePlayers = positionGroups[position] || [];
+        console.log(`🔍 Available players for ${position}:`, availablePlayers);
+        
         const sortedPlayers = availablePlayers
           .filter((p: any) => !usedPlayers.has(p.playerId || p.playerName))
           .sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0))
           .slice(0, count);
+        
+        console.log(`🔍 Selected players for ${position}:`, sortedPlayers);
         
         optimalLineup[position] = sortedPlayers;
         sortedPlayers.forEach((p: any) => usedPlayers.add(p.playerId || p.playerName));
@@ -97,6 +107,15 @@ export default class OptimalLineupEngine {
       }
     }
     
+    // Ensure all required positions have at least an empty array
+    Object.entries(requirements).forEach(([position, count]) => {
+      if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions' || position === 'superflexSlots') return;
+      
+      if (typeof count === 'number' && count > 0 && !optimalLineup[position]) {
+        optimalLineup[position] = [];
+      }
+    });
+    
     return optimalLineup;
   }
 
@@ -130,9 +149,16 @@ export default class OptimalLineupEngine {
   private groupPlayersByPosition(roster: any[]) {
     const groups: Record<string, any[]> = {};
     
+    console.log('🔍 Grouping players by position. Roster:', roster);
+    
     roster.forEach((player) => {
       const position = (player.position || '').toUpperCase();
-      if (!position) return;
+      console.log(`🔍 Player: ${player.playerName}, Position: ${position}, Raw position: ${player.position}`);
+      
+      if (!position) {
+        console.log(`⚠️ Skipping player ${player.playerName} - no position`);
+        return;
+      }
       
       if (!groups[position]) {
         groups[position] = [];
@@ -140,6 +166,7 @@ export default class OptimalLineupEngine {
       groups[position].push(player);
     });
     
+    console.log('🔍 Grouped players:', groups);
     return groups;
   }
 

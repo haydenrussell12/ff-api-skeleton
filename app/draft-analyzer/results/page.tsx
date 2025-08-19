@@ -34,19 +34,10 @@ function TeamLineup({ team }: { team: any }) {
   const bench = team?.benchPlayers || [];
   const posGrades = team?.positionGrades || {};
 
-  // Get position order based on league type
+  // Get position order based on league type - use a fixed order for now
   const getPositionOrder = () => {
-    // Check if team has lineupAnalysis to determine league type
-    const hasSuperflex = team?.lineupAnalysis?.requirements?.SUPERFLEX;
-    const hasMultipleQB = team?.lineupAnalysis?.requirements?.QB === 2;
-    
-    if (hasSuperflex) {
-      return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX', 'DEF', 'K'];
-    } else if (hasMultipleQB) {
-      return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'DEF', 'K'];
-    } else {
-      return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'DEF', 'K'];
-    }
+    // For now, use a standard order - we can make this dynamic later
+    return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX', 'DEF', 'K'];
   };
 
   const positionOrder = getPositionOrder();
@@ -87,8 +78,8 @@ function TeamLineup({ team }: { team: any }) {
           {positionOrder.map((pos) => {
             const players = lineup[pos] || [];
             const grade = posGrades[pos];
-            if (players.length === 0) return null;
             
+            // Show all positions, even if empty, for debugging
             return (
               <div key={pos} style={{ 
                 border: '1px solid #e2e8f0', 
@@ -109,10 +100,22 @@ function TeamLineup({ team }: { team: any }) {
                     {grade && <Badge text={grade.grade} color={getGradeColor(grade.grade)} />}
                   </div>
                   <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>
-                    {players.reduce((sum: number, p: any) => sum + (p.projectedPoints || 0), 0).toFixed(1)} pts
+                    {players.length > 0 ? players.reduce((sum: number, p: any) => sum + (p.projectedPoints || 0), 0).toFixed(1) : '0'} pts
                   </div>
                 </div>
-                {renderPlayers(players)}
+                {players.length > 0 ? (
+                  renderPlayers(players)
+                ) : (
+                  <div style={{ 
+                    padding: '20px', 
+                    textAlign: 'center', 
+                    color: '#64748b', 
+                    fontSize: '14px',
+                    background: '#f8fafc'
+                  }}>
+                    No players in {pos} position
+                  </div>
+                )}
               </div>
             );
           })}
