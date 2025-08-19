@@ -473,41 +473,35 @@ class DraftAnalyzer {
         console.log('🔍 Total draft picks:', draftPicks.length);
         console.log('🔍 Slot to roster mapping:', slotToRosterId);
 
+        // Initialize all teams first
+        Object.entries(slotToRosterId).forEach(([slot, rosterId]: [string, number]) => {
+            teams[rosterId] = {
+                teamId: rosterId,
+                teamName: slotToName[slot] || `Team ${rosterId}`,
+                draftSlot: parseInt(slot),
+                roster: []
+            };
+        });
+
         // Process each pick and build team rosters
         draftPicks.forEach((pick: any, index: number) => {
-            // Calculate the overall draft position (1-based)
-            const overallPickNumber = index + 1;
-            
-            // Calculate which team this pick belongs to
-            // For a snake draft: picks 1, 2, 3... go to teams 1, 2, 3...
-            // Then picks 24, 23, 22... go to teams 12, 11, 10... (reverse order)
-            const teamsInLeague = Object.keys(slotToRosterId).length;
-            const round = Math.floor((overallPickNumber - 1) / teamsInLeague) + 1;
-            const pickInRound = (overallPickNumber - 1) % teamsInLeague;
-            
-            let teamSlot: number;
-            if (round % 2 === 1) {
-                // Odd rounds: forward order (1, 2, 3, 4...)
-                teamSlot = pickInRound;
-            } else {
-                // Even rounds: reverse order (4, 3, 2, 1...)
-                teamSlot = teamsInLeague - 1 - pickInRound;
+            // Use the draft_slot from the pick data directly
+            const draftSlot = pick.draft_slot;
+            if (draftSlot === undefined || draftSlot === null) {
+                console.warn(`Pick ${index + 1} has no draft_slot:`, pick);
+                return;
             }
-            
-            const rosterId = slotToRosterId[teamSlot.toString()];
-            
+
+            // Find the roster ID for this draft slot
+            const rosterId = slotToRosterId[draftSlot.toString()];
             if (!rosterId) {
-                console.warn(`No roster ID found for team slot ${teamSlot} in round ${round}`);
+                console.warn(`No roster ID found for draft slot ${draftSlot}`);
                 return;
             }
 
             if (!teams[rosterId]) {
-                teams[rosterId] = {
-                    teamId: rosterId,
-                    teamName: slotToName[teamSlot.toString()] || `Team ${rosterId}`,
-                    draftSlot: teamSlot,
-                    roster: []
-                };
+                console.warn(`Team ${rosterId} not initialized for draft slot ${draftSlot}`);
+                return;
             }
 
             // Get player data
@@ -517,11 +511,15 @@ class DraftAnalyzer {
                 return;
             }
 
+            // Calculate round from pick number and total teams
+            const totalTeams = Object.keys(slotToRosterId).length;
+            const round = Math.floor(index / totalTeams) + 1;
+
             // Enhance player data with projections and VORP
             const enhancedPlayer = this.enhancePlayerData(sleeperPlayer, pick, round);
             teams[rosterId].roster.push(enhancedPlayer);
             
-            console.log(`🔍 Pick ${overallPickNumber} (Round ${round}, Pick ${pickInRound + 1}): ${sleeperPlayer.full_name} -> Team ${rosterId}`);
+            console.log(`🔍 Pick ${index + 1} (Round ${round}, Slot ${draftSlot}): ${sleeperPlayer.full_name} -> Team ${rosterId}`);
         });
 
         console.log('🔍 Team roster summary:');
