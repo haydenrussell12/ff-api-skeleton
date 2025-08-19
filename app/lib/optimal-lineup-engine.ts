@@ -1,26 +1,31 @@
 type LeagueSettings = {
   scoring?: string;
   leagueType?: string;
+  superflexSlots?: number;
+  teams?: number;
 };
 
 export default class OptimalLineupEngine {
-  private getRosterRequirements(leagueType: string = 'standard') {
+  private getRosterRequirements(leagueType: string = 'standard', superflexSlots: number = 0) {
     const requirements = {
       standard: {
         QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1,
         totalStarters: 9,
-        flexPositions: ['RB', 'WR', 'TE']
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexSlots: 0
       },
       superflex: {
-        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, K: 1, DEF: 1,
-        totalStarters: 10,
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: superflexSlots || 1, K: 1, DEF: 1,
+        totalStarters: 9 + (superflexSlots || 1),
         flexPositions: ['RB', 'WR', 'TE'],
-        superflexPositions: ['QB', 'RB', 'WR', 'TE']
+        superflexPositions: ['QB', 'RB', 'WR', 'TE'],
+        superflexSlots: superflexSlots || 1
       },
       '2qb': {
         QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1,
         totalStarters: 10,
-        flexPositions: ['RB', 'WR', 'TE']
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexSlots: 0
       }
     };
     
@@ -29,7 +34,8 @@ export default class OptimalLineupEngine {
 
   calculateOptimalLineup(roster: any[], settings: LeagueSettings = {}) {
     const leagueType = settings.leagueType || 'standard';
-    const requirements = this.getRosterRequirements(leagueType);
+    const superflexSlots = settings.superflexSlots || 0;
+    const requirements = this.getRosterRequirements(leagueType, superflexSlots);
     
     // Group players by position
     const positionGroups = this.groupPlayersByPosition(roster);
@@ -40,7 +46,7 @@ export default class OptimalLineupEngine {
     
     // Fill required positions first (excluding special positions)
     Object.entries(requirements).forEach(([position, count]) => {
-      if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions') return;
+      if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions' || position === 'superflexSlots') return;
       
       if (typeof count === 'number' && count > 0) {
         optimalLineup[position] = [];
@@ -74,40 +80,51 @@ export default class OptimalLineupEngine {
       }
     }
     
-    // Handle SUPERFLEX position (if applicable)
-    if (leagueType === 'superflex' && 'superflexPositions' in requirements && requirements.superflexPositions) {
-      // Get all available superflex eligible players
-      const availableQBs = (positionGroups['QB'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
-      const availableRBs = (positionGroups['RB'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
-      const availableWRs = (positionGroups['WR'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
-      const availableTEs = (positionGroups['TE'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+    // Handle SUPERFLEX positions (if applicable)
+    if (leagueType === 'superflex' && requirements.superflexSlots && requirements.superflexSlots > 0) {
+      optimalLineup.SUPERFLEX = [];
       
-      // In superflex, QBs are extremely valuable - give them priority
-      let bestSuperflexPlayer = null;
-      
-      // First priority: Best available QB (QBs score much higher than other positions)
-      if (availableQBs.length > 0) {
-        const bestQB = availableQBs.sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
-        bestSuperflexPlayer = bestQB;
-        console.log(`🦸 SUPERFLEX: Selected QB ${bestQB.playerName} with ${bestQB.projectedPoints} points`);
-      }
-      
-      // If no QBs available, select best RB/WR/TE
-      if (!bestSuperflexPlayer) {
-        const otherPlayers = [...availableRBs, ...availableWRs, ...availableTEs];
-        if (otherPlayers.length > 0) {
-          bestSuperflexPlayer = otherPlayers.sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
-          console.log(`🦸 SUPERFLEX: No QBs available, selected ${bestSuperflexPlayer.position} ${bestSuperflexPlayer.playerName} with ${bestSuperflexPlayer.projectedPoints} points`);
+      // Fill each superflex slot
+      for (let slot = 0; slot < requirements.superflexSlots; slot++) {
+        const bestSuperflexPlayer = this.findBestSuperflexPlayer(positionGroups, usedPlayers);
+        
+        if (bestSuperflexPlayer) {
+          optimalLineup.SUPERFLEX.push(bestSuperflexPlayer);
+          usedPlayers.add(bestSuperflexPlayer.playerId || bestSuperflexPlayer.playerName);
+          
+          console.log(`🦸 SUPERFLEX Slot ${slot + 1}: Selected ${bestSuperflexPlayer.position} ${bestSuperflexPlayer.playerName} with ${bestSuperflexPlayer.projectedPoints} points`);
         }
-      }
-      
-      if (bestSuperflexPlayer) {
-        optimalLineup.SUPERFLEX = [bestSuperflexPlayer];
-        usedPlayers.add(bestSuperflexPlayer.playerId || bestSuperflexPlayer.playerName);
       }
     }
     
     return optimalLineup;
+  }
+
+  private findBestSuperflexPlayer(positionGroups: Record<string, any[]>, usedPlayers: Set<string | unknown>) {
+    // Get all available superflex eligible players
+    const availableQBs = (positionGroups['QB'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+    const availableRBs = (positionGroups['RB'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+    const availableWRs = (positionGroups['WR'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+    const availableTEs = (positionGroups['TE'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+    
+    // In superflex, QBs are extremely valuable - give them priority
+    let bestSuperflexPlayer = null;
+    
+    // First priority: Best available QB (QBs score much higher than other positions)
+    if (availableQBs.length > 0) {
+      const bestQB = availableQBs.sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+      bestSuperflexPlayer = bestQB;
+    }
+    
+    // If no QBs available, select best RB/WR/TE
+    if (!bestSuperflexPlayer) {
+      const otherPlayers = [...availableRBs, ...availableWRs, ...availableTEs];
+      if (otherPlayers.length > 0) {
+        bestSuperflexPlayer = otherPlayers.sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+      }
+    }
+    
+    return bestSuperflexPlayer;
   }
 
   private groupPlayersByPosition(roster: any[]) {
@@ -160,15 +177,35 @@ export default class OptimalLineupEngine {
 
   analyzeLineup(optimalLineup: Record<string, any[]>, settings: LeagueSettings = {}) {
     const leagueType = settings.leagueType || 'standard';
-    const requirements = this.getRosterRequirements(leagueType);
+    const superflexSlots = settings.superflexSlots || 0;
+    const requirements = this.getRosterRequirements(leagueType, superflexSlots);
     
     return {
       totalStarters: requirements.totalStarters,
       leagueType,
+      superflexSlots: requirements.superflexSlots || 0,
       requirements,
       positionCounts: Object.entries(requirements)
-        .filter(([key]) => !['totalStarters', 'flexPositions', 'superflexPositions'].includes(key))
+        .filter(([key]) => !['totalStarters', 'flexPositions', 'superflexPositions', 'superflexSlots'].includes(key))
         .reduce((acc, [pos, count]) => ({ ...acc, [pos]: count }), {})
     };
+  }
+
+  // Calculate replacement baselines for VORP calculations
+  calculateReplacementBaselines(settings: LeagueSettings = {}) {
+    const leagueType = settings.leagueType || 'standard';
+    const superflexSlots = settings.superflexSlots || 0;
+    const teams = settings.teams || 12;
+    
+    const baselines = {
+      QB: teams * (1 + superflexSlots), // QB demand increases with superflex slots
+      RB: teams * 2, // Standard RB demand
+      WR: teams * 2, // Standard WR demand  
+      TE: teams * 1, // Standard TE demand
+      K: teams * 1,
+      DEF: teams * 1
+    };
+    
+    return baselines;
   }
 } 

@@ -157,6 +157,7 @@ function ResultsContent() {
   const searchParams = useSearchParams();
   const draftUrl = useMemo(() => searchParams.get('draftUrl') || '', [searchParams]);
   const leagueType = useMemo(() => searchParams.get('leagueType') || 'standard', [searchParams]);
+  const superflexSlots = useMemo(() => parseInt(searchParams.get('superflexSlots') || '1'), [searchParams]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -174,7 +175,11 @@ function ResultsContent() {
         const response = await fetch('/api/analyze-draft', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ draftUrl, leagueType })
+          body: JSON.stringify({ 
+            draftUrl, 
+            leagueType, 
+            superflexSlots: leagueType === 'superflex' ? superflexSlots : undefined 
+          })
         });
         const json = await response.json();
         if (!response.ok || !json.success) {
@@ -189,7 +194,7 @@ function ResultsContent() {
       }
     };
     run();
-  }, [draftUrl, leagueType]);
+  }, [draftUrl, leagueType, superflexSlots]);
 
   // Helper: derive sorted teams for scoreboard (rank by optimal lineup projected points)
   const sortedTeams = useMemo(() => {
@@ -202,16 +207,20 @@ function ResultsContent() {
   }, [results]);
 
   // Helper: get league type display info
-  const getLeagueTypeInfo = (type: string) => {
+  const getLeagueTypeInfo = (type: string, slots: number = 1) => {
     const leagueTypes = {
       standard: { name: 'Standard (1 QB)', starters: 9, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1' },
-      superflex: { name: '🦸 Superflex', starters: 10, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, K: 1, DEF: 1' },
+      superflex: { 
+        name: '🦸 Superflex', 
+        starters: 9 + slots, 
+        description: `QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: ${slots}, K: 1, DEF: 1` 
+      },
       '2qb': { name: '⚖️ 2 QB', starters: 10, description: 'QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1' }
     };
     return leagueTypes[type as keyof typeof leagueTypes] || leagueTypes.standard;
   };
 
-  const leagueInfo = getLeagueTypeInfo(leagueType);
+  const leagueInfo = getLeagueTypeInfo(leagueType, superflexSlots);
 
   return (
     <div>

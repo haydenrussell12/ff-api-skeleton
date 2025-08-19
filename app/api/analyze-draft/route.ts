@@ -298,279 +298,52 @@ class DraftAnalyzer {
         return direct?.vorp_score || direct?.vorpScore ? parseFloat(direct.vorp_score || direct.vorpScore) : 0;
     }
 
-    async analyzeDraft(draftUrl: string, leagueType: string = 'standard') {
+    async analyzeDraft(draftUrl: string, leagueType: string = 'standard', superflexSlots?: number) {
         await this.initialize();
-
+        
+        console.log('🔍 Fetching draft data from Sleeper...');
         const draftId = this.parseSleeperDraftUrl(draftUrl);
-        console.log(`Analyzing draft ID: ${draftId}`);
-
+        
+        // Fetch draft data
         const draftData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}`);
-        const draftPicks: any[] = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
+        const draftPicks = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
         
-        // Log draft data to understand the draft type
-        console.log('🔍 Draft data:', {
-            id: draftData.id,
-            type: draftData.type,
-            status: draftData.status,
-            metadata: draftData.metadata,
-            settings: draftData.settings,
-            league_id: draftData.league_id,
-            slot_to_roster_id: draftData.slot_to_roster_id
-        });
-        
-        // Try to fetch participants to get display names for each draft slot
-        let participants: any[] = [];
-        let slotToName: Record<string, string> = {};
-        
-        // Get slot to roster mapping first
-        const slotToRosterId = draftData.slot_to_roster_id as { [slot: string]: number };
-        if (!slotToRosterId) {
-            throw new Error('No slot_to_roster_id found in draft data - this may not be a mock draft');
-        }
-
-        // SMART USERNAME DETECTION - Don't rely on failing endpoints
-        console.log('🧠 Using smart username detection...');
-        console.log('🔍 Draft type:', draftData.type);
-        console.log('🔍 Draft status:', draftData.status);
-        console.log('🔍 Draft metadata keys:', Object.keys(draftData.metadata || {}));
-        console.log('🔍 Draft settings keys:', Object.keys(draftData.settings || {}));
-        
-        // Method 1: Check if this is a mock draft with user info in picks
-        if (draftData.type === 'mock' || draftData.status === 'complete') {
-            console.log('🔍 This appears to be a mock draft, extracting usernames from picks...');
-            
-            // Look through all draft picks for user metadata
-            for (const pick of draftPicks || []) {
-                if (pick.metadata && Object.keys(pick.metadata).length > 0) {
-                    const slotKey = String(pick.draft_slot);
-                    
-                    console.log(`🔍 Pick ${pick.draft_slot} metadata:`, pick.metadata);
-                    
-                    // Check for any user identifier in metadata
-                    const potentialUsername = pick.metadata.user_id || 
-                                           pick.metadata.username || 
-                                           pick.metadata.display_name ||
-                                           pick.metadata.name ||
-                                           pick.metadata.user;
-                    
-                    if (potentialUsername && !slotToName[slotKey]) {
-                        slotToName[slotKey] = potentialUsername;
-                        console.log(`✅ Found username for slot ${slotKey}: ${potentialUsername}`);
-                    }
-                }
-            }
-        }
-        
-        // Method 2: Check draft metadata for user order
-        if (Object.keys(slotToName).length === 0 && draftData.metadata?.draft_order) {
-            console.log('🔍 Checking draft metadata for user order...');
-            const draftOrder = draftData.metadata.draft_order;
-            console.log('🔍 Draft order from metadata:', draftOrder);
-            
-            if (Array.isArray(draftOrder)) {
-                draftOrder.forEach((name: string, index: number) => {
-                    if (name && typeof name === 'string' && name.trim()) {
-                        const slotKey = String(index);
-                        slotToName[slotKey] = name.trim();
-                        console.log(`✅ Metadata mapped slot ${slotKey} to: ${name.trim()}`);
-                    }
-                });
-            }
-        }
-        
-        // Method 3: Check if there are team names in metadata
-        if (Object.keys(slotToName).length === 0 && draftData.metadata?.team_names) {
-            console.log('🔍 Checking for team names in metadata...');
-            const teamNames = draftData.metadata.team_names;
-            console.log('🔍 Team names from metadata:', teamNames);
-            
-            if (Array.isArray(teamNames)) {
-                teamNames.forEach((name: string, index: number) => {
-                    if (name && typeof name === 'string' && name.trim()) {
-                        const slotKey = String(index);
-                        slotToName[slotKey] = name.trim();
-                        console.log(`✅ Team names mapped slot ${slotKey} to: ${name.trim()}`);
-                    }
-                });
-            }
-        }
-        
-        // Method 4: Try to extract from draft settings
-        if (Object.keys(slotToName).length === 0 && draftData.settings) {
-            console.log('🔍 Checking draft settings for user info...');
-            
-            // Look for any field that might contain user information
-            const settingsKeys = Object.keys(draftData.settings);
-            for (const key of settingsKeys) {
-                const value = draftData.settings[key];
-                if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
-                    console.log(`🔍 Found potential user array in settings.${key}:`, value);
-                    
-                    // If this looks like a user list, map it to slots
-                    if (value.length === Object.keys(slotToRosterId).length) {
-                        value.forEach((name: string, index: number) => {
-                            if (name && typeof name === 'string' && name.trim()) {
-                                const slotKey = String(index);
-                                slotToName[slotKey] = name.trim();
-                                console.log(`✅ Settings mapped slot ${slotKey} to: ${name.trim()}`);
-                            }
-                        });
-                        break;
-                    }
-                }
-            }
-        }
-        
-        // Method 5: Check for any other metadata fields that might contain usernames
-        if (Object.keys(slotToName).length === 0 && draftData.metadata) {
-            console.log('🔍 Checking all metadata fields for potential usernames...');
-            
-            for (const [key, value] of Object.entries(draftData.metadata)) {
-                if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
-                    console.log(`🔍 Found array in metadata.${key}:`, value);
-                    
-                    // Check if this array has the right length and contains username-like strings
-                    if (value.length === Object.keys(slotToRosterId).length) {
-                        const looksLikeUsernames = value.every(v => 
-                            typeof v === 'string' && v.trim().length > 0 && 
-                            (v.includes('@') || v.length > 3) // Username-like characteristics
-                        );
-                        
-                        if (looksLikeUsernames) {
-                            value.forEach((name: string, index: number) => {
-                                const slotKey = String(index);
-                                slotToName[slotKey] = name.trim();
-                                console.log(`✅ Metadata.${key} mapped slot ${slotKey} to: ${name.trim()}`);
-                            });
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Method 6: Check if there are any other fields that might contain usernames
-        if (Object.keys(slotToName).length === 0) {
-            console.log('🔍 Checking for any other potential username sources...');
-            
-            // Check if there are any fields in the draft data that might contain usernames
-            const allFields = Object.keys(draftData);
-            for (const field of allFields) {
-                const value = draftData[field];
-                if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
-                    console.log(`🔍 Found array in draft.${field}:`, value);
-                    
-                    // If this array has the right length, it might be usernames
-                    if (value.length === Object.keys(slotToRosterId).length) {
-                        value.forEach((name: string, index: number) => {
-                            if (name && typeof name === 'string' && name.trim()) {
-                                const slotKey = String(index);
-                                slotToName[slotKey] = name.trim();
-                                console.log(`✅ Draft.${field} mapped slot ${slotKey} to: ${name.trim()}`);
-                            }
-                        });
-                        break;
-                    }
-                }
-            }
-        }
-        
-        // Method 7: Generate mock usernames if nothing else works
-        if (Object.keys(slotToName).length === 0) {
-            console.log('🔍 No usernames found, generating mock usernames...');
-            
-            // Create mock usernames based on draft slot
-            Object.keys(slotToRosterId).forEach((slot) => {
-                const slotNum = parseInt(slot, 10);
-                slotToName[slot] = `DraftSlot${slotNum + 1}`;
-                console.log(`🎭 Generated mock username for slot ${slot}: DraftSlot${slotNum + 1}`);
-            });
-        }
-        
-        console.log('🔍 Final slot to name mapping:', slotToName);
-        console.log('🔍 Slot to roster mapping:', slotToRosterId);
-        
-        // Summary of username detection results
-        console.log('📊 USERNAME DETECTION SUMMARY:');
-        console.log(`   Total slots: ${Object.keys(slotToRosterId).length}`);
-        console.log(`   Slots with names: ${Object.keys(slotToName).length}`);
-        console.log(`   Slots without names: ${Object.keys(slotToRosterId).length - Object.keys(slotToName).length}`);
-        
-        if (Object.keys(slotToName).length === 0) {
-            console.log('❌ NO USERNAMES FOUND - All strategies failed');
-            console.log('🔍 This suggests this may be a mock draft without user information');
-        } else {
-            console.log('✅ Usernames found:');
-            Object.entries(slotToName).forEach(([slot, name]) => {
-                console.log(`   Slot ${slot}: ${name}`);
-            });
-        }
-
-        const playersMap: any = await this.fetchSleeperApi(`https://api.sleeper.app/v1/players/nfl`);
-        const getSleeperPlayer = (id: string) => playersMap?.[id];
-
-        const draftInfo = {
-            name: draftData.metadata?.name || `Draft ${draftId}`,
-            teams: Object.keys(slotToRosterId).length,
+        console.log('📊 Draft data fetched:', {
+            draftName: draftData.name,
+            teams: draftData.teams?.length || 0,
             rounds: draftData.settings?.rounds || 0,
-            totalPicks: draftPicks?.length || 0,
-        };
-
-        const teams: { [rosterId: number]: any } = {};
-        Object.entries(slotToRosterId).forEach(([slot, rosterId]) => {
-            const teamName = slotToName[String(slot)] || `Team ${rosterId}`;
-            teams[rosterId] = {
-                teamId: rosterId,
-                teamName: teamName,
-                draftSlot: parseInt(slot, 10),
-                roster: [] as any[],
-            };
-            console.log(`🏈 Created team ${rosterId} for slot ${slot} with name: "${teamName}"`);
+            picks: draftPicks?.length || 0
         });
+        
+        // Process draft picks and build team rosters
+        const teams = await this.buildTeamRosters(draftData, draftPicks);
+        
+        // Calculate optimal lineups and grades
+        const result = this.analyzeTeams(teams, leagueType, superflexSlots);
+        
+        return {
+            draftInfo: {
+                name: draftData.name,
+                teams: draftData.teams?.length || 0,
+                rounds: draftData.settings?.rounds || 0,
+                totalPicks: draftPicks?.length || 0
+            },
+            ...result
+        };
+    }
 
-        for (const pick of draftPicks || []) {
-            const sleeperPlayer = getSleeperPlayer(String(pick.player_id));
-            if (!sleeperPlayer) continue;
-            const playerName: string = sleeperPlayer.full_name || `${sleeperPlayer.first_name || ''} ${sleeperPlayer.last_name || ''}`.trim();
-            const position: string = sleeperPlayer.position || pick.metadata?.position || '';
-
-            // Debug defense players specifically
-            if (position?.toLowerCase() === 'def' || position?.toLowerCase() === 'defense') {
-                console.log(`🛡️ Processing DEFENSE player: ${playerName} at position: ${position}`);
-            }
-
-            const projectedPoints = this.getPlayerProjectedPoints(playerName, position);
-            const adpValue = this.getPlayerAdp(playerName);
-            const vorpScore = this.getPlayerVorp(playerName);
-            
-            // Calculate draft value: negative means player was drafted above ADP (good value)
-            const draftValue = adpValue > 0 ? (adpValue - pick.draft_slot) : 0;
-
-            const player = {
-                ...pick,
-                metadata: sleeperPlayer,
-                playerName,
-                position,
-                projectedPoints,
-                adpValue,
-                vorpScore,
-                draftValue,
-                playerId: pick.player_id,
-            };
-
-            const targetRosterId = slotToRosterId[String(pick.draft_slot)];
-            if (targetRosterId && teams[targetRosterId]) {
-                teams[targetRosterId].roster.push(player);
-            }
-        }
-
-        // Compute optimal lineups and grades
+    private analyzeTeams(teams: any, leagueType: string = 'standard', superflexSlots?: number) {
         const lineupEngine = new OptimalLineupEngine();
-        const gradeEngine = new PositionGradeEngine(Array.isArray(this.vorpData) ? this.vorpData : []);
-
+        const gradeEngine = new PositionGradeEngine();
+        
         // First calculate optimal lineups for all teams
-        const analysisTeams = Object.entries(teams).map(([id, team]) => {
-            const lineup = lineupEngine.calculateOptimalLineup(team.roster, { leagueType, scoring: 'ppr' });
+        const analysisTeams = Object.entries(teams).map(([id, team]: [string, any]) => {
+            const lineup = lineupEngine.calculateOptimalLineup(team.roster, { 
+                leagueType, 
+                scoring: 'ppr',
+                superflexSlots: leagueType === 'superflex' ? superflexSlots : undefined,
+                teams: Object.keys(teams).length
+            });
             
             // Calculate average ADP
             const adpValues = team.roster.map((p: any) => p.adpValue || 0).filter((v: number) => v !== 0);
@@ -588,7 +361,12 @@ class DraftAnalyzer {
             const benchPoints = lineupEngine.calculateTotalProjectedPoints(benchPlayers);
             
             // Get lineup analysis
-            const lineupAnalysis = lineupEngine.analyzeLineup(lineup, { leagueType, scoring: 'ppr' });
+            const lineupAnalysis = lineupEngine.analyzeLineup(lineup, { 
+                leagueType, 
+                scoring: 'ppr',
+                superflexSlots: leagueType === 'superflex' ? superflexSlots : undefined,
+                teams: Object.keys(teams).length
+            });
             
             return {
                 teamId: id,
@@ -607,7 +385,12 @@ class DraftAnalyzer {
         });
 
         // Now calculate position grades using the new system that considers all teams
-        const gradedTeams = gradeEngine.calculatePositionGrades(analysisTeams, { leagueType, scoring: 'ppr' });
+        const gradedTeams = gradeEngine.calculatePositionGrades(analysisTeams, { 
+            leagueType, 
+            scoring: 'ppr',
+            superflexSlots: leagueType === 'superflex' ? superflexSlots : undefined,
+            teams: Object.keys(teams).length
+        });
 
         // Map the graded teams back to the expected format for the frontend
         const finalTeams = gradedTeams.map(gradedTeam => {
@@ -637,17 +420,101 @@ class DraftAnalyzer {
         });
 
         return {
-            draftInfo,
             analysis: {
                 teams: finalTeams,
             },
+        };
+    }
+
+    private async buildTeamRosters(draftData: any, draftPicks: any) {
+        const slotToRosterId = draftData.slot_to_roster_id as { [slot: string]: number };
+        if (!slotToRosterId) {
+            throw new Error('No slot_to_roster_id found in draft data - this may not be a mock draft');
+        }
+
+        const slotToName: Record<string, string> = {};
+        
+        // SMART USERNAME DETECTION - Don't rely on failing endpoints
+        if (draftData.metadata?.draft_order_by_roster_id) {
+            // Use metadata if available
+            Object.entries(draftData.metadata.draft_order_by_roster_id).forEach(([rosterId, slot]: [string, any]) => {
+                slotToName[slot] = `Team ${parseInt(rosterId) + 1}`;
+            });
+        } else {
+            // Fallback to slot numbers
+            Object.keys(slotToRosterId).forEach(slot => {
+                slotToName[slot] = `Team ${parseInt(slot) + 1}`;
+            });
+        }
+
+        // Fetch NFL players data
+        const playersMap: any = await this.fetchSleeperApi(`https://api.sleeper.app/v1/players/nfl`);
+        const getSleeperPlayer = (id: string) => playersMap?.[id];
+
+        const teams: { [rosterId: number]: any } = {};
+
+        // Process each pick and build team rosters
+        draftPicks.forEach((pick: any) => {
+            const slot = pick.pick_no.toString();
+            const rosterId = slotToRosterId[slot];
+            
+            if (!rosterId) {
+                console.warn(`No roster ID found for slot ${slot}`);
+                return;
+            }
+
+            if (!teams[rosterId]) {
+                teams[rosterId] = {
+                    teamId: rosterId,
+                    teamName: slotToName[slot] || `Team ${rosterId}`,
+                    draftSlot: parseInt(slot),
+                    roster: []
+                };
+            }
+
+            // Get player data
+            const sleeperPlayer = getSleeperPlayer(pick.player_id);
+            if (!sleeperPlayer) {
+                console.warn(`No player data found for ID ${pick.player_id}`);
+                return;
+            }
+
+            // Enhance player data with projections and VORP
+            const enhancedPlayer = this.enhancePlayerData(sleeperPlayer, pick);
+            teams[rosterId].roster.push(enhancedPlayer);
+        });
+
+        return teams;
+    }
+
+    private enhancePlayerData(sleeperPlayer: any, pick: any) {
+        const playerName: string = sleeperPlayer.full_name || `${sleeperPlayer.first_name || ''} ${sleeperPlayer.last_name || ''}`.trim();
+        const position: string = sleeperPlayer.position || pick.metadata?.position || '';
+
+        const projectedPoints = this.getPlayerProjectedPoints(playerName, position);
+        const adpValue = this.getPlayerAdp(playerName);
+        const vorpScore = this.getPlayerVorp(playerName);
+        
+        // Calculate draft value: negative means player was drafted above ADP (good value)
+        const draftValue = adpValue > 0 ? (adpValue - pick.draft_slot) : 0;
+
+        return {
+            ...pick,
+            metadata: sleeperPlayer,
+            playerName,
+            position,
+            projectedPoints,
+            adpValue,
+            vorpScore,
+            draftValue,
+            playerId: pick.player_id,
         };
     }
 }
 
 export async function POST(request: Request) {
     try {
-        const { draftUrl, leagueType = 'standard' } = await request.json();
+        const { draftUrl, leagueType = 'standard', superflexSlots } = await request.json();
         
         if (!draftUrl) {
             return NextResponse.json({ success: false, error: 'Draft URL is required' });
@@ -656,11 +523,12 @@ export async function POST(request: Request) {
         console.log('🚀 Starting draft analysis...');
         console.log('🔍 Draft URL:', draftUrl);
         console.log('🏈 League Type:', leagueType);
+        console.log('🦸 Superflex Slots:', superflexSlots);
 
         const analyzer = new DraftAnalyzer();
         await analyzer.initialize();
         
-        const result = await analyzer.analyzeDraft(draftUrl, leagueType);
+        const result = await analyzer.analyzeDraft(draftUrl, leagueType, superflexSlots);
         
         return NextResponse.json({ success: true, data: result });
     } catch (error) {

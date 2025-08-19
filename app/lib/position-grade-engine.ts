@@ -7,6 +7,7 @@ type LeagueSettings = {
   includeDST?: boolean;
   scoring?: string;
   leagueType?: string;
+  superflexSlots?: number;
 };
 
 export default class PositionGradeEngine {
@@ -24,7 +25,8 @@ export default class PositionGradeEngine {
 
   calculatePositionGrades(teams: any[], settings: LeagueSettings = {}) {
     const leagueType = settings.leagueType || 'standard';
-    const positionRequirements = this.getPositionRequirements(leagueType);
+    const superflexSlots = settings.superflexSlots || 0;
+    const positionRequirements = this.getPositionRequirements(leagueType, superflexSlots);
     
     // Calculate position grades for each team first
     const teamsWithPositionGrades = teams.map(team => {
@@ -96,7 +98,7 @@ export default class PositionGradeEngine {
       'WR': { excellent: 40, good: 30, average: 22, poor: 15 }, // 2 WRs  
       'TE': { excellent: 15, good: 12, average: 9, poor: 6 },
       'FLEX': { excellent: 20, good: 15, average: 12, poor: 8 },
-      'SUPERFLEX': { excellent: 25, good: 20, average: 15, poor: 10 },
+      'SUPERFLEX': { excellent: 25, good: 20, average: 15, poor: 10 }, // QB priority in superflex
       'K': { excellent: 10, good: 8, average: 6, poor: 4 },
       'DEF': { excellent: 12, good: 9, average: 7, poor: 5 }
     };
@@ -136,40 +138,18 @@ export default class PositionGradeEngine {
     return team.optimalLineup[position] || [];
   }
 
-  private gradePosition(players: any[], position: string) {
-    if (players.length === 0) return { grade: '—', score: 0, reason: 'No players' };
-    
-    const totalPoints = players.reduce((sum, p) => sum + (p.projectedPoints || 0), 0);
-    const avgVorp = players.reduce((sum, p) => sum + (p.vorpScore || 0), 0) / players.length;
-    
-    // Get league average for this position
-    const leagueAvg = this.leagueAverages[position] || 0;
-    const leagueStdDev = this.leagueStdDevs[position] || 1;
-    
-    // Calculate z-score
-    const zScore = leagueStdDev > 0 ? (totalPoints - leagueAvg) / leagueStdDev : 0;
-    
-    // Convert to grade
-    const grade = this.zScoreToGrade(zScore);
-    
-    return {
-      grade,
-      score: totalPoints,
-      zScore,
-      avgVorp,
-      reason: this.generatePositionReason(grade, zScore, position)
-    };
-  }
-
-  private calculateOverallGrade(team: any, positionGrades: Record<string, any>) {
+  private calculateOverallGrade(team: any, positionGrades: Record<string, any>, settings: LeagueSettings = {}) {
     // Calculate weighted overall score based on position grades
+    const leagueType = settings.leagueType || 'standard';
+    const superflexSlots = settings.superflexSlots || 0;
+    
     const positionWeights: Record<string, number> = {
-      'QB': 1.2,    // QB gets slight premium
+      'QB': leagueType === 'superflex' ? 1.4 : 1.2,    // QB gets premium in superflex
       'RB': 1.0,    // RB is baseline
       'WR': 1.0,    // WR is baseline
       'TE': 0.9,    // TE slightly less important
       'FLEX': 0.8,  // Flex is bonus
-      'SUPERFLEX': 1.1, // Superflex is premium
+      'SUPERFLEX': leagueType === 'superflex' ? 1.3 : 0.8, // Superflex is premium in superflex leagues
       'K': 0.3,     // Kicker much less important
       'DEF': 0.4    // Defense less important
     };
@@ -196,6 +176,31 @@ export default class PositionGradeEngine {
       score: overallScore,
       totalWeightedScore,
       totalWeight
+    };
+  }
+
+  private gradePosition(players: any[], position: string) {
+    if (players.length === 0) return { grade: '—', score: 0, reason: 'No players' };
+    
+    const totalPoints = players.reduce((sum, p) => sum + (p.projectedPoints || 0), 0);
+    const avgVorp = players.reduce((sum, p) => sum + (p.vorpScore || 0), 0) / players.length;
+    
+    // Get league average for this position
+    const leagueAvg = this.leagueAverages[position] || 0;
+    const leagueStdDev = this.leagueStdDevs[position] || 1;
+    
+    // Calculate z-score
+    const zScore = leagueStdDev > 0 ? (totalPoints - leagueAvg) / leagueStdDev : 0;
+    
+    // Convert to grade
+    const grade = this.zScoreToGrade(zScore);
+    
+    return {
+      grade,
+      score: totalPoints,
+      zScore,
+      avgVorp,
+      reason: this.generatePositionReason(grade, zScore, position)
     };
   }
 
@@ -299,7 +304,7 @@ export default class PositionGradeEngine {
     return this.vorpLookup[normalizedName] || 0;
   }
 
-  private getPositionRequirements(leagueType: string = 'standard') {
+  private getPositionRequirements(leagueType: string = 'standard', superflexSlots: number = 0) {
     const requirements = {
       standard: ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DEF'],
       superflex: ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX', 'K', 'DEF'],
@@ -307,5 +312,23 @@ export default class PositionGradeEngine {
     };
     
     return requirements[leagueType as keyof typeof requirements] || requirements.standard;
+  }
+
+  // Calculate replacement baselines for VORP calculations
+  calculateReplacementBaselines(settings: LeagueSettings = {}) {
+    const leagueType = settings.leagueType || 'standard';
+    const superflexSlots = settings.superflexSlots || 0;
+    const teams = settings.teams || 12;
+    
+    const baselines = {
+      QB: teams * (1 + superflexSlots), // QB demand increases with superflex slots
+      RB: teams * 2, // Standard RB demand
+      WR: teams * 2, // Standard WR demand  
+      TE: teams * 1, // Standard TE demand
+      K: teams * 1,
+      DEF: teams * 1
+    };
+    
+    return baselines;
   }
 } 
