@@ -120,7 +120,9 @@ class DraftAnalyzer {
             type: draftData.type,
             status: draftData.status,
             metadata: draftData.metadata,
-            settings: draftData.settings
+            settings: draftData.settings,
+            league_id: draftData.league_id,
+            slot_to_roster_id: draftData.slot_to_roster_id
         });
         
         // Try to fetch participants to get display names for each draft slot
@@ -178,6 +180,7 @@ class DraftAnalyzer {
             
             // Fallback 1: Try to get league info if this is a league draft
             try {
+                console.log('🔄 Fallback 1: Checking for league_id...', draftData.league_id);
                 if (draftData.league_id) {
                     console.log('🔄 Trying league endpoint as fallback...');
                     const leagueData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/league/${draftData.league_id}/users`);
@@ -201,6 +204,8 @@ class DraftAnalyzer {
                             }
                         });
                     }
+                } else {
+                    console.log('⚠️ No league_id found in draft data');
                 }
             } catch (leagueError) {
                 console.warn('⚠️ League fallback also failed:', leagueError);
@@ -208,9 +213,11 @@ class DraftAnalyzer {
             
             // Fallback 2: Try to extract names from draft metadata
             try {
+                console.log('🔄 Fallback 2: Checking draft metadata...', draftData.metadata);
                 if (draftData.metadata?.draft_order) {
                     console.log('🔄 Trying draft metadata as fallback...');
                     const draftOrder = draftData.metadata.draft_order;
+                    console.log('🔍 Draft order from metadata:', draftOrder);
                     if (Array.isArray(draftOrder)) {
                         draftOrder.forEach((name: string, index: number) => {
                             if (name && typeof name === 'string') {
@@ -220,6 +227,8 @@ class DraftAnalyzer {
                             }
                         });
                     }
+                } else {
+                    console.log('⚠️ No draft_order found in metadata');
                 }
             } catch (metadataError) {
                 console.warn('⚠️ Metadata fallback also failed:', metadataError);
