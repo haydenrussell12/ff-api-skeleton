@@ -172,20 +172,50 @@ class DraftAnalyzer {
     private getPlayerProjectedPoints(playerName: string, position: string) {
         const player = this.findPlayerByName(playerName, position);
         if (!player || !player.projections) {
+            console.log(`⚠️ No player or projections found for: ${playerName} (${position})`);
             return 0;
         }
 
         const posKey = position?.toLowerCase();
+        console.log(`🔍 Looking for projections for ${playerName} at position: ${posKey}`);
+        console.log(`🔍 Available projection keys:`, Object.keys(player.projections));
+        
         let fpts = player.projections[posKey]?.fpts;
         
-        // Handle defense projections - try different position keys
-        if (!fpts && posKey === 'def') {
-            fpts = player.projections['def']?.fpts || 
-                   player.projections['DEF']?.fpts || 
-                   player.projections['defense']?.fpts;
+        // Handle defense projections - try multiple position key variations
+        if (!fpts && (posKey === 'def' || posKey === 'defense')) {
+            console.log(`🛡️ Trying defense projection variations for: ${playerName}`);
+            
+            // Try all possible defense position keys
+            const defenseKeys = ['def', 'DEF', 'defense', 'Defense', 'DEFENSE'];
+            for (const key of defenseKeys) {
+                if (player.projections[key]?.fpts) {
+                    fpts = player.projections[key].fpts;
+                    console.log(`✅ Found defense projections using key: ${key} = ${fpts}`);
+                    break;
+                }
+            }
+            
+            // If still no luck, try to find any key that contains 'def'
+            if (!fpts) {
+                for (const key of Object.keys(player.projections)) {
+                    if (key.toLowerCase().includes('def')) {
+                        fpts = player.projections[key].fpts;
+                        console.log(`✅ Found defense projections using partial key: ${key} = ${fpts}`);
+                        break;
+                    }
+                }
+            }
         }
         
-        return fpts ? parseFloat(fpts) : 0;
+        if (fpts) {
+            console.log(`✅ Projected points for ${playerName}: ${fpts}`);
+            return parseFloat(fpts);
+        } else {
+            console.log(`❌ No projected points found for ${playerName} at position ${posKey}`);
+            console.log(`🔍 Player projections structure:`, player.projections);
+            return 0;
+        }
     }
 
     private getPlayerAdp(playerName: string) {
@@ -268,6 +298,8 @@ class DraftAnalyzer {
         // Strategy 1: Try participants endpoint
         try {
             console.log('🔄 Strategy 1: Trying participants endpoint...');
+            console.log(`🔍 URL: https://api.sleeper.app/v1/draft/${draftId}/participants`);
+            
             participants = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/participants`);
             console.log('🔍 Participants data:', JSON.stringify(participants, null, 2));
             console.log('🔍 Participants count:', participants.length);
@@ -290,6 +322,35 @@ class DraftAnalyzer {
             
         } catch (e) {
             console.error('❌ Strategy 1 (participants) failed:', e);
+            console.error('❌ Error details:', {
+                message: e instanceof Error ? e.message : 'Unknown error',
+                stack: e instanceof Error ? e.stack : 'No stack trace',
+                draftId: draftId,
+                url: `https://api.sleeper.app/v1/draft/${draftId}/participants`
+            });
+            
+            // Try alternative participants endpoint format
+            try {
+                console.log('🔄 Strategy 1b: Trying alternative participants endpoint...');
+                const altParticipants = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/users`);
+                console.log('🔍 Alternative participants data:', JSON.stringify(altParticipants, null, 2));
+                
+                if (Array.isArray(altParticipants)) {
+                    altParticipants.forEach((p: any) => {
+                        const slotKey = String(p?.slot ?? '');
+                        if (!slotKey) return;
+                        
+                        const name = p?.name || p?.display_name || p?.username || p?.user_name || p?.metadata?.name || p?.metadata?.display_name;
+                        
+                        if (name) {
+                            slotToName[slotKey] = name;
+                            console.log(`📝 Alternative participants mapped slot ${slotKey} to name: ${name}`);
+                        }
+                    });
+                }
+            } catch (altError) {
+                console.error('❌ Strategy 1b (alternative participants) also failed:', altError);
+            }
         }
         
         // Strategy 2: Check if this is a league draft and try league users
@@ -380,8 +441,61 @@ class DraftAnalyzer {
                 if (draftData.metadata?.team_names) {
                     console.log('🔍 Found team_names:', draftData.metadata.team_names);
                 }
+                
+                // Check if this is a mock draft and try to get user info from picks
+                if (draftData.type === 'mock' || draftData.status === 'complete') {
+                    console.log('🔄 Strategy 5b: This appears to be a mock draft, checking picks for user info...');
+                    
+                    // Look through draft picks for any user metadata
+                    for (const pick of draftPicks || []) {
+                        if (pick.metadata && Object.keys(pick.metadata).length > 0) {
+                            console.log(`🔍 Pick ${pick.draft_slot} metadata:`, pick.metadata);
+                            
+                            // Check if this pick has user info
+                            if (pick.metadata.user_id || pick.metadata.username || pick.metadata.display_name) {
+                                const slotKey = String(pick.draft_slot);
+                                const name = pick.metadata.display_name || pick.metadata.username || pick.metadata.user_id;
+                                
+                                if (name && !slotToName[slotKey]) {
+                                    slotToName[slotKey] = name;
+                                    console.log(`📝 Draft pick metadata mapped slot ${slotKey} to name: ${name}`);
+                                }
+                            }
+                        }
+                    }
+                }
+                
             } catch (error) {
                 console.error('❌ Strategy 5 (draft exploration) failed:', error);
+            }
+        }
+        
+        // Strategy 6: Try to get user info from Sleeper user IDs if available
+        if (Object.keys(slotToName).length === 0) {
+            try {
+                console.log('🔄 Strategy 6: Checking for Sleeper user IDs in draft data...');
+                
+                // Look for any user_id fields in the draft data
+                if (draftData.user_id) {
+                    console.log('🔍 Found user_id in draft data:', draftData.user_id);
+                }
+                
+                // Check if there are any user references in the metadata
+                if (draftData.metadata) {
+                    const metadataKeys = Object.keys(draftData.metadata);
+                    console.log('🔍 All metadata keys:', metadataKeys);
+                    
+                    // Look for any field that might contain user info
+                    for (const key of metadataKeys) {
+                        const value = draftData.metadata[key];
+                        if (typeof value === 'string' && value.includes('@')) {
+                            console.log(`🔍 Potential username found in ${key}:`, value);
+                        }
+                    }
+                }
+                
+            } catch (error) {
+                console.error('❌ Strategy 6 (user ID exploration) failed:', error);
             }
         }
         
