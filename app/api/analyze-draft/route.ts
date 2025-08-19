@@ -354,76 +354,101 @@ class DraftAnalyzer {
         }
         
         // Strategy 2: Check if this is a league draft and try league users
-        if (Object.keys(slotToName).length === 0 && draftData.league_id) {
+        if (Object.keys(slotToName).length === 0) {
             try {
                 console.log('🔄 Strategy 2: Trying league users endpoint...');
-                const leagueData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/league/${draftData.league_id}/users`);
-                console.log('🔍 League users data:', JSON.stringify(leagueData, null, 2));
+                console.log(`🔍 Checking for league_id: ${draftData.league_id}`);
                 
-                // Map roster IDs to user names from league
-                if (Array.isArray(leagueData)) {
-                    leagueData.forEach((user: any) => {
-                        const rosterId = user?.roster_id;
-                        if (rosterId !== undefined && rosterId !== null) {
-                            const name = user?.display_name || user?.username || user?.name;
-                            if (name) {
-                                // Find which slot this roster corresponds to
-                                Object.entries(slotToRosterId).forEach(([slot, rid]) => {
-                                    if (rid === rosterId) {
-                                        slotToName[slot] = name;
-                                        console.log(`📝 League fallback mapped slot ${slot} (roster ${rosterId}) to name: ${name}`);
-                                    }
-                                });
+                if (draftData.league_id) {
+                    const leagueData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/league/${draftData.league_id}/users`);
+                    console.log('🔍 League users data:', JSON.stringify(leagueData, null, 2));
+                    
+                    // Map roster IDs to user names from league
+                    if (Array.isArray(leagueData)) {
+                        leagueData.forEach((user: any) => {
+                            const rosterId = user?.roster_id;
+                            if (rosterId !== undefined && rosterId !== null) {
+                                const name = user?.display_name || user?.username || user?.name;
+                                if (name) {
+                                    // Find which slot this roster corresponds to
+                                    Object.entries(slotToRosterId).forEach(([slot, rid]) => {
+                                        if (rid === rosterId) {
+                                            slotToName[slot] = name;
+                                            console.log(`📝 League fallback mapped slot ${slot} (roster ${rosterId}) to name: ${name}`);
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+                } else {
+                    console.log('⚠️ No league_id found in draft data');
                 }
             } catch (leagueError) {
                 console.error('❌ Strategy 2 (league users) failed:', leagueError);
             }
+        } else {
+            console.log('🔄 Strategy 2: Skipped - usernames already found');
         }
         
         // Strategy 3: Check draft picks metadata for user info
         if (Object.keys(slotToName).length === 0) {
             try {
                 console.log('🔄 Strategy 3: Checking draft picks metadata...');
+                console.log(`🔍 Draft picks count: ${draftPicks?.length || 0}`);
                 console.log('🔍 Draft picks data:', JSON.stringify(draftPicks?.slice(0, 3), null, 2)); // Log first 3 picks
                 
                 // Look for user info in draft picks
                 for (const pick of draftPicks || []) {
-                    if (pick.metadata?.user_id || pick.metadata?.username || pick.metadata?.display_name) {
-                        const slotKey = String(pick.draft_slot);
-                        const name = pick.metadata?.display_name || pick.metadata?.username || pick.metadata?.user_id;
-                        if (name && !slotToName[slotKey]) {
-                            slotToName[slotKey] = name;
-                            console.log(`📝 Draft picks metadata mapped slot ${slotKey} to name: ${name}`);
+                    if (pick.metadata && Object.keys(pick.metadata).length > 0) {
+                        console.log(`🔍 Pick ${pick.draft_slot} metadata:`, pick.metadata);
+                        
+                        // Check if this pick has user info
+                        if (pick.metadata.user_id || pick.metadata.username || pick.metadata.display_name) {
+                            const slotKey = String(pick.draft_slot);
+                            const name = pick.metadata.display_name || pick.metadata.username || pick.metadata.user_id;
+                            
+                            if (name && !slotToName[slotKey]) {
+                                slotToName[slotKey] = name;
+                                console.log(`📝 Draft picks metadata mapped slot ${slotKey} to name: ${name}`);
+                            }
                         }
                     }
                 }
             } catch (metadataError) {
                 console.error('❌ Strategy 3 (draft picks metadata) failed:', metadataError);
             }
+        } else {
+            console.log('🔄 Strategy 3: Skipped - usernames already found');
         }
         
         // Strategy 4: Check draft metadata for draft order
-        if (Object.keys(slotToName).length === 0 && draftData.metadata?.draft_order) {
+        if (Object.keys(slotToName).length === 0) {
             try {
                 console.log('🔄 Strategy 4: Checking draft metadata...');
-                const draftOrder = draftData.metadata.draft_order;
-                console.log('🔍 Draft order from metadata:', draftOrder);
+                console.log(`🔍 Draft metadata keys: ${Object.keys(draftData.metadata || {}).join(', ')}`);
                 
-                if (Array.isArray(draftOrder)) {
-                    draftOrder.forEach((name: string, index: number) => {
-                        if (name && typeof name === 'string') {
-                            const slotKey = String(index);
-                            slotToName[slotKey] = name;
-                            console.log(`📝 Metadata fallback mapped slot ${slotKey} to name: ${name}`);
-                        }
-                    });
+                if (draftData.metadata?.draft_order) {
+                    const draftOrder = draftData.metadata.draft_order;
+                    console.log('🔍 Draft order from metadata:', draftOrder);
+                    
+                    if (Array.isArray(draftOrder)) {
+                        draftOrder.forEach((name: string, index: number) => {
+                            if (name && typeof name === 'string') {
+                                const slotKey = String(index);
+                                slotToName[slotKey] = name;
+                                console.log(`📝 Metadata fallback mapped slot ${slotKey} to name: ${name}`);
+                            }
+                        });
+                    }
+                } else {
+                    console.log('⚠️ No draft_order found in metadata');
                 }
             } catch (metadataError) {
                 console.error('❌ Strategy 4 (draft metadata) failed:', metadataError);
             }
+        } else {
+            console.log('🔄 Strategy 4: Skipped - usernames already found');
         }
         
         // Strategy 5: Try to extract from draft settings or other fields
@@ -501,6 +526,22 @@ class DraftAnalyzer {
         
         console.log('🔍 Final slot to name mapping:', slotToName);
         console.log('🔍 Slot to roster mapping:', slotToRosterId);
+        
+        // Summary of username detection results
+        console.log('📊 USERNAME DETECTION SUMMARY:');
+        console.log(`   Total slots: ${Object.keys(slotToRosterId).length}`);
+        console.log(`   Slots with names: ${Object.keys(slotToName).length}`);
+        console.log(`   Slots without names: ${Object.keys(slotToRosterId).length - Object.keys(slotToName).length}`);
+        
+        if (Object.keys(slotToName).length === 0) {
+            console.log('❌ NO USERNAMES FOUND - All strategies failed');
+            console.log('🔍 This suggests this may be a mock draft without user information');
+        } else {
+            console.log('✅ Some usernames found:');
+            Object.entries(slotToName).forEach(([slot, name]) => {
+                console.log(`   Slot ${slot}: ${name}`);
+            });
+        }
 
         const playersMap: any = await this.fetchSleeperApi(`https://api.sleeper.app/v1/players/nfl`);
         const getSleeperPlayer = (id: string) => playersMap?.[id];
@@ -529,6 +570,11 @@ class DraftAnalyzer {
             if (!sleeperPlayer) continue;
             const playerName: string = sleeperPlayer.full_name || `${sleeperPlayer.first_name || ''} ${sleeperPlayer.last_name || ''}`.trim();
             const position: string = sleeperPlayer.position || pick.metadata?.position || '';
+
+            // Debug defense players specifically
+            if (position?.toLowerCase() === 'def' || position?.toLowerCase() === 'defense') {
+                console.log(`🛡️ Processing DEFENSE player: ${playerName} at position: ${position}`);
+            }
 
             const projectedPoints = this.getPlayerProjectedPoints(playerName, position);
             const adpValue = this.getPlayerAdp(playerName);
