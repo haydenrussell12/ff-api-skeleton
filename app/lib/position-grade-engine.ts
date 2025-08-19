@@ -122,8 +122,13 @@ export default class PositionGradeEngine {
     const flexPositions = flexType === 'SUPERFLEX' ? ['QB', 'RB', 'WR', 'TE'] : ['RB', 'WR', 'TE'];
     const allFlexPlayers: any[] = [];
     
+    // Look at the roster for flex players, not the optimal lineup
+    if (!team.roster) return [];
+    
     flexPositions.forEach(pos => {
-      const players = this.getPositionPlayers(team, pos);
+      const players = (team.roster || []).filter((p: any) => 
+        (p.position || '').toUpperCase() === pos
+      );
       allFlexPlayers.push(...players);
     });
     
@@ -134,6 +139,15 @@ export default class PositionGradeEngine {
   }
 
   private getPositionPlayers(team: any, position: string) {
+    // For regular positions (QB, RB, WR, TE, K, DEF), look at the roster
+    if (position !== 'FLEX' && position !== 'SUPERFLEX') {
+      if (!team.roster) return [];
+      return (team.roster || []).filter((p: any) => 
+        (p.position || '').toUpperCase() === position
+      );
+    }
+    
+    // For flex positions, look at the optimal lineup
     if (!team.optimalLineup || !team.optimalLineup[position]) return [];
     return team.optimalLineup[position] || [];
   }

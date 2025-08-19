@@ -382,7 +382,7 @@ class DraftAnalyzer {
             };
         });
 
-        // Now calculate position grades using the new system that considers all teams
+        // Now calculate position grades using the teams with optimal lineups
         const gradedTeams = gradeEngine.calculatePositionGrades(analysisTeams, { 
             leagueType, 
             scoring: 'ppr',
