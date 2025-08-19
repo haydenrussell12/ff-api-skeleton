@@ -19,7 +19,7 @@ export default function DraftAnalyzerPage() {
     {
       id: 'superflex',
       name: '🦸 Superflex',
-      description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, DEF: 1, K: 1 (10 starters)',
+      description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1 (QB/RB/WR/TE), DEF: 1, K: 1 (9 starters)',
       icon: '🦸'
     },
     {

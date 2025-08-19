@@ -15,10 +15,10 @@ export default class OptimalLineupEngine {
         superflexPositions: []
       },
       superflex: {
-        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, DEF: 1, K: 1,
-        totalStarters: 10,
-        flexPositions: ['RB', 'WR', 'TE'],
-        superflexPositions: ['QB', 'RB', 'WR', 'TE']
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1,
+        totalStarters: 9,
+        flexPositions: ['QB', 'RB', 'WR', 'TE'], // QB eligible in flex
+        superflexPositions: []
       },
       '2qb': {
         QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1,
@@ -91,22 +91,14 @@ export default class OptimalLineupEngine {
         if (bestFlexPlayer) {
           optimalLineup.FLEX = [bestFlexPlayer];
           usedPlayers.add(bestFlexPlayer.playerId || bestFlexPlayer.playerName);
+          
+          // Log which type of flex this is
+          if (leagueType === 'superflex') {
+            console.log(`🦸 Superflex FLEX: Selected ${bestFlexPlayer.position} ${bestFlexPlayer.playerName} with ${bestFlexPlayer.projectedPoints} points`);
+          } else {
+            console.log(`🔄 Standard FLEX: Selected ${bestFlexPlayer.position} ${bestFlexPlayer.playerName} with ${bestFlexPlayer.projectedPoints} points`);
+          }
         }
-      }
-    }
-    
-    // Handle SUPERFLEX positions (if applicable)
-    if (leagueType === 'superflex' && requirements.superflexPositions && requirements.superflexPositions.length > 0) {
-      optimalLineup.SUPERFLEX = [];
-      
-      // Fill superflex slot with best QB/RB/WR/TE
-      const bestSuperflexPlayer = this.findBestSuperflexPlayer(positionGroups, usedPlayers);
-      
-      if (bestSuperflexPlayer) {
-        optimalLineup.SUPERFLEX.push(bestSuperflexPlayer);
-        usedPlayers.add(bestSuperflexPlayer.playerId || bestSuperflexPlayer.playerName);
-        
-        console.log(`🦸 SUPERFLEX: Selected ${bestSuperflexPlayer.position} ${bestSuperflexPlayer.playerName} with ${bestSuperflexPlayer.projectedPoints} points`);
       }
     }
     

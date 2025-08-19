@@ -38,7 +38,7 @@ function TeamLineup({ team }: { team: any }) {
   const getPositionOrder = () => {
     // For now, use a standard order - we can make this dynamic later
     // Note: FLEX will show multiple players if it's a 2 FLEX league
-    return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX', 'DEF', 'K'];
+    return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'DEF', 'K'];
   };
 
   const positionOrder = getPositionOrder();
@@ -212,7 +212,7 @@ function ResultsContent() {
   const getLeagueTypeInfo = (type: string) => {
     const leagueTypes = {
       standard: { name: 'Standard (1 QB)', starters: 9, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1' },
-      superflex: { name: '🦸 Superflex', starters: 10, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, DEF: 1, K: 1' },
+      superflex: { name: '🦸 Superflex', starters: 9, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1 (QB/RB/WR/TE), DEF: 1, K: 1' },
       '2qb': { name: '⚖️ 2 QB', starters: 10, description: 'QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1' },
       '2flex': { name: '🔄 2 Flex', starters: 10, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1' }
     };
