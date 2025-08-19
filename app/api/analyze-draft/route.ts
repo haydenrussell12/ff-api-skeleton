@@ -469,21 +469,43 @@ class DraftAnalyzer {
 
         const teams: { [rosterId: number]: any } = {};
 
+        console.log('🔍 Building team rosters from draft picks...');
+        console.log('🔍 Total draft picks:', draftPicks.length);
+        console.log('🔍 Slot to roster mapping:', slotToRosterId);
+
         // Process each pick and build team rosters
-        draftPicks.forEach((pick: any) => {
-            const slot = pick.pick_no.toString();
-            const rosterId = slotToRosterId[slot];
+        draftPicks.forEach((pick: any, index: number) => {
+            // Calculate the overall draft position (1-based)
+            const overallPickNumber = index + 1;
+            
+            // Calculate which team this pick belongs to
+            // For a snake draft: picks 1, 2, 3... go to teams 1, 2, 3...
+            // Then picks 24, 23, 22... go to teams 12, 11, 10... (reverse order)
+            const teamsInLeague = Object.keys(slotToRosterId).length;
+            const round = Math.floor((overallPickNumber - 1) / teamsInLeague) + 1;
+            const pickInRound = (overallPickNumber - 1) % teamsInLeague;
+            
+            let teamSlot: number;
+            if (round % 2 === 1) {
+                // Odd rounds: forward order (1, 2, 3, 4...)
+                teamSlot = pickInRound;
+            } else {
+                // Even rounds: reverse order (4, 3, 2, 1...)
+                teamSlot = teamsInLeague - 1 - pickInRound;
+            }
+            
+            const rosterId = slotToRosterId[teamSlot.toString()];
             
             if (!rosterId) {
-                console.warn(`No roster ID found for slot ${slot}`);
+                console.warn(`No roster ID found for team slot ${teamSlot} in round ${round}`);
                 return;
             }
 
             if (!teams[rosterId]) {
                 teams[rosterId] = {
                     teamId: rosterId,
-                    teamName: slotToName[slot] || `Team ${rosterId}`,
-                    draftSlot: parseInt(slot),
+                    teamName: slotToName[teamSlot.toString()] || `Team ${rosterId}`,
+                    draftSlot: teamSlot,
                     roster: []
                 };
             }
@@ -496,14 +518,21 @@ class DraftAnalyzer {
             }
 
             // Enhance player data with projections and VORP
-            const enhancedPlayer = this.enhancePlayerData(sleeperPlayer, pick);
+            const enhancedPlayer = this.enhancePlayerData(sleeperPlayer, pick, round);
             teams[rosterId].roster.push(enhancedPlayer);
+            
+            console.log(`🔍 Pick ${overallPickNumber} (Round ${round}, Pick ${pickInRound + 1}): ${sleeperPlayer.full_name} -> Team ${rosterId}`);
+        });
+
+        console.log('🔍 Team roster summary:');
+        Object.entries(teams).forEach(([rosterId, team]: [string, any]) => {
+            console.log(`🔍 Team ${rosterId}: ${team.roster.length} players`);
         });
 
         return teams;
     }
 
-    private enhancePlayerData(sleeperPlayer: any, pick: any) {
+    private enhancePlayerData(sleeperPlayer: any, pick: any, round: number) {
         const playerName: string = sleeperPlayer.full_name || `${sleeperPlayer.first_name || ''} ${sleeperPlayer.last_name || ''}`.trim();
         const position: string = sleeperPlayer.position || pick.metadata?.position || '';
 
@@ -524,6 +553,7 @@ class DraftAnalyzer {
             vorpScore,
             draftValue,
             playerId: pick.player_id,
+            round: round, // Add round to the enhanced player data
         };
     }
 }
