@@ -214,9 +214,38 @@ function ResultsContent() {
       standard: { name: 'Standard (1 QB)', starters: 9, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1' },
       superflex: { name: '🦸 Superflex', starters: 9, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1 (QB/RB/WR/TE), DEF: 1, K: 1' },
       '2qb': { name: '⚖️ 2 QB', starters: 10, description: 'QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1' },
-      '2flex': { name: '🔄 2 Flex', starters: 10, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1' }
+      '2flex': { name: '🔄 2 Flex', starters: 10, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1' },
+      'robs-bullshit': { name: '💩 Rob\'s Bullshit', starters: 12, description: 'QB: 2, RB: 2, WR: 3, TE: 1, FLEX: 2, DEF: 1, K: 1' }
     };
     return leagueTypes[type as keyof typeof leagueTypes] || leagueTypes.standard;
+  };
+
+  // Helper: get position order based on league type
+  const getPositionOrder = () => {
+    // For now, use a standard order - we can make this dynamic later
+    // Note: FLEX will show multiple players if it's a 2 FLEX league
+    return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'DEF', 'K'];
+  };
+
+  // Helper: format roster construction grade
+  const formatRosterGrade = (grade: any) => {
+    if (!grade || !grade.overallGrade) return { grade: '—', score: 0, summary: 'No grade available' };
+    
+    return {
+      grade: grade.overallGrade.grade || '—',
+      score: grade.overallGrade.score || 0,
+      summary: grade.overallGrade.summary || 'No summary available',
+      breakdown: grade.overallGrade.breakdown || {}
+    };
+  };
+
+  // Helper: get grade color
+  const getGradeColor = (grade: string) => {
+    if (grade.startsWith('A')) return '#10B981'; // Green
+    if (grade.startsWith('B')) return '#3B82F6'; // Blue
+    if (grade.startsWith('C')) return '#F59E0B'; // Yellow
+    if (grade.startsWith('D')) return '#EF4444'; // Red
+    return '#6B7280'; // Gray
   };
 
   const leagueInfo = getLeagueTypeInfo(leagueType);
@@ -304,66 +333,172 @@ function ResultsContent() {
           {/* Teams Section */}
           <SectionCard title="Teams">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: 20 }}>
-              {(results?.analysis?.teams || []).map((team: any) => (
-                <div key={team.teamId} style={{ 
-                  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)', 
-                  border: '1px solid #e2e8f0', 
-                  borderRadius: 16, 
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                  overflow: 'hidden'
-                }}>
-                  {/* Team Header */}
-                  <div style={{ 
-                    padding: '20px', 
-                    background: 'linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%)',
-                    color: 'white',
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'space-between'
+              {(results?.analysis?.teams || []).map((team: any) => {
+                const rosterGrade = formatRosterGrade(team);
+                const gradeColor = getGradeColor(rosterGrade.grade);
+                
+                return (
+                  <div key={team.teamId} style={{ 
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)', 
+                    border: '1px solid #e2e8f0', 
+                    borderRadius: 16, 
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    overflow: 'hidden'
                   }}>
-                    <div>
-                      <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 4 }}>{team.teamName || `Team ${team.teamId}`}</div>
-                      <div style={{ opacity: 0.9, fontSize: 14 }}>Draft Slot {team.draftSlot}</div>
+                    {/* Team Header with Roster Grade */}
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '20px',
+                      paddingBottom: '15px',
+                      borderBottom: '1px solid #e5e7eb'
+                    }}>
+                      <div>
+                        <h3 style={{ margin: '0 0 5px 0', fontSize: '24px', fontWeight: 'bold' }}>
+                          {team.teamName || `Team ${team.teamId}`}
+                        </h3>
+                        <p style={{ margin: '0', color: '#6b7280', fontSize: '14px' }}>
+                          {team.roster?.length || 0} players • {team.optimalLineupPoints || 0} projected points
+                        </p>
+                      </div>
+                      
+                      {/* Roster Construction Grade */}
+                      <div style={{
+                        textAlign: 'center',
+                        padding: '15px',
+                        borderRadius: '8px',
+                        backgroundColor: '#f9fafb',
+                        border: `2px solid ${gradeColor}`,
+                        minWidth: '80px'
+                      }}>
+                        <div style={{
+                          fontSize: '32px',
+                          fontWeight: 'bold',
+                          color: gradeColor,
+                          marginBottom: '5px'
+                        }}>
+                          {rosterGrade.grade}
+                        </div>
+                        <div style={{
+                          fontSize: '14px',
+                          color: '#6b7280',
+                          fontWeight: '500'
+                        }}>
+                          {rosterGrade.score}/100
+                        </div>
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <Badge text={team?.overallGrade?.grade ?? team?.positionGrades?.overallGrade?.grade ?? '—'} color="rgba(255,255,255,0.9)" style={{ fontSize: '16px', padding: '6px 16px' }} />
+
+                    {/* Roster Construction Analysis */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                      gap: '15px',
+                      marginBottom: '20px'
+                    }}>
+                      {/* Positional Balance */}
+                      <div style={{
+                        padding: '15px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '6px',
+                        border: '1px solid #e2e8f0'
+                      }}>
+                        <h4 style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: '600' }}>
+                          📊 Positional Balance
+                        </h4>
+                        <div style={{
+                          fontSize: '24px',
+                          fontWeight: 'bold',
+                          color: getGradeColor(rosterGrade.breakdown?.positionalBalance?.score >= 80 ? 'A' : 
+                                           rosterGrade.breakdown?.positionalBalance?.score >= 60 ? 'C' : 'D'),
+                          marginBottom: '5px'
+                        }}>
+                          {rosterGrade.breakdown?.positionalBalance?.score || 0}/100
+                        </div>
+                        <p style={{ margin: '0', fontSize: '14px', color: '#6b7280' }}>
+                          {rosterGrade.breakdown?.positionalBalance?.analysis || 'No analysis available'}
+                        </p>
+                      </div>
+
+                      {/* Depth Strategy */}
+                      <div style={{
+                        padding: '15px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '6px',
+                        border: '1px solid #e2e8f0'
+                      }}>
+                        <h4 style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: '600' }}>
+                          🏗️ Depth Strategy
+                        </h4>
+                        <div style={{
+                          fontSize: '24px',
+                          fontWeight: 'bold',
+                          color: getGradeColor(rosterGrade.breakdown?.depthStrategy?.score >= 80 ? 'A' : 
+                                           rosterGrade.breakdown?.depthStrategy?.score >= 60 ? 'C' : 'D'),
+                          marginBottom: '5px'
+                        }}>
+                          {rosterGrade.breakdown?.depthStrategy?.score || 0}/100
+                        </div>
+                        <p style={{ margin: '0', fontSize: '14px', color: '#6b7280' }}>
+                          {rosterGrade.breakdown?.depthStrategy?.analysis || 'No analysis available'}
+                        </p>
+                      </div>
+
+                      {/* ADP Value */}
+                      <div style={{
+                        padding: '15px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '6px',
+                        border: '1px solid #e2e8f0'
+                      }}>
+                        <h4 style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: '600' }}>
+                          💎 Draft Value
+                        </h4>
+                        <div style={{
+                          fontSize: '24px',
+                          fontWeight: 'bold',
+                          color: getGradeColor(rosterGrade.breakdown?.adpValue?.score >= 80 ? 'A' : 
+                                           rosterGrade.breakdown?.adpValue?.score >= 60 ? 'C' : 'D'),
+                          marginBottom: '5px'
+                        }}>
+                          {rosterGrade.breakdown?.adpValue?.score || 0}/100
+                        </div>
+                        <p style={{ margin: '0', fontSize: '14px', color: '#6b7280' }}>
+                          {rosterGrade.breakdown?.adpValue?.analysis || 'No analysis available'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Detailed Roster Summary */}
+                    <div style={{
+                      padding: '15px',
+                      backgroundColor: '#fef3c7',
+                      borderRadius: '6px',
+                      border: '1px solid #fbbf24',
+                      marginBottom: '20px'
+                    }}>
+                      <h4 style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: '600', color: '#92400e' }}>
+                        📋 Roster Construction Summary
+                      </h4>
+                      <pre style={{
+                        margin: '0',
+                        fontSize: '12px',
+                        color: '#92400e',
+                        whiteSpace: 'pre-wrap',
+                        fontFamily: 'monospace'
+                      }}>
+                        {rosterGrade.summary}
+                      </pre>
+                    </div>
+                    
+                    {/* Team Lineup */}
+                    <div style={{ padding: '20px' }}>
+                      <TeamLineup team={team} />
                     </div>
                   </div>
-                  
-                  {/* Team Stats */}
-                  <div style={{ 
-                    padding: '16px 20px', 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', 
-                    gap: 12, 
-                    fontSize: 13, 
-                    borderBottom: '1px solid #e2e8f0',
-                    background: '#f8fafc'
-                  }}>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total</div>
-                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.totalProjectedPoints?.toFixed?.(1) || 0}</div>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Optimal</div>
-                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.optimalLineupPoints?.toFixed?.(1) || 0}</div>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>ADP</div>
-                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.averageAdpValue?.toFixed?.(1) || 0}</div>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>VORP</div>
-                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.averageVorpScore?.toFixed?.(2) || 0}</div>
-                    </div>
-                  </div>
-                  
-                  {/* Team Lineup */}
-                  <div style={{ padding: '20px' }}>
-                    <TeamLineup team={team} />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </SectionCard>
 

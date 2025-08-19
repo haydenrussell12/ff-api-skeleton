@@ -36,249 +36,287 @@ export default class PositionGradeEngine {
         _metadata: positionRequirements._metadata
       }
     });
-    
-    // Calculate position grades for each team first
+
     const teamsWithPositionGrades = teams.map(team => {
-      const positionGrades = this.calculateTeamPositionGrades(team, positionRequirements);
+      const rosterConstructionGrade = this.analyzeRosterConstruction(team, positionRequirements, leagueType);
       return {
         ...team,
-        positionGrades
+        positionGrades: rosterConstructionGrade
       };
     });
-    
-    // Calculate overall grades based on actual performance, not forced percentiles
-    const teamsWithOverallScores = teamsWithPositionGrades.map(team => {
-      // Calculate overall score based on optimal lineup points
-      const overallScore = team.optimalLineupPoints || 0;
-      
-      // Convert to letter grade based on actual performance thresholds
-      const overallGrade = this.scoreToGrade(overallScore);
-      
+
+    // Calculate overall team grades based on roster construction quality
+    const teamsWithOverallGrades = teamsWithPositionGrades.map(team => {
+      const overallGrade = this.calculateOverallRosterGrade(team.positionGrades);
       return {
         ...team,
-        overallGrade: {
-          grade: overallGrade,
-          score: overallScore,
-          rawScore: overallScore
-        }
+        overallGrade
       };
     });
-    
-    return teamsWithOverallScores;
+
+    return teamsWithOverallGrades;
   }
 
-  private calculateTeamPositionGrades(team: any, positionRequirements: any) {
-    const positionGrades: Record<string, any> = {};
+  private analyzeRosterConstruction(team: any, requirements: any, leagueType: string) {
+    const analysis = {
+      positionalBalance: this.analyzePositionalBalance(team, requirements, leagueType),
+      depthStrategy: this.analyzeDepthStrategy(team, requirements),
+      adpValue: this.analyzeADPValue(team),
+      keeperValue: this.analyzeKeeperValue(team),
+      overallScore: 0,
+      grade: 'F'
+    };
+
+    // Calculate overall score (weighted average)
+    const weights = {
+      positionalBalance: 0.35,  // Most important - roster construction
+      depthStrategy: 0.30,       // Depth and bench quality
+      adpValue: 0.25,           // Draft value and steals
+      keeperValue: 0.10          // Keeper advantage (if applicable)
+    };
+
+    analysis.overallScore = 
+      (analysis.positionalBalance.score * weights.positionalBalance) +
+      (analysis.depthStrategy.score * weights.depthStrategy) +
+      (analysis.adpValue.score * weights.adpValue) +
+      (analysis.keeperValue.score * weights.keeperValue);
+
+    analysis.grade = this.scoreToGrade(analysis.overallScore);
     
-    // Extract position names from the requirements object (excluding metadata and flexPositions)
-    const positionNames = Object.keys(positionRequirements).filter(key => 
-      !['flexPositions', 'superflexPositions', 'totalStarters', '_metadata'].includes(key)
-    );
+    return analysis;
+  }
+
+  private analyzePositionalBalance(team: any, requirements: any, leagueType: string) {
+    const roster = team.roster || [];
+    const positionCounts: Record<string, number> = {};
+    const positionValues: Record<string, number[]> = {};
     
-    positionNames.forEach(pos => {
-      if (pos === 'FLEX' || pos === 'SUPERFLEX') {
-        // Handle flex positions specially
-        const flexPlayers = this.getFlexPlayers(team, pos);
-        if (flexPlayers.length > 0) {
-          const grade = this.gradePositionSimple(flexPlayers, pos);
-          positionGrades[pos] = grade;
-        }
-      } else {
-        // Handle regular positions
-        const players = this.getPositionPlayers(team, pos);
-        if (players.length > 0) {
-          const grade = this.gradePositionSimple(players, pos);
-          positionGrades[pos] = grade;
+    // Count players and collect projected points by position
+    roster.forEach((player: any) => {
+      const pos = player.position || 'UNK';
+      if (!positionCounts[pos]) {
+        positionCounts[pos] = 0;
+        positionValues[pos] = [];
+      }
+      positionCounts[pos]++;
+      positionValues[pos].push(player.projectedPoints || 0);
+    });
+
+    let balanceScore = 100;
+    let issues: string[] = [];
+
+    // Analyze each position against requirements
+    Object.entries(requirements).forEach(([pos, required]) => {
+      if (['flexPositions', 'superflexPositions', 'totalStarters', '_metadata'].includes(pos)) return;
+      
+      const actual = positionCounts[pos] || 0;
+      const requiredNum = required as number;
+      
+      if (actual < requiredNum) {
+        // Position is underfilled
+        const deficit = requiredNum - actual;
+        balanceScore -= (deficit * 15); // Major penalty for missing starters
+        issues.push(`${pos}: Missing ${deficit} starter(s)`);
+      } else if (actual > requiredNum + 2) {
+        // Position is overloaded (more than 2 extra)
+        const excess = actual - requiredNum - 2;
+        balanceScore -= (excess * 8); // Penalty for overloading
+        issues.push(`${pos}: ${excess} too many players`);
+      }
+    });
+
+    // Check for critical position gaps
+    const criticalPositions = ['QB', 'RB', 'WR', 'TE'];
+    criticalPositions.forEach(pos => {
+      if (!positionCounts[pos] || positionCounts[pos] === 0) {
+        balanceScore -= 25; // Critical penalty for missing entire position
+        issues.push(`${pos}: Position completely missing`);
+      }
+    });
+
+    // Special analysis for league types
+    if (leagueType === 'superflex' && (!positionCounts['QB'] || positionCounts['QB'] < 2)) {
+      balanceScore -= 20; // Superflex needs QB depth
+      issues.push('Superflex: Insufficient QB depth');
+    }
+
+    if (leagueType === '2qb' && (!positionCounts['QB'] || positionCounts['QB'] < 2)) {
+      balanceScore -= 30; // 2QB needs exactly 2 QBs
+      issues.push('2QB: Must have exactly 2 QBs');
+    }
+
+    return {
+      score: Math.max(0, balanceScore),
+      issues,
+      positionCounts,
+      analysis: `Positional balance analysis: ${issues.length > 0 ? issues.join(', ') : 'Well balanced'}`
+    };
+  }
+
+  private analyzeDepthStrategy(team: any, requirements: any) {
+    const roster = team.roster || [];
+    const starters = roster.slice(0, requirements.totalStarters || 9);
+    const bench = roster.slice(requirements.totalStarters || 9);
+    
+    let depthScore = 100;
+    let analysis: string[] = [];
+
+    // Analyze bench quality
+    if (bench.length === 0) {
+      depthScore -= 30;
+      analysis.push('No bench players');
+    } else {
+      // Check if bench has viable starters for bye weeks
+      const benchQuality = bench.map((p: any) => p.projectedPoints || 0);
+      const avgBenchPoints = benchQuality.reduce((sum: number, pts: number) => sum + pts, 0) / benchQuality.length;
+      
+      if (avgBenchPoints < 80) {
+        depthScore -= 15;
+        analysis.push('Weak bench quality');
+      } else if (avgBenchPoints > 120) {
+        depthScore += 10; // Bonus for strong bench
+        analysis.push('Strong bench quality');
+      }
+
+      // Check position diversity on bench
+      const benchPositions = [...new Set(bench.map((p: any) => p.position))];
+      if (benchPositions.length < 3) {
+        depthScore -= 10;
+        analysis.push('Limited bench position diversity');
+      }
+    }
+
+    // Check for injury risk (players with low projected points as starters)
+    const weakStarters = starters.filter((p: any) => (p.projectedPoints || 0) < 60);
+    if (weakStarters.length > 2) {
+      depthScore -= 20;
+      analysis.push(`${weakStarters.length} weak starters`);
+    }
+
+    return {
+      score: Math.max(0, depthScore),
+      analysis: analysis.length > 0 ? analysis.join(', ') : 'Good depth strategy',
+      benchSize: bench.length,
+      avgBenchPoints: bench.length > 0 ? bench.map((p: any) => p.projectedPoints || 0).reduce((sum: number, pts: number) => sum + pts, 0) / bench.length : 0
+    };
+  }
+
+  private analyzeADPValue(team: any) {
+    const roster = team.roster || [];
+    let adpScore = 100;
+    let steals: string[] = [];
+    let reaches: string[] = [];
+    let analysis: string[] = [];
+
+    roster.forEach((player: any) => {
+      const adp = player.adpValue || 0;
+      const round = player.round || 0;
+      const projectedPoints = player.projectedPoints || 0;
+      
+      if (adp > 0 && round > 0) {
+        const adpRound = Math.ceil(adp / 12); // Convert ADP to approximate round
+        const roundDiff = adpRound - round;
+        
+        if (roundDiff > 2) {
+          // Player drafted much earlier than ADP (reach)
+          adpScore -= 8;
+          reaches.push(`${player.playerName} (Round ${round}, ADP ~${adpRound})`);
+        } else if (roundDiff < -2) {
+          // Player drafted much later than ADP (steal)
+          adpScore += 5;
+          steals.push(`${player.playerName} (Round ${round}, ADP ~${adpRound})`);
         }
       }
     });
-    
-    return positionGrades;
+
+    // Bonus for overall draft value
+    if (steals.length > reaches.length) {
+      adpScore += 10;
+      analysis.push(`More steals (${steals.length}) than reaches (${reaches.length})`);
+    } else if (reaches.length > steals.length) {
+      adpScore -= 10;
+      analysis.push(`More reaches (${reaches.length}) than steals (${steals.length})`);
+    }
+
+    return {
+      score: Math.max(0, Math.min(100, adpScore)),
+      steals,
+      reaches,
+      analysis: analysis.length > 0 ? analysis.join(', ') : 'Balanced ADP strategy',
+      stealCount: steals.length,
+      reachCount: reaches.length
+    };
   }
 
-  private gradePositionSimple(players: any[], position: string) {
-    if (players.length === 0) return { grade: '—', score: 0, reason: 'No players' };
-    
-    const totalPoints = players.reduce((sum, p) => sum + (p.projectedPoints || 0), 0);
-    
-    // Simple grading based on projected points thresholds for different positions
-    let grade = 'C';
-    let gradeScore = totalPoints;
-    
-    // Position-specific scoring thresholds (approximate)
-    const thresholds: Record<string, { excellent: number, good: number, average: number, poor: number }> = {
-      'QB': { excellent: 25, good: 22, average: 18, poor: 15 },
-      'RB': { excellent: 40, good: 30, average: 22, poor: 15 }, // 2 RBs
-      'WR': { excellent: 40, good: 30, average: 22, poor: 15 }, // 2 WRs  
-      'TE': { excellent: 15, good: 12, average: 9, poor: 6 },
-      'FLEX': { excellent: 20, good: 15, average: 12, poor: 8 },
-      'SUPERFLEX': { excellent: 25, good: 20, average: 15, poor: 10 }, // QB priority in superflex
-      'K': { excellent: 10, good: 8, average: 6, poor: 4 },
-      'DEF': { excellent: 12, good: 9, average: 7, poor: 5 }
-    };
-    
-    const threshold = thresholds[position] || thresholds['FLEX'];
-    
-    if (totalPoints >= threshold.excellent) grade = 'A+';
-    else if (totalPoints >= threshold.good) grade = 'A';
-    else if (totalPoints >= threshold.average) grade = 'B';
-    else if (totalPoints >= threshold.poor) grade = 'C';
-    else grade = 'D';
+  private analyzeKeeperValue(team: any) {
+    // For now, assume no keepers - this can be enhanced later
+    // Keeper analysis would look at:
+    // - How many keepers they have
+    // - What round value those keepers represent
+    // - How much of an advantage they provide
     
     return {
-      grade,
-      score: totalPoints,
-      reason: this.generatePositionReason(grade, 0, position)
+      score: 100, // Neutral score for now
+      analysis: 'No keeper analysis available',
+      keepers: [],
+      keeperAdvantage: 0
     };
   }
 
-  private getFlexPlayers(team: any, flexType: string) {
-    const flexPositions = flexType === 'SUPERFLEX' ? ['QB', 'RB', 'WR', 'TE'] : ['RB', 'WR', 'TE'];
-    const allFlexPlayers: any[] = [];
+  private calculateOverallRosterGrade(positionGrades: any) {
+    const score = positionGrades.overallScore;
     
-    // Look at the roster for flex players, not the optimal lineup
-    if (!team.roster) return [];
-    
-    flexPositions.forEach(pos => {
-      const players = (team.roster || []).filter((p: any) => 
-        (p.position || '').toUpperCase() === pos
-      );
-      allFlexPlayers.push(...players);
-    });
-    
-    // Sort by projected points and take top players
-    return allFlexPlayers
-      .sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0))
-      .slice(0, 3); // Top 3 for flex grading
+    return {
+      score: Math.round(score * 100) / 100,
+      grade: positionGrades.grade,
+      summary: this.generateRosterSummary(positionGrades),
+      breakdown: {
+        positionalBalance: positionGrades.positionalBalance,
+        depthStrategy: positionGrades.depthStrategy,
+        adpValue: positionGrades.adpValue,
+        keeperValue: positionGrades.keeperValue
+      }
+    };
   }
 
-  private getPositionPlayers(team: any, position: string) {
-    // For regular positions (QB, RB, WR, TE, K, DEF), look at the roster
-    if (position !== 'FLEX' && position !== 'SUPERFLEX') {
-      if (!team.roster) return [];
-      return (team.roster || []).filter((p: any) => 
-        (p.position || '').toUpperCase() === position
-      );
+  private generateRosterSummary(positionGrades: any) {
+    const { positionalBalance, depthStrategy, adpValue } = positionGrades;
+    
+    let summary = `Overall Roster Grade: ${positionGrades.grade} (${Math.round(positionGrades.overallScore * 100) / 100}/100)\n\n`;
+    
+    // Positional Balance Summary
+    summary += `Positional Balance: ${positionalBalance.score}/100\n`;
+    if (positionalBalance.issues.length > 0) {
+      summary += `Issues: ${positionalBalance.issues.join(', ')}\n`;
     }
     
-    // For flex positions, look at the optimal lineup
-    if (!team.optimalLineup || !team.optimalLineup[position]) return [];
-    return team.optimalLineup[position] || [];
-  }
-
-  private calculateOverallGrade(team: any, positionGrades: Record<string, any>, settings: LeagueSettings = {}) {
-    // Calculate weighted overall score based on position grades
-    const leagueType = settings.leagueType || 'standard';
-    const superflexSlots = settings.superflexSlots || 0;
+    // Depth Strategy Summary
+    summary += `\nDepth Strategy: ${depthStrategy.score}/100\n`;
+    summary += `Bench Size: ${depthStrategy.benchSize} players\n`;
+    summary += `Analysis: ${depthStrategy.analysis}\n`;
     
-    const positionWeights: Record<string, number> = {
-      'QB': leagueType === 'superflex' ? 1.4 : 1.2,    // QB gets premium in superflex
-      'RB': 1.0,    // RB is baseline
-      'WR': 1.0,    // WR is baseline
-      'TE': 0.9,    // TE slightly less important
-      'FLEX': 0.8,  // Flex is bonus
-      'SUPERFLEX': leagueType === 'superflex' ? 1.3 : 0.8, // Superflex is premium in superflex leagues
-      'K': 0.3,     // Kicker much less important
-      'DEF': 0.4    // Defense less important
-    };
+    // ADP Value Summary
+    summary += `\nDraft Value: ${adpValue.score}/100\n`;
+    summary += `Steals: ${adpValue.stealCount}, Reaches: ${adpValue.reachCount}\n`;
+    summary += `Analysis: ${adpValue.analysis}`;
     
-    let totalWeightedScore = 0;
-    let totalWeight = 0;
-    
-    Object.entries(positionGrades).forEach(([pos, grade]) => {
-      if (grade && grade.grade !== '—') {
-        const weight = positionWeights[pos] || 1.0;
-        const gradeScore = this.gradeToScore(grade.grade);
-        totalWeightedScore += gradeScore * weight;
-        totalWeight += weight;
-      }
-    });
-    
-    if (totalWeight === 0) return { grade: '—', score: 0 };
-    
-    const overallScore = totalWeightedScore / totalWeight;
-    const overallGrade = this.scoreToGrade(overallScore);
-    
-    return {
-      grade: overallGrade,
-      score: overallScore,
-      totalWeightedScore,
-      totalWeight
-    };
-  }
-
-  private gradePosition(players: any[], position: string) {
-    if (players.length === 0) return { grade: '—', score: 0, reason: 'No players' };
-    
-    const totalPoints = players.reduce((sum, p) => sum + (p.projectedPoints || 0), 0);
-    const avgVorp = players.reduce((sum, p) => sum + (p.vorpScore || 0), 0) / players.length;
-    
-    // Get league average for this position
-    const leagueAvg = this.leagueAverages[position] || 0;
-    const leagueStdDev = this.leagueStdDevs[position] || 1;
-    
-    // Calculate z-score
-    const zScore = leagueStdDev > 0 ? (totalPoints - leagueAvg) / leagueStdDev : 0;
-    
-    // Convert to grade
-    const grade = this.zScoreToGrade(zScore);
-    
-    return {
-      grade,
-      score: totalPoints,
-      zScore,
-      avgVorp,
-      reason: this.generatePositionReason(grade, zScore, position)
-    };
-  }
-
-  private zScoreToGrade(zScore: number): string {
-    if (zScore >= 1.5) return 'A+';
-    if (zScore >= 1.0) return 'A';
-    if (zScore >= 0.5) return 'B+';
-    if (zScore >= 0.0) return 'B';
-    if (zScore >= -0.5) return 'C+';
-    if (zScore >= -1.0) return 'C';
-    if (zScore >= -1.5) return 'D+';
-    if (zScore >= -2.0) return 'D';
-    return 'F';
-  }
-
-  private gradeToScore(grade: string): number {
-    const gradeScores: Record<string, number> = {
-      'A+': 95, 'A': 90, 'A-': 85,
-      'B+': 80, 'B': 75, 'B-': 70,
-      'C+': 65, 'C': 60, 'C-': 55,
-      'D+': 50, 'D': 45, 'D-': 40,
-      'F': 30
-    };
-    return gradeScores[grade] || 50;
+    return summary;
   }
 
   private scoreToGrade(score: number): string {
-    // Realistic scoring thresholds based on actual fantasy football performance
-    // These thresholds allow for genuine grade distribution based on team quality
-    
-    if (score >= 200) return 'A+';      // Exceptional team
-    if (score >= 185) return 'A';       // Excellent team  
-    if (score >= 170) return 'A-';      // Very good team
-    if (score >= 155) return 'B+';      // Good team
-    if (score >= 140) return 'B';       // Above average team
-    if (score >= 125) return 'B-';      // Slightly above average
-    if (score >= 110) return 'C+';      // Average team
-    if (score >= 95) return 'C';        // Below average team
-    if (score >= 80) return 'C-';       // Poor team
-    if (score >= 65) return 'D+';       // Very poor team
-    if (score >= 50) return 'D';        // Terrible team
-    return 'F';                          // Complete failure
-  }
-
-  private generatePositionReason(grade: string, zScore: number, position: string): string {
-    if (grade.startsWith('A')) return `Excellent ${position} performance`;
-    if (grade.startsWith('B')) return `Good ${position} performance`;
-    if (grade.startsWith('C')) return `Average ${position} performance`;
-    if (grade.startsWith('D')) return `Below average ${position} performance`;
-    return `Poor ${position} performance`;
+    if (score >= 90) return 'A+';
+    if (score >= 85) return 'A';
+    if (score >= 80) return 'A-';
+    if (score >= 75) return 'B+';
+    if (score >= 70) return 'B';
+    if (score >= 65) return 'B-';
+    if (score >= 60) return 'C+';
+    if (score >= 55) return 'C';
+    if (score >= 50) return 'C-';
+    if (score >= 45) return 'D+';
+    if (score >= 40) return 'D';
+    if (score >= 35) return 'D-';
+    return 'F';
   }
 
   private calculateLeagueStats(teams: any[], positionRequirements: string[]) {
@@ -352,6 +390,11 @@ export default class PositionGradeEngine {
       },
       '2flex': {
         QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1, // 10 starters
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexPositions: []
+      },
+      'robs-bullshit': {
+        QB: 2, RB: 2, WR: 3, TE: 1, FLEX: 2, DEF: 1, K: 1, // 12 starters (THE BEAST!)
         flexPositions: ['RB', 'WR', 'TE'],
         superflexPositions: []
       }

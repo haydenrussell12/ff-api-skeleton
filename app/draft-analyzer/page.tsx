@@ -33,6 +33,12 @@ export default function DraftAnalyzerPage() {
       name: '🔄 2 Flex',
       description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1 (10 starters)',
       icon: '🔄'
+    },
+    {
+      id: 'robs-bullshit',
+      name: '💩 Rob\'s Bullshit',
+      description: 'QB: 2, RB: 2, WR: 3, TE: 1, FLEX: 2, DEF: 1, K: 1 (12 starters)',
+      icon: '💩'
     }
   ];
 

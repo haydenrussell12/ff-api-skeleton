@@ -29,6 +29,11 @@ export default class OptimalLineupEngine {
         QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1, // 10 starters
         flexPositions: ['RB', 'WR', 'TE'],
         superflexPositions: []
+      },
+      'robs-bullshit': {
+        QB: 2, RB: 2, WR: 3, TE: 1, FLEX: 2, DEF: 1, K: 1, // 12 starters (THE BEAST!)
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexPositions: []
       }
     };
 
@@ -129,18 +134,14 @@ export default class OptimalLineupEngine {
     }
     
     // Handle 2 FLEX positions (if applicable)
-    if (leagueType === '2flex' && requirements.FLEX === 2) {
+    if ((leagueType === '2flex' || leagueType === 'robs-bullshit') && requirements.FLEX === 2) {
       optimalLineup.FLEX = [];
-      
-      // Fill first flex spot
       const bestFlexPlayer1 = this.findBestFlexPlayer(positionGroups, usedPlayers);
       if (bestFlexPlayer1) {
         optimalLineup.FLEX.push(bestFlexPlayer1);
         usedPlayers.add(bestFlexPlayer1.playerId || bestFlexPlayer1.playerName);
         console.log(`🔄 FLEX 1: Selected ${bestFlexPlayer1.position} ${bestFlexPlayer1.playerName} with ${bestFlexPlayer1.projectedPoints} points`);
       }
-      
-      // Fill second flex spot
       const bestFlexPlayer2 = this.findBestFlexPlayer(positionGroups, usedPlayers);
       if (bestFlexPlayer2) {
         optimalLineup.FLEX.push(bestFlexPlayer2);
