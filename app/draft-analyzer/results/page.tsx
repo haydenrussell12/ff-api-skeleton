@@ -34,44 +34,74 @@ function TeamLineup({ team }: { team: any }) {
   const posGrades = team?.positionGrades?.positionGrades || {};
 
   const renderPlayers = (players: any[]) => (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, minmax(0, 1fr))', gap: 6 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, minmax(0, 1fr))', gap: 8 }}>
       {(players || []).map((p, idx) => (
-        <div key={(p.playerId || p.playerName || idx) + '-lineup'} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px', background: '#f8fafc', border: '1px solid #eef2f7', borderRadius: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div key={(p.playerId || p.playerName || idx) + '-lineup'} style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          padding: '12px 16px', 
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', 
+          border: '1px solid #e2e8f0', 
+          borderRadius: 10,
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Badge text={p.position || '—'} color="#0ea5e9" />
-            <div style={{ fontWeight: 600, color: '#0f172a' }}>{p.playerName}</div>
+            <div style={{ fontWeight: 600, color: '#0f172a', fontSize: 14 }}>{p.playerName}</div>
           </div>
-          <div style={{ fontSize: 12, color: '#475569' }}>{(p.projectedPoints || 0).toFixed(1)} pts</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ fontSize: 12, color: '#64748b' }}>{(p.projectedPoints || 0).toFixed(1)} pts</div>
+            {p.draftValue !== undefined && (
+              <div style={{ 
+                fontSize: 11, 
+                padding: '2px 6px', 
+                borderRadius: 4, 
+                background: p.draftValue < 0 ? '#dcfce7' : p.draftValue > 0 ? '#fef2f2' : '#f3f4f6',
+                color: p.draftValue < 0 ? '#16a34a' : p.draftValue > 0 ? '#dc2626' : '#6b7280'
+              }}>
+                {p.draftValue < 0 ? '+' : ''}{Math.abs(p.draftValue).toFixed(1)}
+              </div>
+            )}
+          </div>
         </div>
       ))}
     </div>
   );
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 16 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 20 }}>
       <div>
-        <h4 style={{ margin: '0 0 12px', color: '#334155', fontSize: 16 }}>Starters</h4>
-        <div style={{ display: 'grid', gap: 12 }}>
+        <h4 style={{ margin: '0 0 16px', color: '#334155', fontSize: 16, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ width: 8, height: 8, background: '#10b981', borderRadius: '50%' }}></span>
+          Starters
+        </h4>
+        <div style={{ display: 'grid', gap: 16 }}>
           {['QB','RB','WR','TE','FLEX','DEF','K'].map((pos) => {
             const players = lineup[pos] || [];
             const grade = posGrades[pos];
             if (players.length === 0) return null;
             
             return (
-              <div key={pos} style={{ border: '1px solid #e9ecef', borderRadius: 8, overflow: 'hidden' }}>
+              <div key={pos} style={{ 
+                border: '1px solid #e2e8f0', 
+                borderRadius: 12, 
+                overflow: 'hidden',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+              }}>
                 <div style={{ 
-                  padding: '8px 12px', 
-                  background: '#f1f5f9', 
+                  padding: '12px 16px', 
+                  background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)', 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'space-between',
-                  borderBottom: '1px solid #e9ecef'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <Badge text={pos} color="#4f46e5" />
                     {grade && <Badge text={grade.grade} color="#16a34a" />}
                   </div>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>
+                  <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>
                     {grade?.projectedPoints?.toFixed(1) || 0} pts
                   </div>
                 </div>
@@ -82,9 +112,22 @@ function TeamLineup({ team }: { team: any }) {
         </div>
       </div>
       <div>
-        <h4 style={{ margin: '0 0 12px', color: '#334155', fontSize: 16 }}>Bench</h4>
+        <h4 style={{ margin: '0 0 16px', color: '#334155', fontSize: 16, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ width: 8, height: 8, background: '#f59e0b', borderRadius: '50%' }}></span>
+          Bench
+        </h4>
         {bench.length === 0 ? (
-          <div style={{ fontSize: 12, color: '#64748b', textAlign: 'center', padding: '20px', background: '#f8fafc', border: '1px solid #e9ecef', borderRadius: 8 }}>No bench players</div>
+          <div style={{ 
+            fontSize: 12, 
+            color: '#64748b', 
+            textAlign: 'center', 
+            padding: '40px 20px', 
+            background: '#f8fafc', 
+            border: '2px dashed #e2e8f0', 
+            borderRadius: 12 
+          }}>
+            No bench players
+          </div>
         ) : (
           renderPlayers(bench)
         )}
@@ -186,7 +229,7 @@ function ResultsContent() {
                     <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Optimal Pts</th>
                     <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Bench Pts</th>
                     <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Total Pts</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg ADP</th>
+                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Draft Value</th>
                     <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg VORP</th>
                   </tr>
                 </thead>
@@ -197,8 +240,10 @@ function ResultsContent() {
                     const benchPts = team?.benchPoints ?? 0;
                     const totalPts = team?.totalProjectedPoints ?? 0;
                     const avgVorp = team?.averageVorpScore ?? 0;
-                    const avgAdp = team?.averageAdpValue ?? 0;
+                    const avgDraftValue = team?.averageDraftValue ?? 0;
+                    const draftValueGrade = team?.draftValueGrade ?? '—';
                     const gradeCol = (gradeLetter && gradeLetter !== '—') ? (gradeLetter.startsWith('A') ? '#16a34a' : gradeLetter.startsWith('B') ? '#22c55e' : gradeLetter.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
+                    const draftValueCol = (draftValueGrade && draftValueGrade !== '—') ? (draftValueGrade.startsWith('A') ? '#16a34a' : draftValueGrade.startsWith('B') ? '#22c55e' : draftValueGrade.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
                     
                     return (
                       <tr key={team.teamId} style={{ borderBottom: '1px solid #f1f5f9' }}>
@@ -210,7 +255,12 @@ function ResultsContent() {
                         <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{optimalPts.toFixed(1)}</td>
                         <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{benchPts.toFixed(1)}</td>
                         <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{totalPts.toFixed(1)}</td>
-                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{avgAdp.toFixed(1)}</td>
+                        <td style={{ padding: '12px 8px', textAlign: 'center' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                            <Badge text={draftValueGrade} color={draftValueCol} />
+                            <div style={{ fontSize: 12, color: '#64748b' }}>{avgDraftValue.toFixed(1)}</div>
+                          </div>
+                        </td>
                         <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{avgVorp.toFixed(2)}</td>
                       </tr>
                     );
@@ -222,20 +272,64 @@ function ResultsContent() {
 
           {/* Teams Section */}
           <SectionCard title="Teams">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: 20 }}>
               {(results?.analysis?.teams || []).map((team: any) => (
-                <div key={team.teamId} style={{ background: '#f8fafc', border: '1px solid #e9ecef', borderRadius: 12 }}>
-                  <div style={{ padding: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #e9ecef' }}>
-                    <div style={{ fontWeight: 800, color: '#0f172a' }}>{team.teamName || `Team ${team.teamId}`} <span style={{ color: '#64748b', fontWeight: 500 }}>(Slot {team.draftSlot})</span></div>
-                    <Badge text={team?.positionGrades?.overallGrade?.grade ?? '—'} color="#4f46e5" />
+                <div key={team.teamId} style={{ 
+                  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)', 
+                  border: '1px solid #e2e8f0', 
+                  borderRadius: 16, 
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                  overflow: 'hidden'
+                }}>
+                  {/* Team Header */}
+                  <div style={{ 
+                    padding: '20px', 
+                    background: 'linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%)',
+                    color: 'white',
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between'
+                  }}>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 4 }}>{team.teamName || `Team ${team.teamId}`}</div>
+                      <div style={{ opacity: 0.9, fontSize: 14 }}>Draft Slot {team.draftSlot}</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <Badge text={team?.positionGrades?.overallGrade?.grade ?? '—'} color="rgba(255,255,255,0.9)" />
+                      <Badge text={team?.draftValueGrade ?? '—'} color="rgba(255,255,255,0.9)" />
+                    </div>
                   </div>
-                  <div style={{ padding: 14, display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 8, fontSize: 13, borderBottom: '1px solid #e9ecef' }}>
-                    <div><span style={{ color: '#64748b' }}>Total:</span> <strong>{team.totalProjectedPoints?.toFixed?.(1) || 0}</strong></div>
-                    <div><span style={{ color: '#64748b' }}>Optimal:</span> <strong>{team.optimalLineupPoints?.toFixed?.(1) || 0}</strong></div>
-                    <div><span style={{ color: '#64748b' }}>Avg ADP:</span> {team.averageAdpValue?.toFixed?.(1) || 0}</div>
-                    <div><span style={{ color: '#64748b' }}>Avg VORP:</span> {team.averageVorpScore?.toFixed?.(2) || 0}</div>
+                  
+                  {/* Team Stats */}
+                  <div style={{ 
+                    padding: '16px 20px', 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', 
+                    gap: 12, 
+                    fontSize: 13, 
+                    borderBottom: '1px solid #e2e8f0',
+                    background: '#f8fafc'
+                  }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Pts</div>
+                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.totalProjectedPoints?.toFixed?.(1) || 0}</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Optimal</div>
+                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.optimalLineupPoints?.toFixed?.(1) || 0}</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Draft Value</div>
+                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.averageDraftValue?.toFixed?.(1) || 0}</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Avg VORP</div>
+                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.averageVorpScore?.toFixed?.(2) || 0}</div>
+                    </div>
                   </div>
-                  <div style={{ padding: 14 }}>
+                  
+                  {/* Team Lineup */}
+                  <div style={{ padding: '20px' }}>
                     <TeamLineup team={team} />
                   </div>
                 </div>
