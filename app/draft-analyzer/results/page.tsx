@@ -42,6 +42,16 @@ function ResultsContent() {
     run();
   }, [draftUrl]);
 
+  // Helper: derive sorted teams for scoreboard (rank by optimal lineup projected points)
+  const sortedTeams = useMemo(() => {
+    const teams = results?.analysis?.teams || [];
+    const withRankKey = teams.map((t: any) => {
+      const optimalPts = t?.optimalLineupPoints ?? 0;
+      return { ...t, __rankScore: optimalPts };
+    });
+    return withRankKey.sort((a: any, b: any) => (b.__rankScore || 0) - (a.__rankScore || 0));
+  }, [results]);
+
   return (
     <div>
       <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', padding: '30px', textAlign: 'center' }}>
@@ -60,6 +70,34 @@ function ResultsContent() {
 
       {!isLoading && !error && results && (
         <div style={{ padding: '30px' }}>
+          {/* Scoreboard */}
+          <section style={{ marginBottom: '24px' }}>
+            <h2 style={{ color: '#667eea', marginBottom: '12px' }}>🏆 Scoreboard (Optimal Lineup Projection)</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
+              {sortedTeams.map((team: any, idx: number) => {
+                const gradeLetter = team?.positionGrades?.overallGrade?.grade ?? '—';
+                const optimalPts = team?.optimalLineupPoints ?? 0;
+                const avgVorp = team?.averageVorpScore ?? 0;
+                const avgAdp = team?.averageAdpValue ?? 0;
+                return (
+                  <div key={team.teamId} style={{ background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 10, padding: 14 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                      <div style={{ fontWeight: 800, color: '#334155' }}>{`#${idx + 1}`}</div>
+                      <div style={{ fontWeight: 700, color: '#475569' }}>{team.teamName || `Team ${team.teamId}`}</div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 8, fontSize: 14 }}>
+                      <div><span style={{ color: '#64748b' }}>Optimal Pts:</span> <strong>{Math.round((optimalPts || 0) * 10) / 10}</strong></div>
+                      <div><span style={{ color: '#64748b' }}>Grade:</span> <strong>{gradeLetter}</strong></div>
+                      <div><span style={{ color: '#64748b' }}>Avg VORP:</span> {avgVorp?.toFixed?.(2) || 0}</div>
+                      <div><span style={{ color: '#64748b' }}>Avg ADP:</span> {avgAdp?.toFixed?.(1) || 0}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Overview */}
           <section style={{ marginBottom: '24px' }}>
             <h2 style={{ color: '#667eea', marginBottom: '8px' }}>Overview</h2>
             <div style={{ background: '#f8f9fa', padding: '16px', borderRadius: '10px' }}>
@@ -70,16 +108,18 @@ function ResultsContent() {
             </div>
           </section>
 
+          {/* Teams */}
           <section>
             <h2 style={{ color: '#667eea', marginBottom: '8px' }}>Teams</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
               {(results?.analysis?.teams || []).map((team: any) => (
                 <div key={team.teamId} style={{ background: '#f8f9fa', padding: '16px', borderRadius: '10px' }}>
-                  <div style={{ fontWeight: 700, marginBottom: '8px' }}>Team {team.teamId} (Slot {team.draftSlot})</div>
-                  <div style={{ fontSize: '14px' }}>
-                    <div>Players: {team.players?.length || 0}</div>
-                    <div>Avg Projected: {team.averageProjectedPoints?.toFixed?.(2) || 0}</div>
-                    <div>Avg ADP: {team.averageAdpValue?.toFixed?.(2) || 0}</div>
+                  <div style={{ fontWeight: 700, marginBottom: '8px' }}>{team.teamName || `Team ${team.teamId}`} (Slot {team.draftSlot})</div>
+                  <div style={{ fontSize: '14px', display: 'grid', gap: 6 }}>
+                    <div>Grade: <strong>{team?.positionGrades?.overallGrade?.grade ?? '—'}</strong></div>
+                    <div>Total Points: {team.totalProjectedPoints?.toFixed?.(1) || 0}</div>
+                    <div>Optimal Lineup: {team.optimalLineupPoints?.toFixed?.(1) || 0}</div>
+                    <div>Avg ADP: {team.averageAdpValue?.toFixed?.(1) || 0}</div>
                     <div>Avg VORP: {team.averageVorpScore?.toFixed?.(2) || 0}</div>
                   </div>
                 </div>
@@ -87,6 +127,7 @@ function ResultsContent() {
             </div>
           </section>
 
+          {/* Raw Results */}
           <section style={{ marginTop: '24px' }}>
             <h3 style={{ color: '#764ba2', marginBottom: '8px' }}>Raw Results</h3>
             <pre style={{ background: '#f8f9fa', padding: '20px', borderRadius: '10px', overflow: 'auto', fontSize: '14px' }}>{JSON.stringify(results, null, 2)}</pre>

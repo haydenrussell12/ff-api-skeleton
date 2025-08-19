@@ -1,7 +1,8 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from "next/server";
-// Removed path and fs usage in favor of JSON imports bundled by Next.js
+import OptimalLineupEngine from '../../lib/optimal-lineup-engine';
+import PositionGradeEngine from '../../lib/position-grade-engine';
 
 // Draft Analyzer class converted for Next.js
 class DraftAnalyzer {
@@ -32,7 +33,7 @@ class DraftAnalyzer {
             });
 
             this.nameLookupIndex = (nameLookupModule as any).default;
-            this.vorpData = (vorpDataModule as any).default.vorpScores;
+            this.vorpData = (vorpDataModule as any).default.vorpScores || (vorpDataModule as any).default;
 
             console.log(`✅ Draft Analyzer initialized with ${Object.keys(this.consolidatedData).length} players.`);
         } catch (error) {
@@ -77,10 +78,12 @@ class DraftAnalyzer {
     }
 
     private getPlayerVorp(playerName: string) {
-        const entry = Array.isArray(this.vorpData)
-            ? this.vorpData.find((p: any) => p.playerName?.toLowerCase() === playerName.toLowerCase())
+        const key = playerName?.toLowerCase();
+        if (!key) return 0;
+        const direct = Array.isArray(this.vorpData)
+            ? (this.vorpData as any[]).find((p: any) => (p.playerName || '').toLowerCase() === key)
             : undefined;
-        return entry?.vorp_score ? parseFloat(entry.vorp_score) : 0;
+        return direct?.vorp_score || direct?.vorpScore ? parseFloat(direct.vorp_score || direct.vorpScore) : 0;
     }
 
     async analyzeDraft(draftUrl: string) {
@@ -90,18 +93,13 @@ class DraftAnalyzer {
         console.log(`Analyzing draft ID: ${draftId}`);
 
         const draftData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}`);
-        console.log('Draft data keys:', Object.keys(draftData));
-
         const draftPicks: any[] = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
-        console.log('Draft picks count:', draftPicks?.length || 0);
 
-        // Mock drafts expose slot_to_roster_id mapping
         const slotToRosterId = draftData.slot_to_roster_id as { [slot: string]: number };
         if (!slotToRosterId) {
             throw new Error('No slot_to_roster_id found in draft data - this may not be a mock draft');
         }
 
-        // Fetch the entire Sleeper players map once
         const playersMap: any = await this.fetchSleeperApi(`https://api.sleeper.app/v1/players/nfl`);
         const getSleeperPlayer = (id: string) => playersMap?.[id];
 
@@ -112,64 +110,65 @@ class DraftAnalyzer {
             totalPicks: draftPicks?.length || 0,
         };
 
-        // Initialize teams keyed by roster_id
         const teams: { [rosterId: number]: any } = {};
         Object.entries(slotToRosterId).forEach(([slot, rosterId]) => {
             teams[rosterId] = {
                 teamId: rosterId,
-                ownerName: `Team ${rosterId}`,
+                teamName: `Team ${rosterId}`,
                 draftSlot: parseInt(slot, 10),
-                players: [] as any[],
-                totalProjectedPoints: 0,
-                totalAdpValue: 0,
-                totalVorpScore: 0,
+                roster: [] as any[],
             };
         });
 
-        console.log(`Processing ${draftPicks?.length || 0} picks...`);
-
         for (const pick of draftPicks || []) {
-            try {
-                const sleeperPlayer = getSleeperPlayer(String(pick.player_id));
-                if (!sleeperPlayer) {
-                    // Skip unknown player IDs
-                    continue;
-                }
-                const playerName: string = sleeperPlayer.full_name || `${sleeperPlayer.first_name || ''} ${sleeperPlayer.last_name || ''}`.trim();
-                const position: string = sleeperPlayer.position || pick.metadata?.position || '';
+            const sleeperPlayer = getSleeperPlayer(String(pick.player_id));
+            if (!sleeperPlayer) continue;
+            const playerName: string = sleeperPlayer.full_name || `${sleeperPlayer.first_name || ''} ${sleeperPlayer.last_name || ''}`.trim();
+            const position: string = sleeperPlayer.position || pick.metadata?.position || '';
 
-                const projectedPoints = this.getPlayerProjectedPoints(playerName, position);
-                const adpValue = this.getPlayerAdp(playerName);
-                const vorpScore = this.getPlayerVorp(playerName);
+            const projectedPoints = this.getPlayerProjectedPoints(playerName, position);
+            const adpValue = this.getPlayerAdp(playerName);
+            const vorpScore = this.getPlayerVorp(playerName);
 
-                const player = {
-                    ...pick,
-                    metadata: sleeperPlayer,
-                    playerName,
-                    position,
-                    projectedPoints,
-                    adpValue,
-                    vorpScore,
-                };
+            const player = {
+                ...pick,
+                metadata: sleeperPlayer,
+                playerName,
+                position,
+                projectedPoints,
+                adpValue,
+                vorpScore,
+                playerId: pick.player_id,
+            };
 
-                const targetRosterId = slotToRosterId[String(pick.draft_slot)];
-                if (targetRosterId && teams[targetRosterId]) {
-                    teams[targetRosterId].players.push(player);
-                    teams[targetRosterId].totalProjectedPoints += projectedPoints;
-                    teams[targetRosterId].totalAdpValue += adpValue;
-                    teams[targetRosterId].totalVorpScore += vorpScore;
-                }
-            } catch (err) {
-                console.error('Error processing pick:', err);
+            const targetRosterId = slotToRosterId[String(pick.draft_slot)];
+            if (targetRosterId && teams[targetRosterId]) {
+                teams[targetRosterId].roster.push(player);
             }
         }
 
-        const analysisTeams = Object.values(teams).map((team: any) => {
-            const count = team.players.length || 0;
-            team.averageProjectedPoints = count > 0 ? team.totalProjectedPoints / count : 0;
-            team.averageAdpValue = count > 0 ? team.totalAdpValue / count : 0;
-            team.averageVorpScore = count > 0 ? team.totalVorpScore / count : 0;
-            return team;
+        // Compute optimal lineups and grades
+        const lineupEngine = new OptimalLineupEngine();
+        const gradeEngine = new PositionGradeEngine(Array.isArray(this.vorpData) ? this.vorpData : []);
+
+        const analysisTeams = Object.entries(teams).map(([id, team]) => {
+            const lineup = lineupEngine.calculateOptimalLineup(team.roster, { scoring: 'ppr' });
+            const grades = gradeEngine.calculatePositionGrades({ roster: team.roster });
+            return {
+                teamId: Number(id),
+                teamName: team.teamName,
+                draftSlot: team.draftSlot,
+                optimalLineup: lineup.optimalLineup,
+                optimalLineupPoints: lineup.totalProjectedPoints,
+                benchPoints: lineup.benchPoints,
+                lineupAnalysis: lineup.analysis,
+                positionGrades: grades,
+                totalProjectedPoints: lineup.totalProjectedPoints + lineup.benchPoints,
+                averageProjectedPoints: team.roster.length > 0 ? (team.roster.reduce((s: number, p: any) => s + (p.projectedPoints || 0), 0) / team.roster.length) : 0,
+                averageAdpValue: team.roster.length > 0 ? (team.roster.reduce((s: number, p: any) => s + (p.adpValue || 0), 0) / team.roster.length) : 0,
+                averageVorpScore: team.roster.length > 0 ? (team.roster.reduce((s: number, p: any) => s + (p.vorpScore || 0), 0) / team.roster.length) : 0,
+                players: team.roster,
+            };
         });
 
         return {
