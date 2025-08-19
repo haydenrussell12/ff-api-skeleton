@@ -568,9 +568,9 @@ class DraftAnalyzer {
         const lineupEngine = new OptimalLineupEngine();
         const gradeEngine = new PositionGradeEngine(Array.isArray(this.vorpData) ? this.vorpData : []);
 
+        // First calculate optimal lineups for all teams
         const analysisTeams = Object.entries(teams).map(([id, team]) => {
             const lineup = lineupEngine.calculateOptimalLineup(team.roster, { scoring: 'ppr' });
-            const grades = gradeEngine.calculatePositionGrades({ roster: team.roster });
             
             // Calculate average ADP
             const adpValues = team.roster.map((p: any) => p.adpValue || 0).filter((v: number) => v !== 0);
@@ -585,19 +585,22 @@ class DraftAnalyzer {
                 benchPlayers: lineup.benchPlayers,
                 benchPoints: lineup.benchPoints,
                 lineupAnalysis: lineup.analysis,
-                positionGrades: grades,
                 totalProjectedPoints: lineup.totalProjectedPoints + lineup.benchPoints,
                 averageProjectedPoints: team.roster.length > 0 ? (team.roster.reduce((s: number, p: any) => s + (p.projectedPoints || 0), 0) / team.roster.length) : 0,
                 averageAdpValue: averageAdpValue,
                 averageVorpScore: team.roster.length > 0 ? (team.roster.reduce((s: number, p: any) => s + (p.vorpScore || 0), 0) / team.roster.length) : 0,
                 players: team.roster,
+                roster: team.roster, // Add roster for grading engine
             };
         });
+
+        // Now calculate position grades using the new system that considers all teams
+        const gradedTeams = gradeEngine.calculatePositionGrades(analysisTeams, { scoring: 'ppr' });
 
         return {
             draftInfo,
             analysis: {
-                teams: analysisTeams,
+                teams: gradedTeams,
             },
         };
     }
