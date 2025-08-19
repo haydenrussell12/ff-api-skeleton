@@ -125,7 +125,16 @@ class DraftAnalyzer {
         
         // Try to fetch participants to get display names for each draft slot
         let participants: any[] = [];
+        let slotToName: Record<string, string> = {};
+        
+        // Get slot to roster mapping first
+        const slotToRosterId = draftData.slot_to_roster_id as { [slot: string]: number };
+        if (!slotToRosterId) {
+            throw new Error('No slot_to_roster_id found in draft data - this may not be a mock draft');
+        }
+        
         try {
+            // First try: participants endpoint (works for live drafts)
             participants = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/participants`);
             console.log('🔍 Participants data:', JSON.stringify(participants, null, 2));
             console.log('🔍 Participants count:', participants.length);
@@ -141,6 +150,23 @@ class DraftAnalyzer {
                     metadata: p?.metadata
                 });
             });
+            
+            // Map slot -> participant display name if available
+            (participants || []).forEach((p: any) => {
+                const slotKey = String(p?.slot ?? '');
+                if (!slotKey) return;
+                
+                // Try multiple fields for username
+                const name = p?.name || p?.display_name || p?.username || p?.user_name || p?.metadata?.name || p?.metadata?.display_name;
+                
+                if (name) {
+                    slotToName[slotKey] = name;
+                    console.log(`📝 Mapped slot ${slotKey} to name: ${name}`);
+                } else {
+                    console.log(`⚠️ No name found for slot ${slotKey}, participant data:`, p);
+                }
+            });
+            
         } catch (e) {
             console.error('❌ Failed to fetch participants:', e);
             console.error('❌ Error details:', {
@@ -149,35 +175,64 @@ class DraftAnalyzer {
                 draftId: draftId,
                 url: `https://api.sleeper.app/v1/draft/${draftId}/participants`
             });
+            
+            // Fallback 1: Try to get league info if this is a league draft
+            try {
+                if (draftData.league_id) {
+                    console.log('🔄 Trying league endpoint as fallback...');
+                    const leagueData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/league/${draftData.league_id}/users`);
+                    console.log('🔍 League users data:', JSON.stringify(leagueData, null, 2));
+                    
+                    // Map roster IDs to user names from league
+                    if (Array.isArray(leagueData)) {
+                        leagueData.forEach((user: any) => {
+                            const rosterId = user?.roster_id;
+                            if (rosterId !== undefined && rosterId !== null) {
+                                const name = user?.display_name || user?.username || user?.name;
+                                if (name) {
+                                    // Find which slot this roster corresponds to
+                                    Object.entries(slotToRosterId).forEach(([slot, rid]) => {
+                                        if (rid === rosterId) {
+                                            slotToName[slot] = name;
+                                            console.log(`📝 Fallback mapped slot ${slot} (roster ${rosterId}) to name: ${name}`);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            } catch (leagueError) {
+                console.warn('⚠️ League fallback also failed:', leagueError);
+            }
+            
+            // Fallback 2: Try to extract names from draft metadata
+            try {
+                if (draftData.metadata?.draft_order) {
+                    console.log('🔄 Trying draft metadata as fallback...');
+                    const draftOrder = draftData.metadata.draft_order;
+                    if (Array.isArray(draftOrder)) {
+                        draftOrder.forEach((name: string, index: number) => {
+                            if (name && typeof name === 'string') {
+                                const slotKey = String(index);
+                                slotToName[slotKey] = name;
+                                console.log(`📝 Metadata fallback mapped slot ${slotKey} to name: ${name}`);
+                            }
+                        });
+                    }
+                }
+            } catch (metadataError) {
+                console.warn('⚠️ Metadata fallback also failed:', metadataError);
+            }
+            
             console.warn('Could not fetch participants; will fall back to generic team names');
         }
-
-        const slotToRosterId = draftData.slot_to_roster_id as { [slot: string]: number };
-        if (!slotToRosterId) {
-            throw new Error('No slot_to_roster_id found in draft data - this may not be a mock draft');
-        }
+        
+        console.log('🔍 Final slot to name mapping:', slotToName);
+        console.log('🔍 Slot to roster mapping:', slotToRosterId);
 
         const playersMap: any = await this.fetchSleeperApi(`https://api.sleeper.app/v1/players/nfl`);
         const getSleeperPlayer = (id: string) => playersMap?.[id];
-
-        // Map slot -> participant display name if available
-        const slotToName: Record<string, string> = {};
-        (participants || []).forEach((p: any) => {
-            const slotKey = String(p?.slot ?? '');
-            if (!slotKey) return;
-            
-            // Try multiple fields for username
-            const name = p?.name || p?.display_name || p?.username || p?.user_name || p?.metadata?.name || p?.metadata?.display_name;
-            
-            if (name) {
-                slotToName[slotKey] = name;
-                console.log(`📝 Mapped slot ${slotKey} to name: ${name}`);
-            } else {
-                console.log(`⚠️ No name found for slot ${slotKey}, participant data:`, p);
-            }
-        });
-        console.log('🔍 Final slot to name mapping:', slotToName);
-        console.log('🔍 Slot to roster mapping:', slotToRosterId);
 
         const draftInfo = {
             name: draftData.metadata?.name || `Draft ${draftId}`,
