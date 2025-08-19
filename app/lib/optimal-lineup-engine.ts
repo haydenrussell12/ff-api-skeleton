@@ -76,18 +76,34 @@ export default class OptimalLineupEngine {
     
     // Handle SUPERFLEX position (if applicable)
     if (leagueType === 'superflex' && 'superflexPositions' in requirements && requirements.superflexPositions) {
-      const superflexPlayers = requirements.superflexPositions.flatMap((pos: string) => 
-        (positionGroups[pos] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName))
-      );
+      // Get all available superflex eligible players
+      const availableQBs = (positionGroups['QB'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+      const availableRBs = (positionGroups['RB'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+      const availableWRs = (positionGroups['WR'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+      const availableTEs = (positionGroups['TE'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
       
-      if (superflexPlayers.length > 0) {
-        const bestSuperflexPlayer = superflexPlayers
-          .sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
-        
-        if (bestSuperflexPlayer) {
-          optimalLineup.SUPERFLEX = [bestSuperflexPlayer];
-          usedPlayers.add(bestSuperflexPlayer.playerId || bestSuperflexPlayer.playerName);
+      // In superflex, QBs are extremely valuable - give them priority
+      let bestSuperflexPlayer = null;
+      
+      // First priority: Best available QB (QBs score much higher than other positions)
+      if (availableQBs.length > 0) {
+        const bestQB = availableQBs.sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+        bestSuperflexPlayer = bestQB;
+        console.log(`🦸 SUPERFLEX: Selected QB ${bestQB.playerName} with ${bestQB.projectedPoints} points`);
+      }
+      
+      // If no QBs available, select best RB/WR/TE
+      if (!bestSuperflexPlayer) {
+        const otherPlayers = [...availableRBs, ...availableWRs, ...availableTEs];
+        if (otherPlayers.length > 0) {
+          bestSuperflexPlayer = otherPlayers.sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+          console.log(`🦸 SUPERFLEX: No QBs available, selected ${bestSuperflexPlayer.position} ${bestSuperflexPlayer.playerName} with ${bestSuperflexPlayer.projectedPoints} points`);
         }
+      }
+      
+      if (bestSuperflexPlayer) {
+        optimalLineup.SUPERFLEX = [bestSuperflexPlayer];
+        usedPlayers.add(bestSuperflexPlayer.playerId || bestSuperflexPlayer.playerName);
       }
     }
     

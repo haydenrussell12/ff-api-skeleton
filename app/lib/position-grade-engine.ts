@@ -26,17 +26,40 @@ export default class PositionGradeEngine {
     const leagueType = settings.leagueType || 'standard';
     const positionRequirements = this.getPositionRequirements(leagueType);
     
-    // Calculate league-wide statistics for each position
-    this.calculateLeagueStats(teams, positionRequirements);
-    
-    const gradedTeams = teams.map(team => {
+    // Calculate position grades for each team first
+    const teamsWithPositionGrades = teams.map(team => {
       const positionGrades = this.calculateTeamPositionGrades(team, positionRequirements);
-      const overallGrade = this.calculateOverallGrade(team, positionGrades);
+      return {
+        ...team,
+        positionGrades
+      };
+    });
+    
+    // Calculate overall grades using percentile ranking
+    const teamsWithOverallScores = teamsWithPositionGrades.map(team => {
+      // Calculate overall score based on optimal lineup points (primary factor)
+      const overallScore = team.optimalLineupPoints || 0;
+      return {
+        ...team,
+        overallScore
+      };
+    });
+    
+    // Sort teams by overall score to determine percentiles
+    const sortedTeams = [...teamsWithOverallScores].sort((a, b) => b.overallScore - a.overallScore);
+    
+    // Assign grades based on percentile ranking
+    const gradedTeams = sortedTeams.map((team, index) => {
+      const percentile = (1 - (index / sortedTeams.length)) * 100; // Higher is better
+      const overallGrade = this.percentileToGrade(percentile);
       
       return {
         ...team,
-        positionGrades,
-        overallGrade
+        overallGrade: {
+          grade: overallGrade,
+          score: team.overallScore,
+          percentile: Math.round(percentile)
+        }
       };
     });
     
@@ -51,20 +74,56 @@ export default class PositionGradeEngine {
         // Handle flex positions specially
         const flexPlayers = this.getFlexPlayers(team, pos);
         if (flexPlayers.length > 0) {
-          const grade = this.gradePosition(flexPlayers, pos);
+          const grade = this.gradePositionSimple(flexPlayers, pos);
           positionGrades[pos] = grade;
         }
       } else {
         // Handle regular positions
         const players = this.getPositionPlayers(team, pos);
         if (players.length > 0) {
-          const grade = this.gradePosition(players, pos);
+          const grade = this.gradePositionSimple(players, pos);
           positionGrades[pos] = grade;
         }
       }
     });
     
     return positionGrades;
+  }
+
+  private gradePositionSimple(players: any[], position: string) {
+    if (players.length === 0) return { grade: '—', score: 0, reason: 'No players' };
+    
+    const totalPoints = players.reduce((sum, p) => sum + (p.projectedPoints || 0), 0);
+    
+    // Simple grading based on projected points thresholds for different positions
+    let grade = 'C';
+    let gradeScore = totalPoints;
+    
+    // Position-specific scoring thresholds (approximate)
+    const thresholds: Record<string, { excellent: number, good: number, average: number, poor: number }> = {
+      'QB': { excellent: 25, good: 22, average: 18, poor: 15 },
+      'RB': { excellent: 40, good: 30, average: 22, poor: 15 }, // 2 RBs
+      'WR': { excellent: 40, good: 30, average: 22, poor: 15 }, // 2 WRs  
+      'TE': { excellent: 15, good: 12, average: 9, poor: 6 },
+      'FLEX': { excellent: 20, good: 15, average: 12, poor: 8 },
+      'SUPERFLEX': { excellent: 25, good: 20, average: 15, poor: 10 },
+      'K': { excellent: 10, good: 8, average: 6, poor: 4 },
+      'DEF': { excellent: 12, good: 9, average: 7, poor: 5 }
+    };
+    
+    const threshold = thresholds[position] || thresholds['FLEX'];
+    
+    if (totalPoints >= threshold.excellent) grade = 'A+';
+    else if (totalPoints >= threshold.good) grade = 'A';
+    else if (totalPoints >= threshold.average) grade = 'B';
+    else if (totalPoints >= threshold.poor) grade = 'C';
+    else grade = 'D';
+    
+    return {
+      grade,
+      score: totalPoints,
+      reason: this.generatePositionReason(grade, 0, position)
+    };
   }
 
   private getFlexPlayers(team: any, flexType: string) {
@@ -256,5 +315,19 @@ export default class PositionGradeEngine {
     };
     
     return requirements[leagueType as keyof typeof requirements] || requirements.standard;
+  }
+
+  private percentileToGrade(percentile: number): string {
+    if (percentile >= 90) return 'A+';
+    if (percentile >= 80) return 'A';
+    if (percentile >= 70) return 'A-';
+    if (percentile >= 60) return 'B+';
+    if (percentile >= 50) return 'B';
+    if (percentile >= 40) return 'B-';
+    if (percentile >= 30) return 'C+';
+    if (percentile >= 20) return 'C';
+    if (percentile >= 10) return 'C-';
+    if (percentile >= 5) return 'D+';
+    return 'D';
   }
 } 
