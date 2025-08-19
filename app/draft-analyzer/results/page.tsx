@@ -290,19 +290,21 @@ function ResultsContent() {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
                 <thead>
                   <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                    <th style={{ padding: '12px 8px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Rank</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Team</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Grade</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Optimal Pts</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Bench Pts</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Total Pts</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg ADP</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg VORP</th>
+                    <th style={{ padding: '8px 4px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Rank</th>
+                    <th style={{ padding: '8px 4px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Team</th>
+                    <th style={{ padding: '8px 4px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Grade</th>
+                    <th style={{ padding: '8px 4px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Lineup</th>
+                    <th style={{ padding: '8px 4px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Optimal Pts</th>
+                    <th style={{ padding: '8px 4px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Bench Pts</th>
+                    <th style={{ padding: '8px 4px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Total Pts</th>
+                    <th style={{ padding: '8px 4px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg ADP</th>
+                    <th style={{ padding: '8px 4px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg VORP</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sortedTeams.map((team: any, idx: number) => {
-                    const gradeLetter = team?.overallGrade?.grade ?? team?.positionGrades?.overallGrade?.grade ?? '—';
+                    const rosterGrade = formatRosterGrade(team);
+                    const gradeLetter = rosterGrade.grade;
                     const optimalPts = team?.optimalLineupPoints ?? 0;
                     const benchPts = team?.benchPoints ?? 0;
                     const totalPts = team?.totalProjectedPoints ?? 0;
@@ -312,16 +314,20 @@ function ResultsContent() {
                     
                     return (
                       <tr key={team.teamId} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                        <td style={{ padding: '12px 8px', fontWeight: 700, color: '#334155' }}>#{idx + 1}</td>
-                        <td style={{ padding: '12px 8px', fontWeight: 600, color: '#0f172a' }}>{team.teamName || `Team ${team.teamId}`}</td>
-                        <td style={{ padding: '12px 8px', textAlign: 'center' }}>
+                        <td style={{ padding: '8px 4px', fontWeight: 700, color: '#334155' }}>#{idx + 1}</td>
+                        <td style={{ padding: '8px 4px', fontWeight: 600, color: '#0f172a' }}>{team.teamName || `Team ${team.teamId}`}</td>
+                        <td style={{ padding: '8px 4px', textAlign: 'center' }}>
                           <Badge text={gradeLetter} color={gradeCol} />
                         </td>
-                        <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{optimalPts.toFixed(1)}</td>
-                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{benchPts.toFixed(1)}</td>
-                        <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{totalPts.toFixed(1)}</td>
-                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{avgAdp.toFixed(1)}</td>
-                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{avgVorp.toFixed(2)}</td>
+                        <td style={{ padding: '8px 4px', textAlign: 'center', fontSize: '12px', color: '#64748b' }}>
+                          {rosterGrade.breakdown?.positionalBalance?.score >= 80 ? '🔥' : 
+                           rosterGrade.breakdown?.positionalBalance?.score >= 60 ? '⚡' : '💀'}
+                        </td>
+                        <td style={{ padding: '8px 4px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{optimalPts.toFixed(1)}</td>
+                        <td style={{ padding: '8px 4px', textAlign: 'center', color: '#64748b' }}>{benchPts.toFixed(1)}</td>
+                        <td style={{ padding: '8px 4px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{totalPts.toFixed(1)}</td>
+                        <td style={{ padding: '8px 4px', textAlign: 'center', color: '#64748b' }}>{avgAdp.toFixed(1)}</td>
+                        <td style={{ padding: '8px 4px', textAlign: 'center', color: '#64748b' }}>{avgVorp.toFixed(2)}</td>
                       </tr>
                     );
                   })}
@@ -393,7 +399,7 @@ function ResultsContent() {
                     {/* Roster Construction Analysis */}
                     <div style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                       gap: '15px',
                       marginBottom: '20px'
                     }}>
@@ -418,6 +424,30 @@ function ResultsContent() {
                         </div>
                         <p style={{ margin: '0', fontSize: '14px', color: '#6b7280' }}>
                           {rosterGrade.breakdown?.positionalBalance?.analysis || 'No analysis available'}
+                        </p>
+                      </div>
+
+                      {/* Starting Lineup Strength */}
+                      <div style={{
+                        padding: '15px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '6px',
+                        border: '1px solid #e2e8f0'
+                      }}>
+                        <h4 style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: '600' }}>
+                          ⚡ Starting Lineup
+                        </h4>
+                        <div style={{
+                          fontSize: '24px',
+                          fontWeight: 'bold',
+                          color: getGradeColor(rosterGrade.breakdown?.startingLineupStrength?.score >= 80 ? 'A' : 
+                                           rosterGrade.breakdown?.startingLineupStrength?.score >= 60 ? 'C' : 'D'),
+                          marginBottom: '5px'
+                        }}>
+                          {rosterGrade.breakdown?.startingLineupStrength?.score || 0}/100
+                        </div>
+                        <p style={{ margin: '0', fontSize: '14px', color: '#6b7280' }}>
+                          {rosterGrade.breakdown?.startingLineupStrength?.analysis || 'No analysis available'}
                         </p>
                       </div>
 

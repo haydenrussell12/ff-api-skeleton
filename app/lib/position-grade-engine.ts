@@ -61,6 +61,7 @@ export default class PositionGradeEngine {
     const analysis = {
       positionalBalance: this.analyzePositionalBalance(team, requirements, leagueType),
       depthStrategy: this.analyzeDepthStrategy(team, requirements),
+      startingLineupStrength: this.analyzeStartingLineupStrength(team, requirements),
       adpValue: this.analyzeADPValue(team),
       keeperValue: this.analyzeKeeperValue(team),
       overallScore: 0,
@@ -69,15 +70,17 @@ export default class PositionGradeEngine {
 
     // Calculate overall score (weighted average)
     const weights = {
-      positionalBalance: 0.35,  // Most important - roster construction
-      depthStrategy: 0.30,       // Depth and bench quality
-      adpValue: 0.25,           // Draft value and steals
-      keeperValue: 0.10          // Keeper advantage (if applicable)
+      positionalBalance: 0.30,    // Roster construction
+      depthStrategy: 0.25,         // Depth and bench quality
+      startingLineupStrength: 0.25, // Starting lineup quality
+      adpValue: 0.15,             // Draft value and steals
+      keeperValue: 0.05            // Keeper advantage (if applicable)
     };
 
     analysis.overallScore = 
       (analysis.positionalBalance.score * weights.positionalBalance) +
       (analysis.depthStrategy.score * weights.depthStrategy) +
+      (analysis.startingLineupStrength.score * weights.startingLineupStrength) +
       (analysis.adpValue.score * weights.adpValue) +
       (analysis.keeperValue.score * weights.keeperValue);
 
@@ -201,6 +204,43 @@ export default class PositionGradeEngine {
     };
   }
 
+  private analyzeStartingLineupStrength(team: any, requirements: any) {
+    const roster = team.roster || [];
+    const starters = roster.slice(0, requirements.totalStarters || 9);
+    const bench = roster.slice(requirements.totalStarters || 9);
+
+    let strengthScore = 100;
+    let analysis: string[] = [];
+
+    // Calculate average projected points for starters
+    const avgStarterPoints = starters.map((p: any) => p.projectedPoints || 0).reduce((sum: number, pts: number) => sum + pts, 0) / starters.length;
+
+    // Check if starters are strong (e.g., average > 100)
+    if (avgStarterPoints < 100) {
+      strengthScore -= 20;
+      analysis.push(`Average starter points (${avgStarterPoints.toFixed(0)}) is below 100`);
+    }
+
+    // Check if starters are weak (e.g., average < 80)
+    if (avgStarterPoints > 120) {
+      strengthScore += 10;
+      analysis.push(`Average starter points (${avgStarterPoints.toFixed(0)}) is above 120`);
+    }
+
+    // Check for injury risk (players with low projected points as starters)
+    const weakStarters = starters.filter((p: any) => (p.projectedPoints || 0) < 60);
+    if (weakStarters.length > 2) {
+      strengthScore -= 20;
+      analysis.push(`${weakStarters.length} weak starters`);
+    }
+
+    return {
+      score: Math.max(0, strengthScore),
+      analysis: analysis.length > 0 ? analysis.join(', ') : 'Strong starting lineup',
+      avgStarterPoints: starters.length > 0 ? starters.map((p: any) => p.projectedPoints || 0).reduce((sum: number, pts: number) => sum + pts, 0) / starters.length : 0
+    };
+  }
+
   private analyzeADPValue(team: any) {
     const roster = team.roster || [];
     let adpScore = 100;
@@ -280,7 +320,7 @@ export default class PositionGradeEngine {
   }
 
   private generateRosterSummary(positionGrades: any) {
-    const { positionalBalance, depthStrategy, adpValue } = positionGrades;
+    const { positionalBalance, depthStrategy, startingLineupStrength, adpValue } = positionGrades;
     
     let summary = `Overall Roster Grade: ${positionGrades.grade} (${Math.round(positionGrades.overallScore * 100) / 100}/100)\n\n`;
     
@@ -289,6 +329,11 @@ export default class PositionGradeEngine {
     if (positionalBalance.issues.length > 0) {
       summary += `Issues: ${positionalBalance.issues.join(', ')}\n`;
     }
+    
+    // Starting Lineup Strength Summary
+    summary += `\nStarting Lineup Strength: ${startingLineupStrength.score}/100\n`;
+    summary += `Average Starter Points: ${startingLineupStrength.avgStarterPoints.toFixed(1)}\n`;
+    summary += `Analysis: ${startingLineupStrength.analysis}\n`;
     
     // Depth Strategy Summary
     summary += `\nDepth Strategy: ${depthStrategy.score}/100\n`;
