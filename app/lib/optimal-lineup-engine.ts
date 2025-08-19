@@ -6,26 +6,31 @@ type LeagueSettings = {
 };
 
 export default class OptimalLineupEngine {
-  private getRosterRequirements(leagueType: string = 'standard', superflexSlots: number = 0) {
+  private getRosterRequirements(leagueType: string = 'standard') {
     const requirements = {
       standard: {
-        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1,
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1,
         totalStarters: 9,
         flexPositions: ['RB', 'WR', 'TE'],
-        superflexSlots: 0
+        superflexPositions: []
       },
       superflex: {
-        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: superflexSlots || 1, K: 1, DEF: 1,
-        totalStarters: 9 + (superflexSlots || 1),
-        flexPositions: ['RB', 'WR', 'TE'],
-        superflexPositions: ['QB', 'RB', 'WR', 'TE'],
-        superflexSlots: superflexSlots || 1
-      },
-      '2qb': {
-        QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1,
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, DEF: 1, K: 1,
         totalStarters: 10,
         flexPositions: ['RB', 'WR', 'TE'],
-        superflexSlots: 0
+        superflexPositions: ['QB', 'RB', 'WR', 'TE']
+      },
+      '2qb': {
+        QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1,
+        totalStarters: 10,
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexPositions: []
+      },
+      '2flex': {
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1,
+        totalStarters: 10,
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexPositions: []
       }
     };
     
@@ -35,7 +40,7 @@ export default class OptimalLineupEngine {
   calculateOptimalLineup(roster: any[], settings: LeagueSettings = {}) {
     const leagueType = settings.leagueType || 'standard';
     const superflexSlots = settings.superflexSlots || 0;
-    const requirements = this.getRosterRequirements(leagueType, superflexSlots);
+    const requirements = this.getRosterRequirements(leagueType);
     
     console.log('🔍 Calculating optimal lineup:', { leagueType, superflexSlots, requirements });
     
@@ -50,7 +55,7 @@ export default class OptimalLineupEngine {
     
     // Fill required positions first (excluding special positions)
     Object.entries(requirements).forEach(([position, count]) => {
-      if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions' || position === 'superflexSlots') return;
+      if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions') return;
       
       console.log(`🔍 Processing position: ${position}, count: ${count}`);
       
@@ -91,25 +96,44 @@ export default class OptimalLineupEngine {
     }
     
     // Handle SUPERFLEX positions (if applicable)
-    if (leagueType === 'superflex' && requirements.superflexSlots && requirements.superflexSlots > 0) {
+    if (leagueType === 'superflex' && requirements.superflexPositions && requirements.superflexPositions.length > 0) {
       optimalLineup.SUPERFLEX = [];
       
-      // Fill each superflex slot
-      for (let slot = 0; slot < requirements.superflexSlots; slot++) {
-        const bestSuperflexPlayer = this.findBestSuperflexPlayer(positionGroups, usedPlayers);
+      // Fill superflex slot with best QB/RB/WR/TE
+      const bestSuperflexPlayer = this.findBestSuperflexPlayer(positionGroups, usedPlayers);
+      
+      if (bestSuperflexPlayer) {
+        optimalLineup.SUPERFLEX.push(bestSuperflexPlayer);
+        usedPlayers.add(bestSuperflexPlayer.playerId || bestSuperflexPlayer.playerName);
         
-        if (bestSuperflexPlayer) {
-          optimalLineup.SUPERFLEX.push(bestSuperflexPlayer);
-          usedPlayers.add(bestSuperflexPlayer.playerId || bestSuperflexPlayer.playerName);
-          
-          console.log(`🦸 SUPERFLEX Slot ${slot + 1}: Selected ${bestSuperflexPlayer.position} ${bestSuperflexPlayer.playerName} with ${bestSuperflexPlayer.projectedPoints} points`);
-        }
+        console.log(`🦸 SUPERFLEX: Selected ${bestSuperflexPlayer.position} ${bestSuperflexPlayer.playerName} with ${bestSuperflexPlayer.projectedPoints} points`);
+      }
+    }
+    
+    // Handle 2 FLEX positions (if applicable)
+    if (leagueType === '2flex' && requirements.FLEX === 2) {
+      optimalLineup.FLEX = [];
+      
+      // Fill first flex spot
+      const bestFlexPlayer1 = this.findBestFlexPlayer(positionGroups, usedPlayers);
+      if (bestFlexPlayer1) {
+        optimalLineup.FLEX.push(bestFlexPlayer1);
+        usedPlayers.add(bestFlexPlayer1.playerId || bestFlexPlayer1.playerName);
+        console.log(`🔄 FLEX 1: Selected ${bestFlexPlayer1.position} ${bestFlexPlayer1.playerName} with ${bestFlexPlayer1.projectedPoints} points`);
+      }
+      
+      // Fill second flex spot
+      const bestFlexPlayer2 = this.findBestFlexPlayer(positionGroups, usedPlayers);
+      if (bestFlexPlayer2) {
+        optimalLineup.FLEX.push(bestFlexPlayer2);
+        usedPlayers.add(bestFlexPlayer2.playerId || bestFlexPlayer2.playerName);
+        console.log(`🔄 FLEX 2: Selected ${bestFlexPlayer2.position} ${bestFlexPlayer2.playerName} with ${bestFlexPlayer2.projectedPoints} points`);
       }
     }
     
     // Ensure all required positions have at least an empty array
     Object.entries(requirements).forEach(([position, count]) => {
-      if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions' || position === 'superflexSlots') return;
+      if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions') return;
       
       if (typeof count === 'number' && count > 0 && !optimalLineup[position]) {
         optimalLineup[position] = [];
@@ -144,6 +168,32 @@ export default class OptimalLineupEngine {
     }
     
     return bestSuperflexPlayer;
+  }
+
+  private findBestFlexPlayer(positionGroups: Record<string, any[]>, usedPlayers: Set<string | unknown>) {
+    // Get all available flex eligible players
+    const availableRBs = (positionGroups['RB'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+    const availableWRs = (positionGroups['WR'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+    const availableTEs = (positionGroups['TE'] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName));
+    
+    // In flex, RB/WR/TE are all valuable - give them priority
+    let bestFlexPlayer = null;
+    
+    // First priority: Best available RB
+    if (availableRBs.length > 0) {
+      const bestRB = availableRBs.sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+      bestFlexPlayer = bestRB;
+    }
+    
+    // If no RBs available, select best WR/TE
+    if (!bestFlexPlayer) {
+      const otherPlayers = [...availableWRs, ...availableTEs];
+      if (otherPlayers.length > 0) {
+        bestFlexPlayer = otherPlayers.sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+      }
+    }
+    
+    return bestFlexPlayer;
   }
 
   private groupPlayersByPosition(roster: any[]) {
@@ -205,15 +255,15 @@ export default class OptimalLineupEngine {
   analyzeLineup(optimalLineup: Record<string, any[]>, settings: LeagueSettings = {}) {
     const leagueType = settings.leagueType || 'standard';
     const superflexSlots = settings.superflexSlots || 0;
-    const requirements = this.getRosterRequirements(leagueType, superflexSlots);
+    const requirements = this.getRosterRequirements(leagueType);
     
     return {
       totalStarters: requirements.totalStarters,
       leagueType,
-      superflexSlots: requirements.superflexSlots || 0,
+      superflexSlots: requirements.superflexPositions ? requirements.superflexPositions.length : 0,
       requirements,
       positionCounts: Object.entries(requirements)
-        .filter(([key]) => !['totalStarters', 'flexPositions', 'superflexPositions', 'superflexSlots'].includes(key))
+        .filter(([key]) => !['totalStarters', 'flexPositions', 'superflexPositions'].includes(key))
         .reduce((acc, [pos, count]) => ({ ...acc, [pos]: count }), {})
     };
   }

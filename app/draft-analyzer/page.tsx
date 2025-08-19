@@ -13,20 +13,26 @@ export default function DraftAnalyzerPage() {
     {
       id: 'standard',
       name: 'Standard (1 QB)',
-      description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1 (9 starters)',
+      description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1 (9 starters)',
       icon: '🏈'
     },
     {
       id: 'superflex',
       name: '🦸 Superflex',
-      description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, K: 1, DEF: 1 (10 starters)',
+      description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, DEF: 1, K: 1 (10 starters)',
       icon: '🦸'
     },
     {
       id: '2qb',
       name: '⚖️ 2 QB',
-      description: 'QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1 (10 starters)',
+      description: 'QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1 (10 starters)',
       icon: '⚖️'
+    },
+    {
+      id: '2flex',
+      name: '🔄 2 Flex',
+      description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1 (10 starters)',
+      icon: '🔄'
     }
   ];
 

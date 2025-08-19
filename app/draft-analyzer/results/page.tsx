@@ -37,6 +37,7 @@ function TeamLineup({ team }: { team: any }) {
   // Get position order based on league type - use a fixed order for now
   const getPositionOrder = () => {
     // For now, use a standard order - we can make this dynamic later
+    // Note: FLEX will show multiple players if it's a 2 FLEX league
     return ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX', 'DEF', 'K'];
   };
 
@@ -210,9 +211,10 @@ function ResultsContent() {
   // Helper: get league type display info
   const getLeagueTypeInfo = (type: string) => {
     const leagueTypes = {
-      standard: { name: 'Standard (1 QB)', starters: 9, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1' },
-      superflex: { name: '🦸 Superflex', starters: 10, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, K: 1, DEF: 1' },
-      '2qb': { name: '⚖️ 2 QB', starters: 10, description: 'QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DEF: 1' }
+      standard: { name: 'Standard (1 QB)', starters: 9, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1' },
+      superflex: { name: '🦸 Superflex', starters: 10, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPERFLEX: 1, DEF: 1, K: 1' },
+      '2qb': { name: '⚖️ 2 QB', starters: 10, description: 'QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1' },
+      '2flex': { name: '🔄 2 Flex', starters: 10, description: 'QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1' }
     };
     return leagueTypes[type as keyof typeof leagueTypes] || leagueTypes.standard;
   };
