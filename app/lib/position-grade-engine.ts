@@ -27,7 +27,7 @@ export default class PositionGradeEngine {
       groups[pos].push(p);
     });
 
-    // Add FLEX position (RB, WR, TE combined)
+    // Add FLEX position (RB, WR, TE combined) - but only the BEST players
     const flexPlayers: any[] = [];
     ['RB', 'WR', 'TE'].forEach(pos => {
       if (groups[pos]) {
@@ -35,7 +35,12 @@ export default class PositionGradeEngine {
       }
     });
     if (flexPlayers.length > 0) {
-      groups['FLEX'] = flexPlayers;
+      // Sort by projected points and only take the top players for FLEX grading
+      const sortedFlexPlayers = flexPlayers
+        .sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0))
+        .slice(0, 3); // Only consider top 3 players for FLEX spot
+      
+      groups['FLEX'] = sortedFlexPlayers;
     }
 
     const positionGrades: Record<string, any> = {};
