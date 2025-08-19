@@ -5,6 +5,131 @@ import { useSearchParams } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
+// LOCKED TABLE STYLES - NO STRETCHING ALLOWED
+const tableStyles = `
+  .scoreboard { 
+    display: block; 
+    overflow-x: auto; 
+  }
+  
+  .shrinkwrap { 
+    display: inline-block; 
+    max-width: 100%; 
+  }
+  
+  .scoreTable { 
+    display: table !important;
+    table-layout: fixed !important;
+    width: 660px !important;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  
+  .scoreTable col.col-rank { width: 60px !important; }
+  .scoreTable col.col-team { width: 200px !important; }
+  .scoreTable col.col-grade { width: 100px !important; }
+  .scoreTable col.col-opt { width: 100px !important; }
+  .scoreTable col.col-bench { width: 100px !important; }
+  .scoreTable col.col-total { width: 100px !important; }
+  
+  .scoreTable th, .scoreTable td {
+    padding: 8px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .scoreTable th {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 2px solid #cbd5e1;
+    font-weight: 600;
+    color: #374151;
+  }
+  
+  .scoreTable th:nth-child(1),
+  .scoreTable td:nth-child(1),
+  .scoreTable th:nth-child(3),
+  .scoreTable td:nth-child(3),
+  .scoreTable th:nth-child(4),
+  .scoreTable td:nth-child(4),
+  .scoreTable th:nth-child(5),
+  .scoreTable td:nth-child(5),
+  .scoreTable th:nth-child(6),
+  .scoreTable td:nth-child(6) { 
+    text-align: center; 
+  }
+  
+  .scoreTable th:nth-child(2),
+  .scoreTable td:nth-child(2) { 
+    text-align: left; 
+  }
+  
+  .scoreTable tr {
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .scoreTable tr:hover {
+    background-color: #f8fafc;
+  }
+  
+  .rank-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .rank-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  
+  .rank-circle.rank-1 {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  }
+  
+  .rank-circle.rank-2 {
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+  }
+  
+  .rank-circle.rank-3 {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  }
+  
+  .rank-circle:not(.rank-1):not(.rank-2):not(.rank-3) {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  }
+  
+  .rank-medal {
+    font-size: 8px;
+    font-weight: 600;
+    color: #92400e;
+    text-transform: uppercase;
+  }
+  
+  .team-name {
+    font-weight: 600;
+    color: #0f172a;
+  }
+  
+  .points {
+    font-weight: 600;
+  }
+  
+  .points.optimal { color: #0ea5e9; }
+  .points.bench { color: #f59e0b; }
+  .points.total { color: #10b981; }
+`;
+
 function Badge({ text, color = '#64748b', style }: { text: string; color?: string; style?: React.CSSProperties }) {
   return (
     <span style={{
@@ -252,6 +377,7 @@ function ResultsContent() {
 
   return (
     <div>
+      <style dangerouslySetInnerHTML={{ __html: tableStyles }} />
       <div style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%)', color: 'white', padding: '30px', textAlign: 'center' }}>
         <a href="/draft-analyzer" style={{ display: 'inline-block', padding: '10px 20px', background: 'rgba(255,255,255,0.2)', color: 'white', textDecoration: 'none', borderRadius: '5px', marginBottom: '20px', fontSize: '14px' }}>← Back</a>
         <h1 style={{ fontSize: '2.0rem', marginBottom: '10px', textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>📊 Draft Analysis Results</h1>
@@ -294,203 +420,90 @@ function ResultsContent() {
 
           {/* Scoreboard as Professional Table */}
           <SectionCard title="🏆 Scoreboard (Ranked by Optimal Lineup Points)">
-            <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
-              <table style={{ 
-                width: '100%', 
-                borderCollapse: 'collapse',
-                tableLayout: 'fixed',
-                fontSize: '12px'
-              }}>
-                <colgroup>
-                  <col style={{ width: '60px' }} />
-                  <col style={{ width: '200px' }} />
-                  <col style={{ width: '100px' }} />
-                  <col style={{ width: '100px' }} />
-                  <col style={{ width: '100px' }} />
-                  <col style={{ width: '100px' }} />
-                </colgroup>
-                <thead>
-                  <tr style={{ 
-                    background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-                    borderBottom: '2px solid #cbd5e1'
-                  }}>
-                    <th style={{ 
-                      padding: '12px 8px', 
-                      textAlign: 'center', 
-                      fontWeight: '600',
-                      color: '#374151',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      Rank
-                    </th>
-                    <th style={{ 
-                      padding: '12px 8px', 
-                      textAlign: 'left', 
-                      fontWeight: '600',
-                      color: '#374151',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      Team
-                    </th>
-                    <th style={{ 
-                      padding: '12px 8px', 
-                      textAlign: 'center', 
-                      fontWeight: '600',
-                      color: '#374151',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      Grade
-                    </th>
-                    <th style={{ 
-                      padding: '12px 8px', 
-                      textAlign: 'center', 
-                      fontWeight: '600',
-                      color: '#374151',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      Optimal
-                    </th>
-                    <th style={{ 
-                      padding: '12px 8px', 
-                      textAlign: 'center', 
-                      fontWeight: '600',
-                      color: '#374151',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      Bench
-                    </th>
-                    <th style={{ 
-                      padding: '12px 8px', 
-                      textAlign: 'center', 
-                      fontWeight: '600',
-                      color: '#374151',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      Total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedTeams.map((team: any, idx: number) => {
-                    const rosterGrade = formatRosterGrade(team);
-                    const gradeLetter = rosterGrade.grade;
-                    const optimalPts = team?.optimalLineupPoints ?? 0;
-                    const benchPts = team?.benchPoints ?? 0;
-                    const totalPts = team?.totalProjectedPoints ?? 0;
-                    const gradeCol = (gradeLetter && gradeLetter !== '—') ? (gradeLetter.startsWith('A') ? '#16a34a' : gradeLetter.startsWith('B') ? '#22c55e' : gradeLetter.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
-                    
-                    return (
-                      <tr key={team.teamId} style={{
-                        borderBottom: '1px solid #e5e7eb',
-                        transition: 'background-color 0.2s ease',
-                        cursor: 'pointer'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#f8fafc';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }}>
-                        
-                        {/* Rank Column */}
-                        <td style={{ 
-                          padding: '12px 8px', 
-                          textAlign: 'center',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: 4
-                          }}>
-                            <div style={{
-                              width: 32,
-                              height: 32,
-                              borderRadius: '50%',
-                              background: idx === 0 ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' : 
-                                         idx === 1 ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)' :
-                                         idx === 2 ? 'linear-gradient(135deg, #d97706 0%, #b45309 100%)' :
-                                         'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              color: 'white',
-                              fontWeight: '700',
-                              fontSize: '12px'
-                            }}>
-                              {idx + 1}
-                            </div>
-                            {idx < 3 && (
-                              <div style={{
-                                fontSize: '8px',
-                                fontWeight: '600',
-                                color: idx === 0 ? '#92400e' : idx === 1 ? '#475569' : '#92400e',
-                                textTransform: 'uppercase'
-                              }}>
-                                {idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}
+            <div className="scoreboard">
+              <div className="shrinkwrap">
+                <table className="scoreTable">
+                  <colgroup>
+                    <col className="col-rank" />
+                    <col className="col-team" />
+                    <col className="col-grade" />
+                    <col className="col-opt" />
+                    <col className="col-bench" />
+                    <col className="col-total" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Team</th>
+                      <th>Grade</th>
+                      <th>Optimal</th>
+                      <th>Bench</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedTeams.map((team: any, idx: number) => {
+                      const rosterGrade = formatRosterGrade(team);
+                      const gradeLetter = rosterGrade.grade;
+                      const optimalPts = team?.optimalLineupPoints ?? 0;
+                      const benchPts = team?.benchPoints ?? 0;
+                      const totalPts = team?.totalProjectedPoints ?? 0;
+                      const gradeCol = (gradeLetter && gradeLetter !== '—') ? (gradeLetter.startsWith('A') ? '#16a34a' : gradeLetter.startsWith('B') ? '#22c55e' : gradeLetter.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
+                      
+                      return (
+                        <tr key={team.teamId}>
+                          {/* Rank Column */}
+                          <td>
+                            <div className="rank-display">
+                              <div className={`rank-circle rank-${idx + 1}`}>
+                                {idx + 1}
                               </div>
-                            )}
-                          </div>
-                        </td>
+                              {idx < 3 && (
+                                <div className="rank-medal">
+                                  {idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}
+                                </div>
+                              )}
+                            </div>
+                          </td>
 
-                        {/* Team Column */}
-                        <td style={{ 
-                          padding: '12px 8px', 
-                          textAlign: 'left',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          <div style={{ fontWeight: '600', color: '#0f172a' }}>
-                            {team.teamName || `Team ${team.teamId}`}
-                          </div>
-                        </td>
+                          {/* Team Column */}
+                          <td>
+                            <div className="team-name">
+                              {team.teamName || `Team ${team.teamId}`}
+                            </div>
+                          </td>
 
-                        {/* Grade Column */}
-                        <td style={{ 
-                          padding: '12px 8px', 
-                          textAlign: 'center',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          <Badge text={gradeLetter} color={gradeCol} />
-                        </td>
+                          {/* Grade Column */}
+                          <td>
+                            <Badge text={gradeLetter} color={gradeCol} />
+                          </td>
 
-                        {/* Optimal Points Column */}
-                        <td style={{ 
-                          padding: '12px 8px', 
-                          textAlign: 'center',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          <div style={{ fontWeight: '600', color: '#0ea5e9' }}>
-                            {optimalPts.toFixed(1)}
-                          </div>
-                        </td>
+                          {/* Optimal Points Column */}
+                          <td>
+                            <div className="points optimal">
+                              {optimalPts.toFixed(1)}
+                            </div>
+                          </td>
 
-                        {/* Bench Points Column */}
-                        <td style={{ 
-                          padding: '12px 8px', 
-                          textAlign: 'center',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          <div style={{ fontWeight: '600', color: '#f59e0b' }}>
-                            {benchPts.toFixed(1)}
-                          </div>
-                        </td>
+                          {/* Bench Points Column */}
+                          <td>
+                            <div className="points bench">
+                              {benchPts.toFixed(1)}
+                            </div>
+                          </td>
 
-                        {/* Total Points Column */}
-                        <td style={{ 
-                          padding: '12px 8px', 
-                          textAlign: 'center',
-                          whiteSpace: 'nowrap'
-                        }}>
-                          <div style={{ fontWeight: '600', color: '#10b981' }}>
-                            {totalPts.toFixed(1)}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          {/* Total Points Column */}
+                          <td>
+                            <div className="points total">
+                              {totalPts.toFixed(1)}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </SectionCard>
 
