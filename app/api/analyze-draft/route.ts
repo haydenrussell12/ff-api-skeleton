@@ -180,13 +180,13 @@ class DraftAnalyzer {
         console.log(`🔍 Looking for projections for ${playerName} at position: ${posKey}`);
         console.log(`🔍 Available projection keys:`, Object.keys(player.projections));
         
-        let fpts = player.projections[posKey]?.fpts;
+        let fpts = 0;
         
-        // Handle defense projections - try multiple position key variations
-        if (!fpts && (posKey === 'def' || posKey === 'defense')) {
-            console.log(`🛡️ Trying defense projection variations for: ${playerName}`);
+        // Handle defense projections - try multiple approaches
+        if (posKey === 'def' || posKey === 'defense') {
+            console.log(`🛡️ Processing DEFENSE player: ${playerName}`);
             
-            // Try all possible defense position keys
+            // Method 1: Try exact position keys
             const defenseKeys = ['def', 'DEF', 'defense', 'Defense', 'DEFENSE'];
             for (const key of defenseKeys) {
                 if (player.projections[key]?.fpts) {
@@ -196,7 +196,7 @@ class DraftAnalyzer {
                 }
             }
             
-            // If still no luck, try to find any key that contains 'def'
+            // Method 2: Try partial key matching
             if (!fpts) {
                 for (const key of Object.keys(player.projections)) {
                     if (key.toLowerCase().includes('def')) {
@@ -206,11 +206,44 @@ class DraftAnalyzer {
                     }
                 }
             }
+            
+            // Method 3: Look for any numeric projection value
+            if (!fpts) {
+                for (const key of Object.keys(player.projections)) {
+                    const projection = player.projections[key];
+                    if (projection && typeof projection === 'object' && projection.fpts) {
+                        fpts = projection.fpts;
+                        console.log(`✅ Found defense projections using generic key: ${key} = ${fpts}`);
+                        break;
+                    }
+                }
+            }
+            
+            // Method 4: Look for any numeric value in projections
+            if (!fpts) {
+                for (const key of Object.keys(player.projections)) {
+                    const value = player.projections[key];
+                    if (typeof value === 'number' && value > 0) {
+                        fpts = value;
+                        console.log(`✅ Found defense projections using numeric key: ${key} = ${fpts}`);
+                        break;
+                    }
+                }
+            }
+            
+            // Method 5: Check if projections is just a number (some defenses have this)
+            if (!fpts && typeof player.projections === 'number' && player.projections > 0) {
+                fpts = player.projections;
+                console.log(`✅ Found defense projections as direct number: ${fpts}`);
+            }
+        } else {
+            // Non-defense players - try standard approach
+            fpts = player.projections[posKey]?.fpts;
         }
         
         if (fpts) {
             console.log(`✅ Projected points for ${playerName}: ${fpts}`);
-            return parseFloat(fpts);
+            return typeof fpts === 'number' ? fpts : parseFloat(fpts);
         } else {
             console.log(`❌ No projected points found for ${playerName} at position ${posKey}`);
             console.log(`🔍 Player projections structure:`, player.projections);
@@ -294,234 +327,102 @@ class DraftAnalyzer {
         if (!slotToRosterId) {
             throw new Error('No slot_to_roster_id found in draft data - this may not be a mock draft');
         }
+
+        // SMART USERNAME DETECTION - Don't rely on failing endpoints
+        console.log('🧠 Using smart username detection...');
         
-        // Strategy 1: Try participants endpoint
-        try {
-            console.log('🔄 Strategy 1: Trying participants endpoint...');
-            console.log(`🔍 URL: https://api.sleeper.app/v1/draft/${draftId}/participants`);
+        // Method 1: Check if this is a mock draft with user info in picks
+        if (draftData.type === 'mock' || draftData.status === 'complete') {
+            console.log('🔍 This appears to be a mock draft, extracting usernames from picks...');
             
-            participants = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/participants`);
-            console.log('🔍 Participants data:', JSON.stringify(participants, null, 2));
-            console.log('🔍 Participants count:', participants.length);
-            
-            // Map slot -> participant display name if available
-            (participants || []).forEach((p: any) => {
-                const slotKey = String(p?.slot ?? '');
-                if (!slotKey) return;
-                
-                // Try multiple fields for username
-                const name = p?.name || p?.display_name || p?.username || p?.user_name || p?.metadata?.name || p?.metadata?.display_name;
-                
-                if (name) {
-                    slotToName[slotKey] = name;
-                    console.log(`📝 Participants mapped slot ${slotKey} to name: ${name}`);
-                } else {
-                    console.log(`⚠️ No name found for slot ${slotKey}, participant data:`, p);
-                }
-            });
-            
-        } catch (e) {
-            console.error('❌ Strategy 1 (participants) failed:', e);
-            console.error('❌ Error details:', {
-                message: e instanceof Error ? e.message : 'Unknown error',
-                stack: e instanceof Error ? e.stack : 'No stack trace',
-                draftId: draftId,
-                url: `https://api.sleeper.app/v1/draft/${draftId}/participants`
-            });
-            
-            // Try alternative participants endpoint format
-            try {
-                console.log('🔄 Strategy 1b: Trying alternative participants endpoint...');
-                const altParticipants = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/users`);
-                console.log('🔍 Alternative participants data:', JSON.stringify(altParticipants, null, 2));
-                
-                if (Array.isArray(altParticipants)) {
-                    altParticipants.forEach((p: any) => {
-                        const slotKey = String(p?.slot ?? '');
-                        if (!slotKey) return;
-                        
-                        const name = p?.name || p?.display_name || p?.username || p?.user_name || p?.metadata?.name || p?.metadata?.display_name;
-                        
-                        if (name) {
-                            slotToName[slotKey] = name;
-                            console.log(`📝 Alternative participants mapped slot ${slotKey} to name: ${name}`);
-                        }
-                    });
-                }
-            } catch (altError) {
-                console.error('❌ Strategy 1b (alternative participants) also failed:', altError);
-            }
-        }
-        
-        // Strategy 2: Check if this is a league draft and try league users
-        if (Object.keys(slotToName).length === 0) {
-            try {
-                console.log('🔄 Strategy 2: Trying league users endpoint...');
-                console.log(`🔍 Checking for league_id: ${draftData.league_id}`);
-                
-                if (draftData.league_id) {
-                    const leagueData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/league/${draftData.league_id}/users`);
-                    console.log('🔍 League users data:', JSON.stringify(leagueData, null, 2));
+            // Look through all draft picks for user metadata
+            for (const pick of draftPicks || []) {
+                if (pick.metadata && Object.keys(pick.metadata).length > 0) {
+                    const slotKey = String(pick.draft_slot);
                     
-                    // Map roster IDs to user names from league
-                    if (Array.isArray(leagueData)) {
-                        leagueData.forEach((user: any) => {
-                            const rosterId = user?.roster_id;
-                            if (rosterId !== undefined && rosterId !== null) {
-                                const name = user?.display_name || user?.username || user?.name;
-                                if (name) {
-                                    // Find which slot this roster corresponds to
-                                    Object.entries(slotToRosterId).forEach(([slot, rid]) => {
-                                        if (rid === rosterId) {
-                                            slotToName[slot] = name;
-                                            console.log(`📝 League fallback mapped slot ${slot} (roster ${rosterId}) to name: ${name}`);
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                } else {
-                    console.log('⚠️ No league_id found in draft data');
-                }
-            } catch (leagueError) {
-                console.error('❌ Strategy 2 (league users) failed:', leagueError);
-            }
-        } else {
-            console.log('🔄 Strategy 2: Skipped - usernames already found');
-        }
-        
-        // Strategy 3: Check draft picks metadata for user info
-        if (Object.keys(slotToName).length === 0) {
-            try {
-                console.log('🔄 Strategy 3: Checking draft picks metadata...');
-                console.log(`🔍 Draft picks count: ${draftPicks?.length || 0}`);
-                console.log('🔍 Draft picks data:', JSON.stringify(draftPicks?.slice(0, 3), null, 2)); // Log first 3 picks
-                
-                // Look for user info in draft picks
-                for (const pick of draftPicks || []) {
-                    if (pick.metadata && Object.keys(pick.metadata).length > 0) {
-                        console.log(`🔍 Pick ${pick.draft_slot} metadata:`, pick.metadata);
-                        
-                        // Check if this pick has user info
-                        if (pick.metadata.user_id || pick.metadata.username || pick.metadata.display_name) {
-                            const slotKey = String(pick.draft_slot);
-                            const name = pick.metadata.display_name || pick.metadata.username || pick.metadata.user_id;
-                            
-                            if (name && !slotToName[slotKey]) {
-                                slotToName[slotKey] = name;
-                                console.log(`📝 Draft picks metadata mapped slot ${slotKey} to name: ${name}`);
-                            }
-                        }
+                    // Check for any user identifier in metadata
+                    const potentialUsername = pick.metadata.user_id || 
+                                           pick.metadata.username || 
+                                           pick.metadata.display_name ||
+                                           pick.metadata.name ||
+                                           pick.metadata.user;
+                    
+                    if (potentialUsername && !slotToName[slotKey]) {
+                        slotToName[slotKey] = potentialUsername;
+                        console.log(`✅ Found username for slot ${slotKey}: ${potentialUsername}`);
                     }
                 }
-            } catch (metadataError) {
-                console.error('❌ Strategy 3 (draft picks metadata) failed:', metadataError);
             }
-        } else {
-            console.log('🔄 Strategy 3: Skipped - usernames already found');
         }
         
-        // Strategy 4: Check draft metadata for draft order
-        if (Object.keys(slotToName).length === 0) {
-            try {
-                console.log('🔄 Strategy 4: Checking draft metadata...');
-                console.log(`🔍 Draft metadata keys: ${Object.keys(draftData.metadata || {}).join(', ')}`);
-                
-                if (draftData.metadata?.draft_order) {
-                    const draftOrder = draftData.metadata.draft_order;
-                    console.log('🔍 Draft order from metadata:', draftOrder);
+        // Method 2: Check draft metadata for user order
+        if (Object.keys(slotToName).length === 0 && draftData.metadata?.draft_order) {
+            console.log('🔍 Checking draft metadata for user order...');
+            const draftOrder = draftData.metadata.draft_order;
+            
+            if (Array.isArray(draftOrder)) {
+                draftOrder.forEach((name: string, index: number) => {
+                    if (name && typeof name === 'string' && name.trim()) {
+                        const slotKey = String(index);
+                        slotToName[slotKey] = name.trim();
+                        console.log(`✅ Metadata mapped slot ${slotKey} to: ${name.trim()}`);
+                    }
+                });
+            }
+        }
+        
+        // Method 3: Check if there are team names in metadata
+        if (Object.keys(slotToName).length === 0 && draftData.metadata?.team_names) {
+            console.log('🔍 Checking for team names in metadata...');
+            const teamNames = draftData.metadata.team_names;
+            
+            if (Array.isArray(teamNames)) {
+                teamNames.forEach((name: string, index: number) => {
+                    if (name && typeof name === 'string' && name.trim()) {
+                        const slotKey = String(index);
+                        slotToName[slotKey] = name.trim();
+                        console.log(`✅ Team names mapped slot ${slotKey} to: ${name.trim()}`);
+                    }
+                });
+            }
+        }
+        
+        // Method 4: Try to extract from draft settings
+        if (Object.keys(slotToName).length === 0 && draftData.settings) {
+            console.log('🔍 Checking draft settings for user info...');
+            
+            // Look for any field that might contain user information
+            const settingsKeys = Object.keys(draftData.settings);
+            for (const key of settingsKeys) {
+                const value = draftData.settings[key];
+                if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
+                    console.log(`🔍 Found potential user array in settings.${key}:`, value);
                     
-                    if (Array.isArray(draftOrder)) {
-                        draftOrder.forEach((name: string, index: number) => {
-                            if (name && typeof name === 'string') {
+                    // If this looks like a user list, map it to slots
+                    if (value.length === Object.keys(slotToRosterId).length) {
+                        value.forEach((name: string, index: number) => {
+                            if (name && typeof name === 'string' && name.trim()) {
                                 const slotKey = String(index);
-                                slotToName[slotKey] = name;
-                                console.log(`📝 Metadata fallback mapped slot ${slotKey} to name: ${name}`);
+                                slotToName[slotKey] = name.trim();
+                                console.log(`✅ Settings mapped slot ${slotKey} to: ${name.trim()}`);
                             }
                         });
-                    }
-                } else {
-                    console.log('⚠️ No draft_order found in metadata');
-                }
-            } catch (metadataError) {
-                console.error('❌ Strategy 4 (draft metadata) failed:', metadataError);
-            }
-        } else {
-            console.log('🔄 Strategy 4: Skipped - usernames already found');
-        }
-        
-        // Strategy 5: Try to extract from draft settings or other fields
-        if (Object.keys(slotToName).length === 0) {
-            try {
-                console.log('🔄 Strategy 5: Checking draft settings and other fields...');
-                console.log('🔍 Full draft data structure:', Object.keys(draftData));
-                console.log('🔍 Draft settings:', draftData.settings);
-                console.log('🔍 Draft metadata keys:', Object.keys(draftData.metadata || {}));
-                
-                // Check if there are any other fields that might contain user info
-                if (draftData.metadata?.draft_order_names) {
-                    console.log('🔍 Found draft_order_names:', draftData.metadata.draft_order_names);
-                }
-                if (draftData.metadata?.team_names) {
-                    console.log('🔍 Found team_names:', draftData.metadata.team_names);
-                }
-                
-                // Check if this is a mock draft and try to get user info from picks
-                if (draftData.type === 'mock' || draftData.status === 'complete') {
-                    console.log('🔄 Strategy 5b: This appears to be a mock draft, checking picks for user info...');
-                    
-                    // Look through draft picks for any user metadata
-                    for (const pick of draftPicks || []) {
-                        if (pick.metadata && Object.keys(pick.metadata).length > 0) {
-                            console.log(`🔍 Pick ${pick.draft_slot} metadata:`, pick.metadata);
-                            
-                            // Check if this pick has user info
-                            if (pick.metadata.user_id || pick.metadata.username || pick.metadata.display_name) {
-                                const slotKey = String(pick.draft_slot);
-                                const name = pick.metadata.display_name || pick.metadata.username || pick.metadata.user_id;
-                                
-                                if (name && !slotToName[slotKey]) {
-                                    slotToName[slotKey] = name;
-                                    console.log(`📝 Draft pick metadata mapped slot ${slotKey} to name: ${name}`);
-                                }
-                            }
-                        }
+                        break;
                     }
                 }
-                
-            } catch (error) {
-                console.error('❌ Strategy 5 (draft exploration) failed:', error);
             }
         }
         
-        // Strategy 6: Try to get user info from Sleeper user IDs if available
+        // Method 5: Generate mock usernames if nothing else works
         if (Object.keys(slotToName).length === 0) {
-            try {
-                console.log('🔄 Strategy 6: Checking for Sleeper user IDs in draft data...');
-                
-                // Look for any user_id fields in the draft data
-                if (draftData.user_id) {
-                    console.log('🔍 Found user_id in draft data:', draftData.user_id);
-                }
-                
-                // Check if there are any user references in the metadata
-                if (draftData.metadata) {
-                    const metadataKeys = Object.keys(draftData.metadata);
-                    console.log('🔍 All metadata keys:', metadataKeys);
-                    
-                    // Look for any field that might contain user info
-                    for (const key of metadataKeys) {
-                        const value = draftData.metadata[key];
-                        if (typeof value === 'string' && value.includes('@')) {
-                            console.log(`🔍 Potential username found in ${key}:`, value);
-                        }
-                    }
-                }
-                
-            } catch (error) {
-                console.error('❌ Strategy 6 (user ID exploration) failed:', error);
-            }
+            console.log('🔍 No usernames found, generating mock usernames...');
+            
+            // Create mock usernames based on draft slot
+            Object.keys(slotToRosterId).forEach((slot) => {
+                const slotNum = parseInt(slot, 10);
+                slotToName[slot] = `DraftSlot${slotNum + 1}`;
+                console.log(`🎭 Generated mock username for slot ${slot}: DraftSlot${slotNum + 1}`);
+            });
         }
         
         console.log('🔍 Final slot to name mapping:', slotToName);
@@ -537,7 +438,7 @@ class DraftAnalyzer {
             console.log('❌ NO USERNAMES FOUND - All strategies failed');
             console.log('🔍 This suggests this may be a mock draft without user information');
         } else {
-            console.log('✅ Some usernames found:');
+            console.log('✅ Usernames found:');
             Object.entries(slotToName).forEach(([slot, name]) => {
                 console.log(`   Slot ${slot}: ${name}`);
             });
