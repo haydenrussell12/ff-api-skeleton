@@ -169,7 +169,7 @@ function TeamLineup({ team }: { team: any }) {
   const positionOrder = getPositionOrder();
 
   const renderPlayers = (players: any[]) => (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, minmax(0, 1fr))', gap: 8 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, minmax(0, 1fr))', gap: 8, maxWidth: '100%', overflow: 'hidden' }}>
       {(players || []).map((p, idx) => (
         <div key={(p.playerId || p.playerName || idx) + '-lineup'} style={{ 
           display: 'flex', 
@@ -179,7 +179,9 @@ function TeamLineup({ team }: { team: any }) {
           background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', 
           border: '1px solid #e2e8f0', 
           borderRadius: 10,
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          maxWidth: '100%',
+          boxSizing: 'border-box'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Badge text={p.position || '—'} color="#0ea5e9" />
@@ -194,13 +196,13 @@ function TeamLineup({ team }: { team: any }) {
   );
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, maxWidth: '100%', overflow: 'hidden' }}>
       <div>
         <h4 style={{ margin: '0 0 16px', color: '#334155', fontSize: 16, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ width: 8, height: 8, background: '#10b981', borderRadius: '50%' }}></span>
           Starters
         </h4>
-        <div style={{ display: 'grid', gap: 16 }}>
+        <div style={{ display: 'grid', gap: 16, maxWidth: '100%' }}>
           {positionOrder.map((pos) => {
             const players = lineup[pos] || [];
             const grade = posGrades[pos];
@@ -211,7 +213,9 @@ function TeamLineup({ team }: { team: any }) {
                 border: '1px solid #e2e8f0', 
                 borderRadius: 12, 
                 overflow: 'hidden',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+                maxWidth: '100%',
+                boxSizing: 'border-box'
               }}>
                 <div style={{ 
                   padding: '12px 16px', 
@@ -403,9 +407,9 @@ function ResultsContent() {
           boxSizing: 'border-box'
         }}>
           {/* Overview and Settings at Top */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, maxWidth: '100%', overflow: 'hidden' }}>
             <SectionCard title="Overview">
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, maxWidth: '100%' }}>
                 <div><div style={{ color: '#64748b', fontSize: 12 }}>Name</div><div style={{ fontWeight: 700 }}>{results?.draftInfo?.name}</div></div>
                 <div><div style={{ color: '#64748b', fontSize: 12 }}>Teams</div><div style={{ fontWeight: 700 }}>{results?.draftInfo?.teams}</div></div>
                 <div><div style={{ color: '#64748b', fontSize: 12 }}>Rounds</div><div style={{ fontWeight: 700 }}>{results?.draftInfo?.rounds}</div></div>
@@ -509,7 +513,7 @@ function ResultsContent() {
 
           {/* Teams Section */}
           <SectionCard title="Teams">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: 20, maxWidth: '100%', overflow: 'hidden' }}>
               {(results?.analysis?.teams || []).map((team: any) => {
                 const rosterGrade = formatRosterGrade(team);
                 const gradeColor = getGradeColor(rosterGrade.grade);
@@ -520,7 +524,9 @@ function ResultsContent() {
                     border: '1px solid #e2e8f0', 
                     borderRadius: 16, 
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    maxWidth: '100%',
+                    boxSizing: 'border-box'
                   }}>
                     {/* Team Header with Roster Grade */}
                     <div style={{
@@ -570,9 +576,11 @@ function ResultsContent() {
                     {/* Roster Construction Analysis */}
                     <div style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                       gap: '15px',
-                      marginBottom: '20px'
+                      marginBottom: '20px',
+                      maxWidth: '100%',
+                      overflow: 'hidden'
                     }}>
                       {/* Positional Balance */}
                       <div style={{
@@ -657,10 +665,10 @@ function ResultsContent() {
             </div>
           </SectionCard>
 
-          {/* Raw Results */}
-          <SectionCard title="Raw Results">
+          {/* Raw Results - HIDDEN */}
+          {/* <SectionCard title="Raw Results">
             <pre style={{ background: '#0b1220', color: '#e2e8f0', padding: '16px', borderRadius: 12, overflow: 'auto', fontSize: '12px', lineHeight: 1.5 }}>{JSON.stringify(results, null, 2)}</pre>
-          </SectionCard>
+          </SectionCard> */}
         </div>
       )}
     </div>
