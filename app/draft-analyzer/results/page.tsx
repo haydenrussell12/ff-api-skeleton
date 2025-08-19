@@ -69,7 +69,7 @@ function TeamLineup({ team }: { team: any }) {
   );
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 20 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
       <div>
         <h4 style={{ margin: '0 0 16px', color: '#334155', fontSize: 16, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ width: 8, height: 8, background: '#10b981', borderRadius: '50%' }}></span>
@@ -267,11 +267,18 @@ function ResultsContent() {
       )}
 
       {!isLoading && !error && results && (
-        <div style={{ padding: '30px', display: 'grid', gap: 20 }}>
+        <div style={{ 
+          padding: '20px', 
+          display: 'grid', 
+          gap: 20, 
+          maxWidth: '100%', 
+          overflow: 'hidden',
+          boxSizing: 'border-box'
+        }}>
           {/* Overview and Settings at Top */}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
             <SectionCard title="Overview">
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
                 <div><div style={{ color: '#64748b', fontSize: 12 }}>Name</div><div style={{ fontWeight: 700 }}>{results?.draftInfo?.name}</div></div>
                 <div><div style={{ color: '#64748b', fontSize: 12 }}>Teams</div><div style={{ fontWeight: 700 }}>{results?.draftInfo?.teams}</div></div>
                 <div><div style={{ color: '#64748b', fontSize: 12 }}>Rounds</div><div style={{ fontWeight: 700 }}>{results?.draftInfo?.rounds}</div></div>
@@ -286,12 +293,13 @@ function ResultsContent() {
 
           {/* Scoreboard as Table */}
           <SectionCard title="🏆 Scoreboard (Ranked by Optimal Lineup Points)">
-            <div style={{ overflowX: 'auto' }}>
+            <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
               <table style={{ 
                 width: '100%', 
                 borderCollapse: 'collapse', 
                 fontSize: 11,
-                tableLayout: 'fixed'
+                tableLayout: 'fixed',
+                minWidth: '600px'
               }}>
                 <colgroup>
                   <col style={{ width: '60px' }} />
@@ -409,7 +417,7 @@ function ResultsContent() {
                     {/* Roster Construction Analysis */}
                     <div style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                       gap: '15px',
                       marginBottom: '20px'
                     }}>
@@ -508,8 +516,20 @@ function ResultsContent() {
 
 export default function DraftAnalyzerResultsPage() {
   return (
-    <div style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%)', minHeight: '100vh', padding: '20px' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto', background: 'transparent', borderRadius: '20px' }}>
+    <div style={{ 
+      background: 'linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%)', 
+      minHeight: '100vh', 
+      padding: '20px',
+      maxWidth: '100vw',
+      overflowX: 'hidden'
+    }}>
+      <div style={{ 
+        maxWidth: '1200px', 
+        margin: '0 auto', 
+        background: 'transparent', 
+        borderRadius: '20px',
+        overflow: 'hidden'
+      }}>
         <Suspense fallback={<div style={{ padding: '30px', textAlign: 'center' }}>Loading...</div>}> 
           <ResultsContent />
         </Suspense>
