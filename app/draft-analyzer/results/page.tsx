@@ -52,17 +52,6 @@ function TeamLineup({ team }: { team: any }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ fontSize: 12, color: '#64748b' }}>{(p.projectedPoints || 0).toFixed(1)} pts</div>
-            {p.draftValue !== undefined && (
-              <div style={{ 
-                fontSize: 11, 
-                padding: '2px 6px', 
-                borderRadius: 4, 
-                background: p.draftValue < 0 ? '#dcfce7' : p.draftValue > 0 ? '#fef2f2' : '#f3f4f6',
-                color: p.draftValue < 0 ? '#16a34a' : p.draftValue > 0 ? '#dc2626' : '#6b7280'
-              }}>
-                {p.draftValue < 0 ? '+' : ''}{Math.abs(p.draftValue).toFixed(1)}
-              </div>
-            )}
           </div>
         </div>
       ))}
@@ -229,7 +218,7 @@ function ResultsContent() {
                     <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Optimal Pts</th>
                     <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Bench Pts</th>
                     <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Total Pts</th>
-                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Draft Value</th>
+                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg ADP</th>
                     <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg VORP</th>
                   </tr>
                 </thead>
@@ -240,10 +229,8 @@ function ResultsContent() {
                     const benchPts = team?.benchPoints ?? 0;
                     const totalPts = team?.totalProjectedPoints ?? 0;
                     const avgVorp = team?.averageVorpScore ?? 0;
-                    const avgDraftValue = team?.averageDraftValue ?? 0;
-                    const draftValueGrade = team?.draftValueGrade ?? '—';
+                    const avgAdp = team?.averageAdpValue ?? 0;
                     const gradeCol = (gradeLetter && gradeLetter !== '—') ? (gradeLetter.startsWith('A') ? '#16a34a' : gradeLetter.startsWith('B') ? '#22c55e' : gradeLetter.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
-                    const draftValueCol = (draftValueGrade && draftValueGrade !== '—') ? (draftValueGrade.startsWith('A') ? '#16a34a' : draftValueGrade.startsWith('B') ? '#22c55e' : draftValueGrade.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
                     
                     return (
                       <tr key={team.teamId} style={{ borderBottom: '1px solid #f1f5f9' }}>
@@ -255,12 +242,7 @@ function ResultsContent() {
                         <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{optimalPts.toFixed(1)}</td>
                         <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{benchPts.toFixed(1)}</td>
                         <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{totalPts.toFixed(1)}</td>
-                        <td style={{ padding: '12px 8px', textAlign: 'center' }}>
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                            <Badge text={draftValueGrade} color={draftValueCol} />
-                            <div style={{ fontSize: 12, color: '#64748b' }}>{avgDraftValue.toFixed(1)}</div>
-                          </div>
-                        </td>
+                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{avgAdp.toFixed(1)}</td>
                         <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{avgVorp.toFixed(2)}</td>
                       </tr>
                     );
@@ -296,7 +278,6 @@ function ResultsContent() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <Badge text={team?.positionGrades?.overallGrade?.grade ?? '—'} color="rgba(255,255,255,0.9)" />
-                      <Badge text={team?.draftValueGrade ?? '—'} color="rgba(255,255,255,0.9)" />
                     </div>
                   </div>
                   
@@ -311,7 +292,7 @@ function ResultsContent() {
                     background: '#f8fafc'
                   }}>
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Pts</div>
+                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total</div>
                       <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.totalProjectedPoints?.toFixed?.(1) || 0}</div>
                     </div>
                     <div style={{ textAlign: 'center' }}>
@@ -319,11 +300,11 @@ function ResultsContent() {
                       <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.optimalLineupPoints?.toFixed?.(1) || 0}</div>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Draft Value</div>
-                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.averageDraftValue?.toFixed?.(1) || 0}</div>
+                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>ADP</div>
+                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.averageAdpValue?.toFixed?.(1) || 0}</div>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Avg VORP</div>
+                      <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' }}>VORP</div>
                       <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16 }}>{team.averageVorpScore?.toFixed?.(2) || 0}</div>
                     </div>
                   </div>

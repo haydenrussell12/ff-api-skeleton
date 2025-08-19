@@ -97,21 +97,6 @@ class DraftAnalyzer {
         return direct?.vorp_score || direct?.vorpScore ? parseFloat(direct.vorp_score || direct.vorpScore) : 0;
     }
 
-    private getDraftValueGrade(averageDraftValue: number, positiveCount: number, totalCount: number): string {
-        const positivePercentage = totalCount > 0 ? (positiveCount / totalCount) * 100 : 0;
-        
-        // Grade based on percentage of picks that were above ADP (negative draft value)
-        if (positivePercentage >= 80) return 'A+';
-        if (positivePercentage >= 70) return 'A';
-        if (positivePercentage >= 60) return 'A-';
-        if (positivePercentage >= 50) return 'B+';
-        if (positivePercentage >= 40) return 'B';
-        if (positivePercentage >= 30) return 'B-';
-        if (positivePercentage >= 20) return 'C+';
-        if (positivePercentage >= 10) return 'C';
-        return 'D';
-    }
-
     async analyzeDraft(draftUrl: string) {
         await this.initialize();
 
@@ -125,6 +110,19 @@ class DraftAnalyzer {
         try {
             participants = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/participants`);
             console.log('🔍 Participants data:', JSON.stringify(participants, null, 2));
+            console.log('🔍 Participants count:', participants.length);
+            
+            // Log each participant's data structure
+            participants.forEach((p, idx) => {
+                console.log(`🔍 Participant ${idx}:`, {
+                    slot: p?.slot,
+                    name: p?.name,
+                    display_name: p?.display_name,
+                    username: p?.username,
+                    user_name: p?.user_name,
+                    metadata: p?.metadata
+                });
+            });
         } catch (e) {
             console.warn('Could not fetch participants; will fall back to generic team names');
         }
@@ -206,11 +204,9 @@ class DraftAnalyzer {
             const lineup = lineupEngine.calculateOptimalLineup(team.roster, { scoring: 'ppr' });
             const grades = gradeEngine.calculatePositionGrades({ roster: team.roster });
             
-            // Calculate draft value metrics
-            const draftValues = team.roster.map((p: any) => p.draftValue || 0).filter((v: number) => v !== 0);
-            const averageDraftValue = draftValues.length > 0 ? draftValues.reduce((s: number, v: number) => s + v, 0) / draftValues.length : 0;
-            const positiveDraftValueCount = draftValues.filter((v: number) => v < 0).length; // Negative means drafted above ADP (good)
-            const draftValueGrade = draftValues.length > 0 ? this.getDraftValueGrade(averageDraftValue, positiveDraftValueCount, draftValues.length) : '—';
+            // Calculate average ADP
+            const adpValues = team.roster.map((p: any) => p.adpValue || 0).filter((v: number) => v !== 0);
+            const averageAdpValue = adpValues.length > 0 ? adpValues.reduce((s: number, v: number) => s + v, 0) / adpValues.length : 0;
             
             return {
                 teamId: Number(id),
@@ -224,10 +220,7 @@ class DraftAnalyzer {
                 positionGrades: grades,
                 totalProjectedPoints: lineup.totalProjectedPoints + lineup.benchPoints,
                 averageProjectedPoints: team.roster.length > 0 ? (team.roster.reduce((s: number, p: any) => s + (p.projectedPoints || 0), 0) / team.roster.length) : 0,
-                averageDraftValue: averageDraftValue,
-                draftValueGrade: draftValueGrade,
-                positiveDraftValueCount: positiveDraftValueCount,
-                totalDraftValuePicks: draftValues.length,
+                averageAdpValue: averageAdpValue,
                 averageVorpScore: team.roster.length > 0 ? (team.roster.reduce((s: number, p: any) => s + (p.vorpScore || 0), 0) / team.roster.length) : 0,
                 players: team.roster,
             };
