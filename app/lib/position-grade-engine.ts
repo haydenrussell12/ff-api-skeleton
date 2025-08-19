@@ -1,13 +1,9 @@
 type LeagueSettings = {
-  teams?: number;
-  rosterSpots?: { [key: string]: number };
-  isSuperflex?: boolean;
-  isTEPremium?: boolean;
-  includeK?: boolean;
-  includeDST?: boolean;
   scoring?: string;
   leagueType?: string;
   superflexSlots?: number;
+  teams?: number;
+  rounds?: number;
 };
 
 export default class PositionGradeEngine {
@@ -25,8 +21,21 @@ export default class PositionGradeEngine {
 
   calculatePositionGrades(teams: any[], settings: LeagueSettings = {}) {
     const leagueType = settings.leagueType || 'standard';
-    const superflexSlots = settings.superflexSlots || 0;
-    const positionRequirements = this.getPositionRequirements(leagueType, superflexSlots);
+    const actualTeams = settings.teams || 12;
+    const actualRounds = settings.rounds || 16;
+    
+    // Get dynamic position requirements based on actual draft data
+    const positionRequirements = this.getPositionRequirements(leagueType, actualTeams, actualRounds);
+    
+    console.log('📊 Position grade calculation:', {
+      leagueType,
+      actualTeams,
+      actualRounds,
+      positionRequirements: {
+        ...positionRequirements,
+        _metadata: positionRequirements._metadata
+      }
+    });
     
     // Calculate position grades for each team first
     const teamsWithPositionGrades = teams.map(team => {
@@ -58,10 +67,15 @@ export default class PositionGradeEngine {
     return teamsWithOverallScores;
   }
 
-  private calculateTeamPositionGrades(team: any, positionRequirements: string[]) {
+  private calculateTeamPositionGrades(team: any, positionRequirements: any) {
     const positionGrades: Record<string, any> = {};
     
-    positionRequirements.forEach(pos => {
+    // Extract position names from the requirements object (excluding metadata and flexPositions)
+    const positionNames = Object.keys(positionRequirements).filter(key => 
+      !['flexPositions', 'superflexPositions', 'totalStarters', '_metadata'].includes(key)
+    );
+    
+    positionNames.forEach(pos => {
       if (pos === 'FLEX' || pos === 'SUPERFLEX') {
         // Handle flex positions specially
         const flexPlayers = this.getFlexPlayers(team, pos);
@@ -318,14 +332,48 @@ export default class PositionGradeEngine {
     return this.vorpLookup[normalizedName] || 0;
   }
 
-  private getPositionRequirements(leagueType: string = 'standard', superflexSlots: number = 0) {
-    const requirements = {
-      standard: ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DEF'],
-      superflex: ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX', 'K', 'DEF'],
-      '2qb': ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DEF']
+  private getPositionRequirements(leagueType: string = 'standard', actualTeams: number = 12, actualRounds: number = 16) {
+    // Fixed starter requirements - bench size scales with rounds, not starters
+    const baseRequirements = {
+      standard: {
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1, // 9 starters
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexPositions: []
+      },
+      superflex: {
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1, // 9 starters (QB eligible in flex)
+        flexPositions: ['QB', 'RB', 'WR', 'TE'],
+        superflexPositions: []
+      },
+      '2qb': {
+        QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1, // 10 starters
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexPositions: []
+      },
+      '2flex': {
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1, // 10 starters
+        flexPositions: ['RB', 'WR', 'TE'],
+        superflexPositions: []
+      }
     };
+
+    const requirements = baseRequirements[leagueType as keyof typeof baseRequirements] || baseRequirements.standard;
     
-    return requirements[leagueType as keyof typeof requirements] || requirements.standard;
+    // Calculate total starters (fixed, doesn't change with rounds)
+    const totalStarters = Object.entries(requirements)
+      .filter(([key]) => !['flexPositions', 'superflexPositions'].includes(key))
+      .reduce((sum, [_, count]) => sum + (typeof count === 'number' ? count : 0), 0);
+
+    return {
+      ...requirements,
+      totalStarters,
+      _metadata: {
+        actualTeams,
+        actualRounds,
+        leagueType,
+        calculatedAt: new Date().toISOString()
+      }
+    };
   }
 
   // Calculate replacement baselines for VORP calculations

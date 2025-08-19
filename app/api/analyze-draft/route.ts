@@ -81,11 +81,20 @@ class DraftAnalyzer {
     }
 
     private async fetchSleeperApi(url: string) {
+        console.log(`🔍 Fetching from Sleeper API: ${url}`);
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Failed to fetch from Sleeper API: ${response.statusText}`);
         }
-        return response.json();
+        const data = await response.json();
+        console.log(`✅ Sleeper API response:`, {
+            url,
+            status: response.status,
+            dataType: Array.isArray(data) ? 'array' : 'object',
+            dataLength: Array.isArray(data) ? data.length : Object.keys(data).length,
+            sampleData: Array.isArray(data) ? data.slice(0, 2) : Object.keys(data).slice(0, 5)
+        });
+        return data;
     }
 
     private parseSleeperDraftUrl(url: string) {
@@ -306,13 +315,14 @@ class DraftAnalyzer {
         
         // Fetch draft data
         const draftData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}`);
-        const draftPicks = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
+        const draftPicks = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/picks?limit=1000`);
         
         console.log('📊 Draft data fetched:', {
             draftName: draftData.name,
             teams: draftData.teams?.length || 0,
             rounds: draftData.settings?.rounds || 0,
-            picks: draftPicks?.length || 0
+            picks: draftPicks?.length || 0,
+            expectedPicks: (draftData.teams?.length || 0) * (draftData.settings?.rounds || 0)
         });
         
         // Process draft picks and build team rosters
@@ -336,12 +346,21 @@ class DraftAnalyzer {
         const lineupEngine = new OptimalLineupEngine();
         const gradeEngine = new PositionGradeEngine();
         
+        // Get actual draft dimensions from the teams data
+        const actualTeams = Object.keys(teams).length;
+        const actualRounds = Math.max(...Object.values(teams).map((team: any) => 
+            Math.max(...(team.roster || []).map((p: any) => p.round || 0))
+        ), 16);
+        
+        console.log('📊 Draft dimensions:', { actualTeams, actualRounds });
+        
         // First calculate optimal lineups for all teams
         const analysisTeams = Object.entries(teams).map(([id, team]: [string, any]) => {
             const lineup = lineupEngine.calculateOptimalLineup(team.roster, { 
                 leagueType, 
                 scoring: 'ppr',
-                teams: Object.keys(teams).length
+                teams: actualTeams,
+                rounds: actualRounds
             });
             
             // Calculate average ADP

@@ -3,46 +3,72 @@ type LeagueSettings = {
   leagueType?: string;
   superflexSlots?: number;
   teams?: number;
+  rounds?: number;
 };
 
 export default class OptimalLineupEngine {
-  private getRosterRequirements(leagueType: string = 'standard') {
-    const requirements = {
+  private getRosterRequirements(leagueType: string = 'standard', actualTeams: number = 12, actualRounds: number = 16) {
+    // Fixed starter requirements - bench size scales with rounds, not starters
+    const baseRequirements = {
       standard: {
-        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1,
-        totalStarters: 9,
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1, // 9 starters
         flexPositions: ['RB', 'WR', 'TE'],
         superflexPositions: []
       },
       superflex: {
-        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1,
-        totalStarters: 9,
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1, // 9 starters (QB eligible in flex)
         flexPositions: ['QB', 'RB', 'WR', 'TE'], // QB eligible in flex
         superflexPositions: []
       },
       '2qb': {
-        QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1,
-        totalStarters: 10,
+        QB: 2, RB: 2, WR: 2, TE: 1, FLEX: 1, DEF: 1, K: 1, // 10 starters
         flexPositions: ['RB', 'WR', 'TE'],
         superflexPositions: []
       },
       '2flex': {
-        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1,
-        totalStarters: 10,
+        QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DEF: 1, K: 1, // 10 starters
         flexPositions: ['RB', 'WR', 'TE'],
         superflexPositions: []
       }
     };
+
+    const requirements = baseRequirements[leagueType as keyof typeof baseRequirements] || baseRequirements.standard;
     
-    return requirements[leagueType as keyof typeof requirements] || requirements.standard;
+    // Calculate total starters (fixed, doesn't change with rounds)
+    const totalStarters = Object.entries(requirements)
+      .filter(([key]) => !['flexPositions', 'superflexPositions'].includes(key))
+      .reduce((sum, [_, count]) => sum + (typeof count === 'number' ? count : 0), 0);
+
+    return {
+      ...requirements,
+      totalStarters,
+      // Add metadata about the dynamic calculation
+      _metadata: {
+        actualTeams,
+        actualRounds,
+        leagueType,
+        calculatedAt: new Date().toISOString()
+      }
+    };
   }
 
   calculateOptimalLineup(roster: any[], settings: LeagueSettings = {}) {
     const leagueType = settings.leagueType || 'standard';
-    const superflexSlots = settings.superflexSlots || 0;
-    const requirements = this.getRosterRequirements(leagueType);
+    const actualTeams = settings.teams || 12;
+    const actualRounds = settings.rounds || 16; // Get actual rounds from settings
     
-    console.log('🔍 Calculating optimal lineup:', { leagueType, superflexSlots, requirements });
+    // Calculate roster requirements based on actual draft data
+    const requirements = this.getRosterRequirements(leagueType, actualTeams, actualRounds);
+    
+    console.log('🔍 Calculating optimal lineup:', { 
+      leagueType, 
+      actualTeams, 
+      actualRounds, 
+      requirements: {
+        ...requirements,
+        _metadata: requirements._metadata
+      }
+    });
     
     // Group players by position
     const positionGroups = this.groupPlayersByPosition(roster);
@@ -247,7 +273,9 @@ export default class OptimalLineupEngine {
   analyzeLineup(optimalLineup: Record<string, any[]>, settings: LeagueSettings = {}) {
     const leagueType = settings.leagueType || 'standard';
     const superflexSlots = settings.superflexSlots || 0;
-    const requirements = this.getRosterRequirements(leagueType);
+    const actualTeams = settings.teams || 12;
+    const actualRounds = 16; // Default to 16 rounds for dynamic calculation
+    const requirements = this.getRosterRequirements(leagueType, actualTeams, actualRounds);
     
     return {
       totalStarters: requirements.totalStarters,
@@ -264,15 +292,16 @@ export default class OptimalLineupEngine {
   calculateReplacementBaselines(settings: LeagueSettings = {}) {
     const leagueType = settings.leagueType || 'standard';
     const superflexSlots = settings.superflexSlots || 0;
-    const teams = settings.teams || 12;
+    const actualTeams = settings.teams || 12;
+    const actualRounds = 16; // Default to 16 rounds for dynamic calculation
     
     const baselines = {
-      QB: teams * (1 + superflexSlots), // QB demand increases with superflex slots
-      RB: teams * 2, // Standard RB demand
-      WR: teams * 2, // Standard WR demand  
-      TE: teams * 1, // Standard TE demand
-      K: teams * 1,
-      DEF: teams * 1
+      QB: actualTeams * (1 + superflexSlots), // QB demand increases with superflex slots
+      RB: actualTeams * 2, // Standard RB demand
+      WR: actualTeams * 2, // Standard WR demand  
+      TE: actualTeams * 1, // Standard TE demand
+      K: actualTeams * 1,
+      DEF: actualTeams * 1
     };
     
     return baselines;
