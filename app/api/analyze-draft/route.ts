@@ -449,7 +449,33 @@ class DraftAnalyzer {
             }
         }
         
-        // Method 6: Generate mock usernames if nothing else works
+        // Method 6: Check if there are any other fields that might contain usernames
+        if (Object.keys(slotToName).length === 0) {
+            console.log('🔍 Checking for any other potential username sources...');
+            
+            // Check if there are any fields in the draft data that might contain usernames
+            const allFields = Object.keys(draftData);
+            for (const field of allFields) {
+                const value = draftData[field];
+                if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
+                    console.log(`🔍 Found array in draft.${field}:`, value);
+                    
+                    // If this array has the right length, it might be usernames
+                    if (value.length === Object.keys(slotToRosterId).length) {
+                        value.forEach((name: string, index: number) => {
+                            if (name && typeof name === 'string' && name.trim()) {
+                                const slotKey = String(index);
+                                slotToName[slotKey] = name.trim();
+                                console.log(`✅ Draft.${field} mapped slot ${slotKey} to: ${name.trim()}`);
+                            }
+                        });
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Method 7: Generate mock usernames if nothing else works
         if (Object.keys(slotToName).length === 0) {
             console.log('🔍 No usernames found, generating mock usernames...');
             

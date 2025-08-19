@@ -27,6 +27,17 @@ export default class PositionGradeEngine {
       groups[pos].push(p);
     });
 
+    // Add FLEX position (RB, WR, TE combined)
+    const flexPlayers: any[] = [];
+    ['RB', 'WR', 'TE'].forEach(pos => {
+      if (groups[pos]) {
+        flexPlayers.push(...groups[pos]);
+      }
+    });
+    if (flexPlayers.length > 0) {
+      groups['FLEX'] = flexPlayers;
+    }
+
     const positionGrades: Record<string, any> = {};
     Object.keys(groups).forEach((pos) => {
       const players = groups[pos];
