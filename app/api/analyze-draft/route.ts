@@ -330,6 +330,10 @@ class DraftAnalyzer {
 
         // SMART USERNAME DETECTION - Don't rely on failing endpoints
         console.log('🧠 Using smart username detection...');
+        console.log('🔍 Draft type:', draftData.type);
+        console.log('🔍 Draft status:', draftData.status);
+        console.log('🔍 Draft metadata keys:', Object.keys(draftData.metadata || {}));
+        console.log('🔍 Draft settings keys:', Object.keys(draftData.settings || {}));
         
         // Method 1: Check if this is a mock draft with user info in picks
         if (draftData.type === 'mock' || draftData.status === 'complete') {
@@ -339,6 +343,8 @@ class DraftAnalyzer {
             for (const pick of draftPicks || []) {
                 if (pick.metadata && Object.keys(pick.metadata).length > 0) {
                     const slotKey = String(pick.draft_slot);
+                    
+                    console.log(`🔍 Pick ${pick.draft_slot} metadata:`, pick.metadata);
                     
                     // Check for any user identifier in metadata
                     const potentialUsername = pick.metadata.user_id || 
@@ -359,6 +365,7 @@ class DraftAnalyzer {
         if (Object.keys(slotToName).length === 0 && draftData.metadata?.draft_order) {
             console.log('🔍 Checking draft metadata for user order...');
             const draftOrder = draftData.metadata.draft_order;
+            console.log('🔍 Draft order from metadata:', draftOrder);
             
             if (Array.isArray(draftOrder)) {
                 draftOrder.forEach((name: string, index: number) => {
@@ -375,6 +382,7 @@ class DraftAnalyzer {
         if (Object.keys(slotToName).length === 0 && draftData.metadata?.team_names) {
             console.log('🔍 Checking for team names in metadata...');
             const teamNames = draftData.metadata.team_names;
+            console.log('🔍 Team names from metadata:', teamNames);
             
             if (Array.isArray(teamNames)) {
                 teamNames.forEach((name: string, index: number) => {
@@ -413,7 +421,35 @@ class DraftAnalyzer {
             }
         }
         
-        // Method 5: Generate mock usernames if nothing else works
+        // Method 5: Check for any other metadata fields that might contain usernames
+        if (Object.keys(slotToName).length === 0 && draftData.metadata) {
+            console.log('🔍 Checking all metadata fields for potential usernames...');
+            
+            for (const [key, value] of Object.entries(draftData.metadata)) {
+                if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
+                    console.log(`🔍 Found array in metadata.${key}:`, value);
+                    
+                    // Check if this array has the right length and contains username-like strings
+                    if (value.length === Object.keys(slotToRosterId).length) {
+                        const looksLikeUsernames = value.every(v => 
+                            typeof v === 'string' && v.trim().length > 0 && 
+                            (v.includes('@') || v.length > 3) // Username-like characteristics
+                        );
+                        
+                        if (looksLikeUsernames) {
+                            value.forEach((name: string, index: number) => {
+                                const slotKey = String(index);
+                                slotToName[slotKey] = name.trim();
+                                console.log(`✅ Metadata.${key} mapped slot ${slotKey} to: ${name.trim()}`);
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Method 6: Generate mock usernames if nothing else works
         if (Object.keys(slotToName).length === 0) {
             console.log('🔍 No usernames found, generating mock usernames...');
             
