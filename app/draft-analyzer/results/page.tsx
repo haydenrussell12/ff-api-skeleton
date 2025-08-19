@@ -69,7 +69,7 @@ function TeamLineup({ team }: { team: any }) {
   );
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
       <div>
         <h4 style={{ margin: '0 0 16px', color: '#334155', fontSize: 16, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ width: 8, height: 8, background: '#10b981', borderRadius: '50%' }}></span>
@@ -271,14 +271,15 @@ function ResultsContent() {
           padding: '20px', 
           display: 'grid', 
           gap: 20, 
+          width: '100%',
           maxWidth: '100%', 
           overflow: 'hidden',
           boxSizing: 'border-box'
         }}>
           {/* Overview and Settings at Top */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
             <SectionCard title="Overview">
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: 12 }}>
                 <div><div style={{ color: '#64748b', fontSize: 12 }}>Name</div><div style={{ fontWeight: 700 }}>{results?.draftInfo?.name}</div></div>
                 <div><div style={{ color: '#64748b', fontSize: 12 }}>Teams</div><div style={{ fontWeight: 700 }}>{results?.draftInfo?.teams}</div></div>
                 <div><div style={{ color: '#64748b', fontSize: 12 }}>Rounds</div><div style={{ fontWeight: 700 }}>{results?.draftInfo?.rounds}</div></div>
@@ -316,7 +317,10 @@ function ResultsContent() {
                     gap: 20,
                     alignItems: 'center',
                     transition: 'all 0.2s ease-in-out',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    width: '100%',
+                    maxWidth: '100%',
+                    boxSizing: 'border-box'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-2px)';
@@ -383,8 +387,11 @@ function ResultsContent() {
                       {/* Metrics Grid */}
                       <div style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                        gap: 16
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                        gap: 12,
+                        width: '100%',
+                        maxWidth: '100%',
+                        boxSizing: 'border-box'
                       }}>
                         {/* Optimal Points */}
                         <div style={{
@@ -474,7 +481,10 @@ function ResultsContent() {
                       flexDirection: 'column',
                       alignItems: 'flex-end',
                       gap: 8,
-                      minWidth: '120px'
+                      minWidth: '100px',
+                      maxWidth: '120px',
+                      width: '100%',
+                      boxSizing: 'border-box'
                     }}>
                       <div style={{
                         fontSize: 12,
@@ -499,7 +509,7 @@ function ResultsContent() {
 
           {/* Teams Section */}
           <SectionCard title="Teams">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 20 }}>
               {(results?.analysis?.teams || []).map((team: any) => {
                 const rosterGrade = formatRosterGrade(team);
                 const gradeColor = getGradeColor(rosterGrade.grade);
@@ -560,7 +570,7 @@ function ResultsContent() {
                     {/* Roster Construction Analysis */}
                     <div style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
                       gap: '15px',
                       marginBottom: '20px'
                     }}>
@@ -663,15 +673,19 @@ export default function DraftAnalyzerResultsPage() {
       background: 'linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%)', 
       minHeight: '100vh', 
       padding: '20px',
+      width: '100%',
       maxWidth: '100vw',
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+      boxSizing: 'border-box'
     }}>
       <div style={{ 
-        maxWidth: '1200px', 
+        width: '100%',
+        maxWidth: '100%',
         margin: '0 auto', 
         background: 'transparent', 
         borderRadius: '20px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        boxSizing: 'border-box'
       }}>
         <Suspense fallback={<div style={{ padding: '30px', textAlign: 'center' }}>Loading...</div>}> 
           <ResultsContent />
