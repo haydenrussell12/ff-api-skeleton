@@ -294,7 +294,7 @@ function ResultsContent() {
 
           {/* Scoreboard as Professional List */}
           <SectionCard title="🏆 Scoreboard (Ranked by Optimal Lineup Points)">
-            <div style={{ display: 'grid', gap: 16 }}>
+            <div style={{ display: 'grid', gap: 16, maxWidth: '100%', overflow: 'hidden' }}>
               {sortedTeams.map((team: any, idx: number) => {
                 const rosterGrade = formatRosterGrade(team);
                 const gradeLetter = rosterGrade.grade;
@@ -310,12 +310,11 @@ function ResultsContent() {
                     background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
                     border: '1px solid #e2e8f0',
                     borderRadius: 16,
-                    padding: '20px',
+                    padding: '16px',
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                    display: 'grid',
-                    gridTemplateColumns: '60px 1fr auto',
-                    gap: 20,
-                    alignItems: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 16,
                     transition: 'all 0.2s ease-in-out',
                     cursor: 'pointer',
                     width: '100%',
@@ -331,51 +330,63 @@ function ResultsContent() {
                     e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
                   }}>
                     
-                    {/* Rank */}
+                    {/* Top Row: Rank, Team Name, Grade */}
                     <div style={{
                       display: 'flex',
-                      flexDirection: 'column',
                       alignItems: 'center',
-                      gap: 4
+                      gap: 16,
+                      justifyContent: 'space-between'
                     }}>
+                      {/* Rank */}
                       <div style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '50%',
-                        background: idx === 0 ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' : 
-                                   idx === 1 ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)' :
-                                   idx === 2 ? 'linear-gradient(135deg, #d97706 0%, #b45309 100%)' :
-                                   'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)',
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontWeight: 700,
-                        fontSize: 16,
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                        gap: 4,
+                        minWidth: '50px'
                       }}>
-                        {idx + 1}
-                      </div>
-                      {idx < 3 && (
                         <div style={{
-                          fontSize: 10,
-                          fontWeight: 600,
-                          color: idx === 0 ? '#92400e' : idx === 1 ? '#475569' : '#92400e',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px'
+                          width: 36,
+                          height: 36,
+                          borderRadius: '50%',
+                          background: idx === 0 ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' : 
+                                     idx === 1 ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)' :
+                                     idx === 2 ? 'linear-gradient(135deg, #d97706 0%, #b45309 100%)' :
+                                     'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontWeight: 700,
+                          fontSize: 14,
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                         }}>
-                          {idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}
+                          {idx + 1}
                         </div>
-                      )}
-                    </div>
+                        {idx < 3 && (
+                          <div style={{
+                            fontSize: 9,
+                            fontWeight: 600,
+                            color: idx === 0 ? '#92400e' : idx === 1 ? '#475569' : '#92400e',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px'
+                          }}>
+                            {idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Team Info & Metrics */}
-                    <div style={{ display: 'grid', gap: 12 }}>
                       {/* Team Name & Grade */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                      <div style={{ 
+                        flex: 1,
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: 12,
+                        justifyContent: 'space-between'
+                      }}>
                         <h3 style={{
                           margin: 0,
-                          fontSize: '20px',
+                          fontSize: '18px',
                           fontWeight: '700',
                           color: '#0f172a'
                         }}>
@@ -383,123 +394,95 @@ function ResultsContent() {
                         </h3>
                         <Badge text={gradeLetter} color={gradeCol} />
                       </div>
+                    </div>
 
-                      {/* Metrics Grid */}
+                    {/* Metrics Grid - Compact 2x3 Layout */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: 8,
+                      width: '100%',
+                      maxWidth: '100%',
+                      boxSizing: 'border-box'
+                    }}>
+                      {/* Optimal Points */}
                       <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-                        gap: 12,
-                        width: '100%',
-                        maxWidth: '100%',
-                        boxSizing: 'border-box'
+                        background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+                        border: '1px solid #0ea5e9',
+                        borderRadius: 8,
+                        padding: '8px 12px',
+                        textAlign: 'center'
                       }}>
-                        {/* Optimal Points */}
-                        <div style={{
-                          background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-                          border: '1px solid #0ea5e9',
-                          borderRadius: 12,
-                          padding: '12px 16px',
-                          textAlign: 'center'
-                        }}>
-                          <div style={{ fontSize: 12, color: '#0c4a6e', fontWeight: 600, marginBottom: 4 }}>
-                            ⚡ Optimal Points
-                          </div>
-                          <div style={{ fontSize: 18, fontWeight: 700, color: '#0ea5e9' }}>
-                            {optimalPts.toFixed(1)}
-                          </div>
+                        <div style={{ fontSize: 10, color: '#0c4a6e', fontWeight: 600, marginBottom: 2 }}>
+                          ⚡ Optimal
                         </div>
-
-                        {/* Bench Points */}
-                        <div style={{
-                          background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                          border: '1px solid #f59e0b',
-                          borderRadius: 12,
-                          padding: '12px 16px',
-                          textAlign: 'center'
-                        }}>
-                          <div style={{ fontSize: 12, color: '#92400e', fontWeight: 600, marginBottom: 4 }}>
-                            🏗️ Bench Points
-                          </div>
-                          <div style={{ fontSize: 18, fontWeight: 700, color: '#f59e0b' }}>
-                            {benchPts.toFixed(1)}
-                          </div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: '#0ea5e9' }}>
+                          {optimalPts.toFixed(1)}
                         </div>
+                      </div>
 
-                        {/* Total Points */}
-                        <div style={{
-                          background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-                          border: '1px solid #10b981',
-                          borderRadius: 12,
-                          padding: '12px 16px',
-                          textAlign: 'center'
-                        }}>
-                          <div style={{ fontSize: 12, color: '#065f46', fontWeight: 600, marginBottom: 4 }}>
-                            🎯 Total Points
-                          </div>
-                          <div style={{ fontSize: 18, fontWeight: 700, color: '#10b981' }}>
-                            {totalPts.toFixed(1)}
-                          </div>
+                      {/* Bench Points */}
+                      <div style={{
+                        background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                        border: '1px solid #f59e0b',
+                        borderRadius: 8,
+                        padding: '8px 12px',
+                        textAlign: 'center'
+                      }}>
+                        <div style={{ fontSize: 10, color: '#92400e', fontWeight: 600, marginBottom: 2 }}>
+                          🏗️ Bench
                         </div>
-
-                        {/* Avg ADP */}
-                        <div style={{
-                          background: 'linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%)',
-                          border: '1px solid #8b5cf6',
-                          borderRadius: 12,
-                          padding: '12px 16px',
-                          textAlign: 'center'
-                        }}>
-                          <div style={{ fontSize: 12, color: '#581c87', fontWeight: 600, marginBottom: 4 }}>
-                            💎 Avg ADP
-                          </div>
-                          <div style={{ fontSize: 18, fontWeight: 700, color: '#8b5cf6' }}>
-                            {avgAdp.toFixed(1)}
-                          </div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: '#f59e0b' }}>
+                          {benchPts.toFixed(1)}
                         </div>
+                      </div>
 
-                        {/* Avg VORP */}
-                        <div style={{
-                          background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
-                          border: '1px solid #ef4444',
-                          borderRadius: 12,
-                          padding: '12px 16px',
-                          textAlign: 'center'
-                        }}>
-                          <div style={{ fontSize: 12, color: '#991b1b', fontWeight: 600, marginBottom: 4 }}>
-                            📊 Avg VORP
-                          </div>
-                          <div style={{ fontSize: 18, fontWeight: 700, color: '#ef4444' }}>
-                            {avgVorp.toFixed(2)}
-                          </div>
+                      {/* Total Points */}
+                      <div style={{
+                        background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+                        border: '1px solid #10b981',
+                        borderRadius: 8,
+                        padding: '8px 12px',
+                        textAlign: 'center'
+                      }}>
+                        <div style={{ fontSize: 10, color: '#065f46', fontWeight: 600, marginBottom: 2 }}>
+                          🎯 Total
+                        </div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: '#10b981' }}>
+                          {totalPts.toFixed(1)}
+                        </div>
+                      </div>
+
+                      {/* Avg ADP */}
+                      <div style={{
+                        background: 'linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%)',
+                        border: '1px solid #8b5cf6',
+                        borderRadius: 8,
+                        padding: '8px 12px',
+                        textAlign: 'center'
+                      }}>
+                        <div style={{ fontSize: 10, color: '#581c87', fontWeight: 600, marginBottom: 2 }}>
+                          💎 ADP
+                        </div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: '#8b5cf6' }}>
+                          {avgAdp.toFixed(1)}
                         </div>
                       </div>
                     </div>
 
-                    {/* Quick Stats */}
+                    {/* Bottom Row: Quick Stats */}
                     <div style={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-end',
-                      gap: 8,
-                      minWidth: '100px',
-                      maxWidth: '120px',
-                      width: '100%',
-                      boxSizing: 'border-box'
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      fontSize: 11,
+                      color: '#64748b',
+                      borderTop: '1px solid #f1f5f9',
+                      paddingTop: 8
                     }}>
-                      <div style={{
-                        fontSize: 12,
-                        color: '#64748b',
-                        textAlign: 'right'
-                      }}>
-                        {team.roster?.length || 0} players
-                      </div>
-                      <div style={{
-                        fontSize: 12,
-                        color: '#64748b',
-                        textAlign: 'right'
-                      }}>
-                        Round {Math.max(...(team.roster?.map((p: any) => p.round) || [0]))}
-                      </div>
+                      <div>{team.roster?.length || 0} players</div>
+                      <div>Round {Math.max(...(team.roster?.map((p: any) => p.round) || [0]))}</div>
+                      <div>VORP: {avgVorp.toFixed(1)}</div>
                     </div>
                   </div>
                 );
