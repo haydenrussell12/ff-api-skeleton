@@ -113,6 +113,16 @@ class DraftAnalyzer {
 
         const draftData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}`);
         const draftPicks: any[] = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
+        
+        // Log draft data to understand the draft type
+        console.log('🔍 Draft data:', {
+            id: draftData.id,
+            type: draftData.type,
+            status: draftData.status,
+            metadata: draftData.metadata,
+            settings: draftData.settings
+        });
+        
         // Try to fetch participants to get display names for each draft slot
         let participants: any[] = [];
         try {
@@ -132,6 +142,13 @@ class DraftAnalyzer {
                 });
             });
         } catch (e) {
+            console.error('❌ Failed to fetch participants:', e);
+            console.error('❌ Error details:', {
+                message: e instanceof Error ? e.message : 'Unknown error',
+                stack: e instanceof Error ? e.stack : 'No stack trace',
+                draftId: draftId,
+                url: `https://api.sleeper.app/v1/draft/${draftId}/participants`
+            });
             console.warn('Could not fetch participants; will fall back to generic team names');
         }
 
