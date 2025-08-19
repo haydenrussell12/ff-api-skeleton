@@ -298,7 +298,7 @@ class DraftAnalyzer {
         return direct?.vorp_score || direct?.vorpScore ? parseFloat(direct.vorp_score || direct.vorpScore) : 0;
     }
 
-    async analyzeDraft(draftUrl: string, leagueType: string = 'standard', superflexSlots?: number) {
+    async analyzeDraft(draftUrl: string, leagueType: string = 'standard') {
         await this.initialize();
         
         console.log('🔍 Fetching draft data from Sleeper...');
@@ -319,7 +319,7 @@ class DraftAnalyzer {
         const teams = await this.buildTeamRosters(draftData, draftPicks);
         
         // Calculate optimal lineups and grades
-        const result = this.analyzeTeams(teams, leagueType, superflexSlots);
+        const result = this.analyzeTeams(teams, leagueType);
         
         return {
             draftInfo: {
@@ -332,7 +332,7 @@ class DraftAnalyzer {
         };
     }
 
-    private analyzeTeams(teams: any, leagueType: string = 'standard', superflexSlots?: number) {
+    private analyzeTeams(teams: any, leagueType: string = 'standard') {
         const lineupEngine = new OptimalLineupEngine();
         const gradeEngine = new PositionGradeEngine();
         
@@ -341,7 +341,6 @@ class DraftAnalyzer {
             const lineup = lineupEngine.calculateOptimalLineup(team.roster, { 
                 leagueType, 
                 scoring: 'ppr',
-                superflexSlots: leagueType === 'superflex' ? superflexSlots : undefined,
                 teams: Object.keys(teams).length
             });
             
@@ -364,7 +363,6 @@ class DraftAnalyzer {
             const lineupAnalysis = lineupEngine.analyzeLineup(lineup, { 
                 leagueType, 
                 scoring: 'ppr',
-                superflexSlots: leagueType === 'superflex' ? superflexSlots : undefined,
                 teams: Object.keys(teams).length
             });
             
@@ -388,7 +386,6 @@ class DraftAnalyzer {
         const gradedTeams = gradeEngine.calculatePositionGrades(analysisTeams, { 
             leagueType, 
             scoring: 'ppr',
-            superflexSlots: leagueType === 'superflex' ? superflexSlots : undefined,
             teams: Object.keys(teams).length
         });
 
@@ -514,7 +511,7 @@ class DraftAnalyzer {
 
 export async function POST(request: Request) {
     try {
-        const { draftUrl, leagueType = 'standard', superflexSlots } = await request.json();
+        const { draftUrl, leagueType = 'standard' } = await request.json();
         
         if (!draftUrl) {
             return NextResponse.json({ success: false, error: 'Draft URL is required' });
@@ -523,12 +520,11 @@ export async function POST(request: Request) {
         console.log('🚀 Starting draft analysis...');
         console.log('🔍 Draft URL:', draftUrl);
         console.log('🏈 League Type:', leagueType);
-        console.log('🦸 Superflex Slots:', superflexSlots);
 
         const analyzer = new DraftAnalyzer();
         await analyzer.initialize();
         
-        const result = await analyzer.analyzeDraft(draftUrl, leagueType, superflexSlots);
+        const result = await analyzer.analyzeDraft(draftUrl, leagueType);
         
         return NextResponse.json({ success: true, data: result });
     } catch (error) {
