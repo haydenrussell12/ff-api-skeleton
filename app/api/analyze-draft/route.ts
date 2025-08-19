@@ -10,16 +10,18 @@ class DraftAnalyzer {
     private nameLookupIndex: any = {};
     private playerDetails: any = {};
     private vorpData: any = {};
+    private adpData: any = {}; // Added adpData property
 
     async initialize() {
         try {
             console.log('🚀 Initializing Draft Analyzer...');
             
             // Load consolidated player data via imports so Vercel bundles them
-            const [masterPlayersModule, nameLookupModule, vorpDataModule] = await Promise.all([
+            const [masterPlayersModule, nameLookupModule, vorpDataModule, adpDataModule] = await Promise.all([
                 import('data/consolidated/master-players.json'),
                 import('data/consolidated/name-lookup-index.json'),
-                import('data/consolidated/player-vorp-scores.json')
+                import('data/consolidated/player-vorp-scores.json'),
+                import('../../../adp_data.json')
             ]);
 
             // Create lookup by player name (case-insensitive)
@@ -34,8 +36,17 @@ class DraftAnalyzer {
 
             this.nameLookupIndex = (nameLookupModule as any).default;
             this.vorpData = (vorpDataModule as any).default.vorpScores || (vorpDataModule as any).default;
+            
+            // Create ADP lookup by player name
+            this.adpData = {};
+            const adpPlayers = (adpDataModule as any).default.players || [];
+            adpPlayers.forEach((player: any) => {
+                if (player.full_name) {
+                    this.adpData[player.full_name.toLowerCase()] = player;
+                }
+            });
 
-            console.log(`✅ Draft Analyzer initialized with ${Object.keys(this.consolidatedData).length} players.`);
+            console.log(`✅ Draft Analyzer initialized with ${Object.keys(this.consolidatedData).length} players and ${Object.keys(this.adpData).length} ADP records.`);
         } catch (error) {
             console.error('❌ Failed to initialize Draft Analyzer:', error);
             throw new Error('Failed to load necessary data for analysis.');
@@ -72,8 +83,8 @@ class DraftAnalyzer {
     }
 
     private getPlayerAdp(playerName: string) {
-        const player = this.consolidatedData[playerName.toLowerCase()];
-        const adp = player?.adp_data?.ppr?.["2025"]?.avg_adp;
+        const player = this.adpData[playerName.toLowerCase()];
+        const adp = player?.adp_value;
         return adp ? parseFloat(adp) : 0;
     }
 

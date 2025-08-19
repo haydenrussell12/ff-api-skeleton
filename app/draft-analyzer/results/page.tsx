@@ -47,53 +47,44 @@ function TeamLineup({ team }: { team: any }) {
     </div>
   );
 
-  const gradeColor = (g: string) => {
-    if (!g) return '#64748b';
-    if (g.startsWith('A')) return '#16a34a';
-    if (g.startsWith('B')) return '#22c55e';
-    if (g.startsWith('C')) return '#f59e0b';
-    if (g.startsWith('D')) return '#ef4444';
-    return '#6b7280';
-  };
-
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 16 }}>
       <div>
-        <h4 style={{ margin: '0 0 8px', color: '#334155' }}>Starters</h4>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {['QB','RB','WR','TE','FLEX','DEF','K'].map((pos) => (
-            <div key={pos}>
-              {(lineup[pos] || []).length > 0 && (
-                <div>
-                  <div style={{ marginBottom: 6 }}><Badge text={pos} color="#4f46e5" /></div>
-                  {renderPlayers(lineup[pos] || [])}
+        <h4 style={{ margin: '0 0 12px', color: '#334155', fontSize: 16 }}>Starters</h4>
+        <div style={{ display: 'grid', gap: 12 }}>
+          {['QB','RB','WR','TE','FLEX','DEF','K'].map((pos) => {
+            const players = lineup[pos] || [];
+            const grade = posGrades[pos];
+            if (players.length === 0) return null;
+            
+            return (
+              <div key={pos} style={{ border: '1px solid #e9ecef', borderRadius: 8, overflow: 'hidden' }}>
+                <div style={{ 
+                  padding: '8px 12px', 
+                  background: '#f1f5f9', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between',
+                  borderBottom: '1px solid #e9ecef'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Badge text={pos} color="#4f46e5" />
+                    {grade && <Badge text={grade.grade} color="#16a34a" />}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#64748b' }}>
+                    {grade?.projectedPoints?.toFixed(1) || 0} pts
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div>
-        <h4 style={{ margin: '0 0 8px', color: '#334155' }}>Position Grades</h4>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {Object.keys(posGrades).length === 0 && (
-            <div style={{ fontSize: 12, color: '#64748b' }}>No grades available</div>
-          )}
-          {Object.entries(posGrades).map(([pos, data]: any) => (
-            <div key={pos} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px', background: '#f8fafc', border: '1px solid #eef2f7', borderRadius: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Badge text={pos} color="#4f46e5" />
-                <div style={{ color: '#0f172a', fontWeight: 600 }}>{(data as any)?.grade || '—'}</div>
+                {renderPlayers(players)}
               </div>
-              <div style={{ fontSize: 12, color: '#475569' }}>{((data as any)?.projectedPoints || 0).toFixed(1)} pts</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       <div>
-        <h4 style={{ margin: '0 0 8px', color: '#334155' }}>Bench</h4>
+        <h4 style={{ margin: '0 0 12px', color: '#334155', fontSize: 16 }}>Bench</h4>
         {bench.length === 0 ? (
-          <div style={{ fontSize: 12, color: '#64748b' }}>No bench players</div>
+          <div style={{ fontSize: 12, color: '#64748b', textAlign: 'center', padding: '20px', background: '#f8fafc', border: '1px solid #e9ecef', borderRadius: 8 }}>No bench players</div>
         ) : (
           renderPlayers(bench)
         )}
@@ -167,32 +158,7 @@ function ResultsContent() {
 
       {!isLoading && !error && results && (
         <div style={{ padding: '30px', display: 'grid', gap: 20 }}>
-          <SectionCard title="🏆 Scoreboard (Optimal Lineup Projection)">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
-              {sortedTeams.map((team: any, idx: number) => {
-                const gradeLetter = team?.positionGrades?.overallGrade?.grade ?? '—';
-                const optimalPts = team?.optimalLineupPoints ?? 0;
-                const avgVorp = team?.averageVorpScore ?? 0;
-                const avgAdp = team?.averageAdpValue ?? 0;
-                const gradeCol = (gradeLetter && gradeLetter !== '—') ? (gradeLetter.startsWith('A') ? '#16a34a' : gradeLetter.startsWith('B') ? '#22c55e' : gradeLetter.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
-                return (
-                  <div key={team.teamId} style={{ background: '#f8fafc', border: '1px solid #e9ecef', borderRadius: 12, padding: 14 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                      <div style={{ fontWeight: 800, color: '#334155' }}>{`#${idx + 1}`}</div>
-                      <div style={{ fontWeight: 700, color: '#0f172a' }}>{team.teamName || `Team ${team.teamId}`}</div>
-                      <Badge text={gradeLetter} color={gradeCol} />
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 8, fontSize: 14 }}>
-                      <div><span style={{ color: '#64748b' }}>Optimal Pts:</span> <strong>{Math.round((optimalPts || 0) * 10) / 10}</strong></div>
-                      <div><span style={{ color: '#64748b' }}>Avg VORP:</span> {avgVorp?.toFixed?.(2) || 0}</div>
-                      <div><span style={{ color: '#64748b' }}>Avg ADP:</span> {avgAdp?.toFixed?.(1) || 0}</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </SectionCard>
-
+          {/* Overview and Settings at Top */}
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20 }}>
             <SectionCard title="Overview">
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 12 }}>
@@ -208,15 +174,62 @@ function ResultsContent() {
             </SectionCard>
           </div>
 
+          {/* Scoreboard as Table */}
+          <SectionCard title="🏆 Scoreboard (Ranked by Optimal Lineup Points)">
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+                <thead>
+                  <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+                    <th style={{ padding: '12px 8px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Rank</th>
+                    <th style={{ padding: '12px 8px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Team</th>
+                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Grade</th>
+                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Optimal Pts</th>
+                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Bench Pts</th>
+                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Total Pts</th>
+                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg ADP</th>
+                    <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg VORP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedTeams.map((team: any, idx: number) => {
+                    const gradeLetter = team?.positionGrades?.overallGrade?.grade ?? '—';
+                    const optimalPts = team?.optimalLineupPoints ?? 0;
+                    const benchPts = team?.benchPoints ?? 0;
+                    const totalPts = team?.totalProjectedPoints ?? 0;
+                    const avgVorp = team?.averageVorpScore ?? 0;
+                    const avgAdp = team?.averageAdpValue ?? 0;
+                    const gradeCol = (gradeLetter && gradeLetter !== '—') ? (gradeLetter.startsWith('A') ? '#16a34a' : gradeLetter.startsWith('B') ? '#22c55e' : gradeLetter.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
+                    
+                    return (
+                      <tr key={team.teamId} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                        <td style={{ padding: '12px 8px', fontWeight: 700, color: '#334155' }}>#{idx + 1}</td>
+                        <td style={{ padding: '12px 8px', fontWeight: 600, color: '#0f172a' }}>{team.teamName || `Team ${team.teamId}`}</td>
+                        <td style={{ padding: '12px 8px', textAlign: 'center' }}>
+                          <Badge text={gradeLetter} color={gradeCol} />
+                        </td>
+                        <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{optimalPts.toFixed(1)}</td>
+                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{benchPts.toFixed(1)}</td>
+                        <td style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{totalPts.toFixed(1)}</td>
+                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{avgAdp.toFixed(1)}</td>
+                        <td style={{ padding: '12px 8px', textAlign: 'center', color: '#64748b' }}>{avgVorp.toFixed(2)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </SectionCard>
+
+          {/* Teams Section */}
           <SectionCard title="Teams">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 16 }}>
               {(results?.analysis?.teams || []).map((team: any) => (
                 <div key={team.teamId} style={{ background: '#f8fafc', border: '1px solid #e9ecef', borderRadius: 12 }}>
                   <div style={{ padding: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #e9ecef' }}>
                     <div style={{ fontWeight: 800, color: '#0f172a' }}>{team.teamName || `Team ${team.teamId}`} <span style={{ color: '#64748b', fontWeight: 500 }}>(Slot {team.draftSlot})</span></div>
                     <Badge text={team?.positionGrades?.overallGrade?.grade ?? '—'} color="#4f46e5" />
                   </div>
-                  <div style={{ padding: 14, display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 8, fontSize: 13 }}>
+                  <div style={{ padding: 14, display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 8, fontSize: 13, borderBottom: '1px solid #e9ecef' }}>
                     <div><span style={{ color: '#64748b' }}>Total:</span> <strong>{team.totalProjectedPoints?.toFixed?.(1) || 0}</strong></div>
                     <div><span style={{ color: '#64748b' }}>Optimal:</span> <strong>{team.optimalLineupPoints?.toFixed?.(1) || 0}</strong></div>
                     <div><span style={{ color: '#64748b' }}>Avg ADP:</span> {team.averageAdpValue?.toFixed?.(1) || 0}</div>
@@ -230,6 +243,7 @@ function ResultsContent() {
             </div>
           </SectionCard>
 
+          {/* Raw Results */}
           <SectionCard title="Raw Results">
             <pre style={{ background: '#0b1220', color: '#e2e8f0', padding: '16px', borderRadius: 12, overflow: 'auto', fontSize: '12px', lineHeight: 1.5 }}>{JSON.stringify(results, null, 2)}</pre>
           </SectionCard>
