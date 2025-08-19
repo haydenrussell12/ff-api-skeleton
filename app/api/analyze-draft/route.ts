@@ -599,7 +599,7 @@ class DraftAnalyzer {
                 optimalLineupPoints,
                 benchPlayers,
                 benchPoints,
-                totalProjectedPoints: team.totalProjectedPoints,
+                totalProjectedPoints: optimalLineupPoints + benchPoints,
                 averageAdpValue,
                 averageVorpScore,
                 lineupAnalysis
@@ -623,7 +623,8 @@ class DraftAnalyzer {
                 benchPlayers: originalTeam?.benchPlayers || [],
                 benchPoints: originalTeam?.benchPoints || 0,
                 positionGrades: gradedTeam.positionGrades || {},
-                totalProjectedPoints: originalTeam?.totalProjectedPoints || 0,
+                overallGrade: gradedTeam.overallGrade || { grade: '—', score: 0 },
+                totalProjectedPoints: (originalTeam?.optimalLineupPoints || 0) + (originalTeam?.benchPoints || 0),
                 averageProjectedPoints: (() => {
                     if (!originalTeam?.roster?.length) return 0;
                     return originalTeam.roster.reduce((sum: number, p: any) => sum + (p.projectedPoints || 0), 0) / originalTeam.roster.length;

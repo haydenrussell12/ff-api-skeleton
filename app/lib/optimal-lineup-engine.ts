@@ -38,7 +38,7 @@ export default class OptimalLineupEngine {
     const optimalLineup: Record<string, any[]> = {};
     const usedPlayers = new Set();
     
-    // Fill required positions first
+    // Fill required positions first (excluding special positions)
     Object.entries(requirements).forEach(([position, count]) => {
       if (position === 'totalStarters' || position === 'flexPositions' || position === 'superflexPositions') return;
       
@@ -49,7 +49,7 @@ export default class OptimalLineupEngine {
         const availablePlayers = positionGroups[position] || [];
         const sortedPlayers = availablePlayers
           .filter((p: any) => !usedPlayers.has(p.playerId || p.playerName))
-          .sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))
+          .sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0))
           .slice(0, count);
         
         optimalLineup[position] = sortedPlayers;
@@ -65,7 +65,7 @@ export default class OptimalLineupEngine {
       
       if (flexPlayers.length > 0) {
         const bestFlexPlayer = flexPlayers
-          .sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+          .sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
         
         if (bestFlexPlayer) {
           optimalLineup.FLEX = [bestFlexPlayer];
@@ -75,14 +75,14 @@ export default class OptimalLineupEngine {
     }
     
     // Handle SUPERFLEX position (if applicable)
-    if ('superflexPositions' in requirements && requirements.superflexPositions && leagueType === 'superflex') {
-      const superflexPlayers = requirements.superflexPositions.flatMap(pos => 
+    if (leagueType === 'superflex' && 'superflexPositions' in requirements && requirements.superflexPositions) {
+      const superflexPlayers = requirements.superflexPositions.flatMap((pos: string) => 
         (positionGroups[pos] || []).filter((p: any) => !usedPlayers.has(p.playerId || p.playerName))
       );
       
       if (superflexPlayers.length > 0) {
         const bestSuperflexPlayer = superflexPlayers
-          .sort((a, b) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
+          .sort((a: any, b: any) => (b.projectedPoints || 0) - (a.projectedPoints || 0))[0];
         
         if (bestSuperflexPlayer) {
           optimalLineup.SUPERFLEX = [bestSuperflexPlayer];
