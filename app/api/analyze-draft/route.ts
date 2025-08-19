@@ -94,6 +94,13 @@ class DraftAnalyzer {
 
         const draftData = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}`);
         const draftPicks: any[] = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/picks`);
+        // Try to fetch participants to get display names for each draft slot
+        let participants: any[] = [];
+        try {
+            participants = await this.fetchSleeperApi(`https://api.sleeper.app/v1/draft/${draftId}/participants`);
+        } catch (e) {
+            console.warn('Could not fetch participants; will fall back to generic team names');
+        }
 
         const slotToRosterId = draftData.slot_to_roster_id as { [slot: string]: number };
         if (!slotToRosterId) {
@@ -102,6 +109,15 @@ class DraftAnalyzer {
 
         const playersMap: any = await this.fetchSleeperApi(`https://api.sleeper.app/v1/players/nfl`);
         const getSleeperPlayer = (id: string) => playersMap?.[id];
+
+        // Map slot -> participant display name if available
+        const slotToName: Record<string, string> = {};
+        (participants || []).forEach((p: any) => {
+            const slotKey = String(p?.slot ?? '');
+            if (!slotKey) return;
+            const name = p?.name || p?.display_name || p?.username || p?.user_name;
+            if (name) slotToName[slotKey] = name;
+        });
 
         const draftInfo = {
             name: draftData.metadata?.name || `Draft ${draftId}`,
@@ -114,7 +130,7 @@ class DraftAnalyzer {
         Object.entries(slotToRosterId).forEach(([slot, rosterId]) => {
             teams[rosterId] = {
                 teamId: rosterId,
-                teamName: `Team ${rosterId}`,
+                teamName: slotToName[String(slot)] || `Team ${rosterId}`,
                 draftSlot: parseInt(slot, 10),
                 roster: [] as any[],
             };
@@ -160,6 +176,7 @@ class DraftAnalyzer {
                 draftSlot: team.draftSlot,
                 optimalLineup: lineup.optimalLineup,
                 optimalLineupPoints: lineup.totalProjectedPoints,
+                benchPlayers: lineup.benchPlayers,
                 benchPoints: lineup.benchPoints,
                 lineupAnalysis: lineup.analysis,
                 positionGrades: grades,
