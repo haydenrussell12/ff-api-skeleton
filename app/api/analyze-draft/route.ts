@@ -597,10 +597,39 @@ class DraftAnalyzer {
         // Now calculate position grades using the new system that considers all teams
         const gradedTeams = gradeEngine.calculatePositionGrades(analysisTeams, { scoring: 'ppr' });
 
+        // Map the graded teams back to the expected format for the frontend
+        const finalTeams = gradedTeams.map(gradedTeam => {
+            // Find the original analysis team data
+            const originalTeam = analysisTeams.find(t => t.teamId === gradedTeam.teamId);
+            
+            return {
+                teamId: gradedTeam.teamId,
+                teamName: gradedTeam.teamName,
+                draftSlot: originalTeam?.draftSlot || 0,
+                optimalLineup: originalTeam?.optimalLineup || [],
+                optimalLineupPoints: originalTeam?.optimalLineupPoints || 0,
+                benchPlayers: originalTeam?.benchPlayers || [],
+                benchPoints: originalTeam?.benchPoints || 0,
+                lineupAnalysis: originalTeam?.lineupAnalysis || {},
+                positionGrades: gradedTeam.positionGrades || {},
+                totalProjectedPoints: originalTeam?.totalProjectedPoints || 0,
+                averageProjectedPoints: originalTeam?.averageProjectedPoints || 0,
+                averageAdpValue: originalTeam?.averageAdpValue || 0,
+                averageVorpScore: originalTeam?.averageVorpScore || 0,
+                players: originalTeam?.players || [],
+                // Add the new grading data
+                overallGrade: gradedTeam.overallGrade || { grade: 'C', score: 0, percentile: 50 },
+                starterScores: gradedTeam.starterScores || {},
+                depthScore: gradedTeam.depthScore || 0,
+                balancePenalty: gradedTeam.balancePenalty || 0,
+                totalScore: gradedTeam.totalScore || 0
+            };
+        });
+
         return {
             draftInfo,
             analysis: {
-                teams: gradedTeams,
+                teams: finalTeams,
             },
         };
     }
