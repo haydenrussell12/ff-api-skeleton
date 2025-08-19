@@ -280,24 +280,24 @@ function ResultsContent() {
             </SectionCard>
 
             <SectionCard title="Settings">
-              <div style={{ color: '#64748b', fontSize: 12 }}>Assumed PPR with {leagueInfo.description}</div>
+              <div style={{ color: '#64748b', fontSize: 12 }}>{leagueInfo.description}</div>
             </SectionCard>
           </div>
 
           {/* Scoreboard as Table */}
           <SectionCard title="🏆 Scoreboard (Ranked by Optimal Lineup Points)">
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
                 <thead>
                   <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                    <th style={{ padding: '2px 1px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Rank</th>
-                    <th style={{ padding: '2px 1px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Team</th>
-                    <th style={{ padding: '2px 1px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Grade</th>
-                    <th style={{ padding: '2px 1px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Optimal Pts</th>
-                    <th style={{ padding: '2px 1px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Bench Pts</th>
-                    <th style={{ padding: '2px 1px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Total Pts</th>
-                    <th style={{ padding: '2px 1px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg ADP</th>
-                    <th style={{ padding: '2px 1px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg VORP</th>
+                    <th style={{ padding: '1px 0px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Rank</th>
+                    <th style={{ padding: '1px 0px', textAlign: 'left', fontWeight: 600, color: '#334155' }}>Team</th>
+                    <th style={{ padding: '1px 0px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Grade</th>
+                    <th style={{ padding: '1px 0px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Optimal Pts</th>
+                    <th style={{ padding: '1px 0px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Bench Pts</th>
+                    <th style={{ padding: '1px 0px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Total Pts</th>
+                    <th style={{ padding: '1px 0px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg ADP</th>
+                    <th style={{ padding: '1px 0px', textAlign: 'center', fontWeight: 600, color: '#334155' }}>Avg VORP</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -313,16 +313,16 @@ function ResultsContent() {
                     
                     return (
                       <tr key={team.teamId} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                        <td style={{ padding: '2px 1px', fontWeight: 700, color: '#334155' }}>#{idx + 1}</td>
-                        <td style={{ padding: '2px 1px', fontWeight: 600, color: '#0f172a' }}>{team.teamName || `Team ${team.teamId}`}</td>
-                        <td style={{ padding: '2px 1px', textAlign: 'center' }}>
+                        <td style={{ padding: '1px 0px', fontWeight: 700, color: '#334155' }}>#{idx + 1}</td>
+                        <td style={{ padding: '1px 0px', fontWeight: 600, color: '#0f172a' }}>{team.teamName || `Team ${team.teamId}`}</td>
+                        <td style={{ padding: '1px 0px', textAlign: 'center' }}>
                           <Badge text={gradeLetter} color={gradeCol} />
                         </td>
-                        <td style={{ padding: '2px 1px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{optimalPts.toFixed(1)}</td>
-                        <td style={{ padding: '2px 1px', textAlign: 'center', color: '#64748b' }}>{benchPts.toFixed(1)}</td>
-                        <td style={{ padding: '2px 1px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{totalPts.toFixed(1)}</td>
-                        <td style={{ padding: '2px 1px', textAlign: 'center', color: '#64748b' }}>{avgAdp.toFixed(1)}</td>
-                        <td style={{ padding: '2px 1px', textAlign: 'center', color: '#64748b' }}>{avgVorp.toFixed(2)}</td>
+                        <td style={{ padding: '1px 0px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{optimalPts.toFixed(1)}</td>
+                        <td style={{ padding: '1px 0px', textAlign: 'center', color: '#64748b' }}>{benchPts.toFixed(1)}</td>
+                        <td style={{ padding: '1px 0px', textAlign: 'center', fontWeight: 600, color: '#0f172a' }}>{totalPts.toFixed(1)}</td>
+                        <td style={{ padding: '1px 0px', textAlign: 'center', color: '#64748b' }}>{avgAdp.toFixed(1)}</td>
+                        <td style={{ padding: '1px 0px', textAlign: 'center', color: '#64748b' }}>{avgVorp.toFixed(2)}</td>
                       </tr>
                     );
                   })}
@@ -360,7 +360,7 @@ function ResultsContent() {
                           {team.teamName || `Team ${team.teamId}`}
                         </h3>
                         <p style={{ margin: '0', color: '#6b7280', fontSize: '14px' }}>
-                          {team.roster?.length || 0} players • {team.optimalLineupPoints || 0} projected points
+                          {team.roster?.length || 0} players • {Math.round((team.optimalLineupPoints || 0) * 10) / 10} projected points
                         </p>
                       </div>
                       
@@ -494,30 +494,6 @@ function ResultsContent() {
                         </p>
                       </div>
                     </div>
-
-                    {/* Detailed Roster Summary */}
-                    {/* 
-                    <div style={{
-                      padding: '15px',
-                      backgroundColor: '#fef3c7',
-                      borderRadius: '6px',
-                      border: '1px solid #fbbf24',
-                      marginBottom: '20px'
-                    }}>
-                      <h4 style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: '600', color: '#92400e' }}>
-                        📋 Roster Construction Summary
-                      </h4>
-                      <pre style={{
-                        margin: '0',
-                        fontSize: '12px',
-                        color: '#92400e',
-                        whiteSpace: 'pre-wrap',
-                        fontFamily: 'monospace'
-                      }}>
-                        {rosterGrade.summary}
-                      </pre>
-                    </div>
-                    */}
                     
                     {/* Team Lineup */}
                     <div style={{ padding: '20px' }}>
