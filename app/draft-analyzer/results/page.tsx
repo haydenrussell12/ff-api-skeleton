@@ -292,201 +292,205 @@ function ResultsContent() {
             </SectionCard>
           </div>
 
-          {/* Scoreboard as Professional List */}
+          {/* Scoreboard as Professional Table */}
           <SectionCard title="🏆 Scoreboard (Ranked by Optimal Lineup Points)">
-            <div style={{ display: 'grid', gap: 16, maxWidth: '100%', overflow: 'hidden' }}>
-              {sortedTeams.map((team: any, idx: number) => {
-                const rosterGrade = formatRosterGrade(team);
-                const gradeLetter = rosterGrade.grade;
-                const optimalPts = team?.optimalLineupPoints ?? 0;
-                const benchPts = team?.benchPoints ?? 0;
-                const totalPts = team?.totalProjectedPoints ?? 0;
-                const avgVorp = team?.averageVorpScore ?? 0;
-                const avgAdp = team?.averageAdpValue ?? 0;
-                const gradeCol = (gradeLetter && gradeLetter !== '—') ? (gradeLetter.startsWith('A') ? '#16a34a' : gradeLetter.startsWith('B') ? '#22c55e' : gradeLetter.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
-                
-                return (
-                  <div key={team.teamId} style={{
-                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: 16,
-                    padding: '16px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 16,
-                    transition: 'all 0.2s ease-in-out',
-                    cursor: 'pointer',
-                    width: '100%',
-                    maxWidth: '100%',
-                    boxSizing: 'border-box'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+            <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
+              <table style={{ 
+                width: '100%', 
+                borderCollapse: 'collapse',
+                tableLayout: 'fixed',
+                fontSize: '12px'
+              }}>
+                <colgroup>
+                  <col style={{ width: '60px' }} />
+                  <col style={{ width: '200px' }} />
+                  <col style={{ width: '100px' }} />
+                  <col style={{ width: '100px' }} />
+                  <col style={{ width: '100px' }} />
+                  <col style={{ width: '100px' }} />
+                </colgroup>
+                <thead>
+                  <tr style={{ 
+                    background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+                    borderBottom: '2px solid #cbd5e1'
                   }}>
+                    <th style={{ 
+                      padding: '12px 8px', 
+                      textAlign: 'center', 
+                      fontWeight: '600',
+                      color: '#374151',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      Rank
+                    </th>
+                    <th style={{ 
+                      padding: '12px 8px', 
+                      textAlign: 'left', 
+                      fontWeight: '600',
+                      color: '#374151',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      Team
+                    </th>
+                    <th style={{ 
+                      padding: '12px 8px', 
+                      textAlign: 'center', 
+                      fontWeight: '600',
+                      color: '#374151',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      Grade
+                    </th>
+                    <th style={{ 
+                      padding: '12px 8px', 
+                      textAlign: 'center', 
+                      fontWeight: '600',
+                      color: '#374151',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      Optimal
+                    </th>
+                    <th style={{ 
+                      padding: '12px 8px', 
+                      textAlign: 'center', 
+                      fontWeight: '600',
+                      color: '#374151',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      Bench
+                    </th>
+                    <th style={{ 
+                      padding: '12px 8px', 
+                      textAlign: 'center', 
+                      fontWeight: '600',
+                      color: '#374151',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      Total
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedTeams.map((team: any, idx: number) => {
+                    const rosterGrade = formatRosterGrade(team);
+                    const gradeLetter = rosterGrade.grade;
+                    const optimalPts = team?.optimalLineupPoints ?? 0;
+                    const benchPts = team?.benchPoints ?? 0;
+                    const totalPts = team?.totalProjectedPoints ?? 0;
+                    const gradeCol = (gradeLetter && gradeLetter !== '—') ? (gradeLetter.startsWith('A') ? '#16a34a' : gradeLetter.startsWith('B') ? '#22c55e' : gradeLetter.startsWith('C') ? '#f59e0b' : '#ef4444') : '#64748b';
                     
-                    {/* Top Row: Rank, Team Name, Grade */}
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 16,
-                      justifyContent: 'space-between'
-                    }}>
-                      {/* Rank */}
-                      <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 4,
-                        minWidth: '50px'
+                    return (
+                      <tr key={team.teamId} style={{
+                        borderBottom: '1px solid #e5e7eb',
+                        transition: 'background-color 0.2s ease',
+                        cursor: 'pointer'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f8fafc';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
                       }}>
-                        <div style={{
-                          width: 36,
-                          height: 36,
-                          borderRadius: '50%',
-                          background: idx === 0 ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' : 
-                                     idx === 1 ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)' :
-                                     idx === 2 ? 'linear-gradient(135deg, #d97706 0%, #b45309 100%)' :
-                                     'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                          fontWeight: 700,
-                          fontSize: 14,
-                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                        
+                        {/* Rank Column */}
+                        <td style={{ 
+                          padding: '12px 8px', 
+                          textAlign: 'center',
+                          whiteSpace: 'nowrap'
                         }}>
-                          {idx + 1}
-                        </div>
-                        {idx < 3 && (
                           <div style={{
-                            fontSize: 9,
-                            fontWeight: 600,
-                            color: idx === 0 ? '#92400e' : idx === 1 ? '#475569' : '#92400e',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px'
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 4
                           }}>
-                            {idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}
+                            <div style={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: '50%',
+                              background: idx === 0 ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' : 
+                                         idx === 1 ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)' :
+                                         idx === 2 ? 'linear-gradient(135deg, #d97706 0%, #b45309 100%)' :
+                                         'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: 'white',
+                              fontWeight: '700',
+                              fontSize: '12px'
+                            }}>
+                              {idx + 1}
+                            </div>
+                            {idx < 3 && (
+                              <div style={{
+                                fontSize: '8px',
+                                fontWeight: '600',
+                                color: idx === 0 ? '#92400e' : idx === 1 ? '#475569' : '#92400e',
+                                textTransform: 'uppercase'
+                              }}>
+                                {idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
+                        </td>
 
-                      {/* Team Name & Grade */}
-                      <div style={{ 
-                        flex: 1,
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: 12,
-                        justifyContent: 'space-between'
-                      }}>
-                        <h3 style={{
-                          margin: 0,
-                          fontSize: '18px',
-                          fontWeight: '700',
-                          color: '#0f172a'
+                        {/* Team Column */}
+                        <td style={{ 
+                          padding: '12px 8px', 
+                          textAlign: 'left',
+                          whiteSpace: 'nowrap'
                         }}>
-                          {team.teamName || `Team ${team.teamId}`}
-                        </h3>
-                        <Badge text={gradeLetter} color={gradeCol} />
-                      </div>
-                    </div>
+                          <div style={{ fontWeight: '600', color: '#0f172a' }}>
+                            {team.teamName || `Team ${team.teamId}`}
+                          </div>
+                        </td>
 
-                    {/* Metrics Grid - Compact 2x3 Layout */}
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(2, 1fr)',
-                      gap: 8,
-                      width: '100%',
-                      maxWidth: '100%',
-                      boxSizing: 'border-box'
-                    }}>
-                      {/* Optimal Points */}
-                      <div style={{
-                        background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-                        border: '1px solid #0ea5e9',
-                        borderRadius: 8,
-                        padding: '8px 12px',
-                        textAlign: 'center'
-                      }}>
-                        <div style={{ fontSize: 10, color: '#0c4a6e', fontWeight: 600, marginBottom: 2 }}>
-                          ⚡ Optimal
-                        </div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: '#0ea5e9' }}>
-                          {optimalPts.toFixed(1)}
-                        </div>
-                      </div>
+                        {/* Grade Column */}
+                        <td style={{ 
+                          padding: '12px 8px', 
+                          textAlign: 'center',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          <Badge text={gradeLetter} color={gradeCol} />
+                        </td>
 
-                      {/* Bench Points */}
-                      <div style={{
-                        background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                        border: '1px solid #f59e0b',
-                        borderRadius: 8,
-                        padding: '8px 12px',
-                        textAlign: 'center'
-                      }}>
-                        <div style={{ fontSize: 10, color: '#92400e', fontWeight: 600, marginBottom: 2 }}>
-                          🏗️ Bench
-                        </div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: '#f59e0b' }}>
-                          {benchPts.toFixed(1)}
-                        </div>
-                      </div>
+                        {/* Optimal Points Column */}
+                        <td style={{ 
+                          padding: '12px 8px', 
+                          textAlign: 'center',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          <div style={{ fontWeight: '600', color: '#0ea5e9' }}>
+                            {optimalPts.toFixed(1)}
+                          </div>
+                        </td>
 
-                      {/* Total Points */}
-                      <div style={{
-                        background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-                        border: '1px solid #10b981',
-                        borderRadius: 8,
-                        padding: '8px 12px',
-                        textAlign: 'center'
-                      }}>
-                        <div style={{ fontSize: 10, color: '#065f46', fontWeight: 600, marginBottom: 2 }}>
-                          🎯 Total
-                        </div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: '#10b981' }}>
-                          {totalPts.toFixed(1)}
-                        </div>
-                      </div>
+                        {/* Bench Points Column */}
+                        <td style={{ 
+                          padding: '12px 8px', 
+                          textAlign: 'center',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          <div style={{ fontWeight: '600', color: '#f59e0b' }}>
+                            {benchPts.toFixed(1)}
+                          </div>
+                        </td>
 
-                      {/* Avg ADP */}
-                      <div style={{
-                        background: 'linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%)',
-                        border: '1px solid #8b5cf6',
-                        borderRadius: 8,
-                        padding: '8px 12px',
-                        textAlign: 'center'
-                      }}>
-                        <div style={{ fontSize: 10, color: '#581c87', fontWeight: 600, marginBottom: 2 }}>
-                          💎 ADP
-                        </div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: '#8b5cf6' }}>
-                          {avgAdp.toFixed(1)}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Bottom Row: Quick Stats */}
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      fontSize: 11,
-                      color: '#64748b',
-                      borderTop: '1px solid #f1f5f9',
-                      paddingTop: 8
-                    }}>
-                      <div>{team.roster?.length || 0} players</div>
-                      <div>Round {Math.max(...(team.roster?.map((p: any) => p.round) || [0]))}</div>
-                      <div>VORP: {avgVorp.toFixed(1)}</div>
-                    </div>
-                  </div>
-                );
-              })}
+                        {/* Total Points Column */}
+                        <td style={{ 
+                          padding: '12px 8px', 
+                          textAlign: 'center',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          <div style={{ fontWeight: '600', color: '#10b981' }}>
+                            {totalPts.toFixed(1)}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </SectionCard>
 
