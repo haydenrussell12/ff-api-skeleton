@@ -5,12 +5,13 @@ import { useSearchParams } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-function Badge({ text, color = '#64748b' }: { text: string; color?: string }) {
+function Badge({ text, color = '#64748b', style }: { text: string; color?: string; style?: React.CSSProperties }) {
   return (
     <span style={{
       display: 'inline-block', padding: '2px 8px', borderRadius: 999,
       background: `${color}20`, color,
-      fontSize: 12, fontWeight: 700, border: `1px solid ${color}55`
+      fontSize: 12, fontWeight: 700, border: `1px solid ${color}55`,
+      ...style
     }}>{text}</span>
   );
 }
@@ -91,7 +92,7 @@ function TeamLineup({ team }: { team: any }) {
                     {grade && <Badge text={grade.grade} color="#16a34a" />}
                   </div>
                   <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>
-                    {grade?.projectedPoints?.toFixed(1) || 0} pts
+                    {players.reduce((sum: number, p: any) => sum + (p.projectedPoints || 0), 0).toFixed(1)} pts
                   </div>
                 </div>
                 {renderPlayers(players)}
@@ -277,7 +278,7 @@ function ResultsContent() {
                       <div style={{ opacity: 0.9, fontSize: 14 }}>Draft Slot {team.draftSlot}</div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <Badge text={team?.positionGrades?.overallGrade?.grade ?? '—'} color="rgba(255,255,255,0.9)" />
+                      <Badge text={team?.positionGrades?.overallGrade?.grade ?? '—'} color="rgba(255,255,255,0.9)" style={{ fontSize: '16px', padding: '6px 16px' }} />
                     </div>
                   </div>
                   
